@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+test:
+  api-version: 0.0.1
+  access-hold-time: 10
+  access-hold-time-millis: 10000
+
+
+spring:
+  datasource:
+    driver-class-name:
+    url:
+    username:
+    password:
+  # Spring boot 2.6버전 이후에 spring.mvc.pathmatch.matching-strategy 값이 ant_apth_matcher에서 path_pattern_parser로 변경되면서 몇몇 라이브러리(swagger포함)에 오류
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+      # show_sql: true
+      format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+    # org.hibernate.type: trace
