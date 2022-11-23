@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import server.test.auth.dto.AuthToken;
 import server.test.auth.dto.LoginForm;
-import server.test.auth.dto.MemberAccess;
+import server.test.auth.entity.MemberAccess;
 import server.test.auth.service.AuthService;
 import server.test.common.JwtProvider;
 import server.test.config.AppProperties;
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
 
     private Optional<Member> checkUserNameAndPassword(LoginForm loginForm) {
         //일단 이름으로 DB에 있나 확인
-        Optional<Member> member = memberRepository.findByUserName(loginForm.getUserName());
+        Optional<Member> member = memberRepository.findByName(loginForm.getUserName());
         member.orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
 
         //비밀번호 확인

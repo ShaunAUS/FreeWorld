@@ -1,4 +1,4 @@
-package server.test.auth.dto;
+package server.test.auth.entity;
 
 
 import java.time.LocalDateTime;

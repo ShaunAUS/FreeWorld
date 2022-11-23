@@ -7,7 +7,7 @@ import server.test.entity.Member;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findByUserName(String username);
+    Optional<Member> findByName(String name);
 
 }
 
