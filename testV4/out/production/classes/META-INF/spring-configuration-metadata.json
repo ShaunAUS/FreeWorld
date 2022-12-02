@@ -1,0 +1,32 @@
+{
+  "groups": [
+    {
+      "name": "ice",
+      "type": "com.example.testSecurity.config.AppProperties",
+      "sourceType": "com.example.testSecurity.config.AppProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "ice.access-hold-time",
+      "type": "java.lang.Long",
+      "sourceType": "com.example.testSecurity.config.AppProperties"
+    },
+    {
+      "name": "ice.access-hold-time-millis",
+      "type": "java.lang.Long",
+      "sourceType": "com.example.testSecurity.config.AppProperties"
+    },
+    {
+      "name": "ice.api-version",
+      "type": "java.lang.String",
+      "sourceType": "com.example.testSecurity.config.AppProperties"
+    },
+    {
+      "name": "ice.s-e-s-s-i-o-n-i-d",
+      "type": "java.lang.String",
+      "sourceType": "com.example.testSecurity.config.AppProperties"
+    }
+  ],
+  "hints": []
+}
