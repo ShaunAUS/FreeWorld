@@ -4,7 +4,7 @@ import com.example.testSecurity.auth.dto.AuthToken;
 import com.example.testSecurity.auth.dto.LoginForm;
 import com.example.testSecurity.auth.entity.MemberAccess;
 import com.example.testSecurity.auth.service.AuthService;
-import com.example.testSecurity.common.JwtProvider;
+import com.example.testSecurity.jwt.JwtProvider;
 import com.example.testSecurity.config.AppProperties;
 import com.example.testSecurity.dto.MemberDto;
 import com.example.testSecurity.entity.Member;
