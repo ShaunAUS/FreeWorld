@@ -11,7 +11,12 @@ public enum ServiceMessage {
     WRONG_PASSWORD(-2,"비밀번호가 일치하지 않습니다." ),
 
     DUPLICATE_USERNAME(-2,"아이디 중복" ),
-    NOT_FOUND_ACCESS_INFO(-3,"접근기록을 찾을 수 없습니다" );
+    NOT_FOUND_ACCESS_INFO(-3,"접근기록을 찾을 수 없습니다" ),
+
+    NOT_AUTHORIZED(-4,"인증되지 않은 사용자" );
+
+
+    
 
 
 
