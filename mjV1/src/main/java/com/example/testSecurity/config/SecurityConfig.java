@@ -1,7 +1,7 @@
 package com.example.testSecurity.config;
 
-import com.example.testSecurity.common.JwtAuthenticationFilter;
-import com.example.testSecurity.common.JwtProvider;
+import com.example.testSecurity.jwt.JwtAuthenticationFilter;
+import com.example.testSecurity.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

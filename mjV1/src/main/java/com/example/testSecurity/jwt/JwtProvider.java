@@ -1,7 +1,8 @@
-package com.example.testSecurity.common;
+package com.example.testSecurity.jwt;
 
 import com.example.testSecurity.config.AppProperties;
 import com.example.testSecurity.entity.Member;
+import com.example.testSecurity.exception.enums.ServiceMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -10,9 +11,13 @@ import io.jsonwebtoken.Jwts;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -27,6 +32,22 @@ public class JwtProvider {
 
     private final JwtSigningKeyResolver signingKeyResolver;
     private final AppProperties properties;
+
+
+
+    public static Credential getCredential(Authentication authentication) {
+        if (Optional.ofNullable(authentication).isEmpty()) {
+            throw new AuthenticationServiceException(ServiceMessage.NOT_AUTHORIZED.getMessage());
+        }
+        // cast authentication.getCredentials() as Credential
+        Credential credentials = (Credential) authentication.getCredentials();
+        if (Optional.ofNullable(credentials).isEmpty()) {
+            throw new AuthenticationCredentialsNotFoundException(ServiceMessage.NOT_AUTHORIZED.getMessage());
+        }
+        return credentials;
+    }
+
+
 
 
     public String getJwtToken(Member member, Long memberAccessId) {
@@ -126,6 +147,13 @@ public class JwtProvider {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    @Builder
+    public static class Credential {
+        public String token;
+        public AuthenticationUser user;
+        public Jws<Claims> claims;
     }
 
 

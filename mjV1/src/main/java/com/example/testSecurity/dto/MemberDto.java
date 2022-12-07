@@ -52,6 +52,7 @@ public class MemberDto {
     public static class Create  {
         private String userName;   // = LoginForm UserName
         private String password;
+        @ApiModelProperty(value = "권한 - ( ANONYMOUS:로그인전 회원, GENERAL_MEMBER:일반회원, ADMIN:어드민 )")
         private RoleType roleType;
         public void insertEncodedPassword(String encodedPassword) {
             this.password = encodedPassword;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api("swagger 테스트")
 @RestController
 @RequestMapping("/v1")
-public class HelloController  {
+public class SwaggerController {
 
     @ApiOperation(value = "스웨거 테스트", notes = "test swagger")
     @PostMapping("/register")

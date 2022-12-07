@@ -13,20 +13,21 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTime{
+public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_no")
     private Long no;
 
-    @ApiModelProperty(value = "접속 아이디")
-    private String userName;   // = LoginForm UserName
+    @ApiModelProperty(value = "회사이름")
+    private String name;
+    @ApiModelProperty(value = "연락번호")
+    private String contactNumber;
+    @ApiModelProperty(value = "회사주소")
+    private String address;
     @ApiModelProperty(value = "접속 비밀번호")
-    private String password;
-    @ApiModelProperty(value = "권한")
-    private Integer roleType;
+    private Integer businessNumber;
+
 
 }

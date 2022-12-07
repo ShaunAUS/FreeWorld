@@ -1,4 +1,4 @@
-package com.example.testSecurity.common;
+package com.example.testSecurity.jwt;
 
 import com.example.testSecurity.config.AppProperties;
 import io.jsonwebtoken.Claims;
