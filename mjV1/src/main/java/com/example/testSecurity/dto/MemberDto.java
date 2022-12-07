@@ -6,6 +6,8 @@ import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModel;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +23,7 @@ public class MemberDto {
     @Getter
     @Builder
     @Setter
-    @ApiModel(value = "MemberDto.Info", description = "기본정보")
+    @ApiModel(value = "MemberDto.Info", description = "멤버 정보")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Info {
@@ -39,14 +41,11 @@ public class MemberDto {
                 })
                 .map(member);
         }
-
-
-
     }
 
 
     @Getter
-    @ApiModel(value = "MemberDto.Create", description = "회원가입")
+    @ApiModel(value = "MemberDto.Create", description = "멤버 생성")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Create  {
