@@ -1,5 +1,6 @@
 package com.example.testSecurity.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +22,11 @@ public class Member extends BaseTime{
     @Column(name = "member_no")
     private Long no;
 
-    private String password;
+    @ApiModelProperty(value = "접속 아이디")
     private String userName;   // = LoginForm UserName
+    @ApiModelProperty(value = "접속 비밀번호")
+    private String password;
+    @ApiModelProperty(value = "권한")
     private Integer roleType;
 
 }

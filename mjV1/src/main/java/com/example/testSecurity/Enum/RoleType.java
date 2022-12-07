@@ -13,9 +13,9 @@ import org.modelmapper.Converter;
 @Getter
 public enum RoleType {
 
-    LOW("LOW",0),
-    MIDDLE("MIDDLE",1),
-    HIGH("HIGH",2);
+    ANONYMOUS("ANONYMOUS",0),
+    GENERAL_MEMBER("GENERAL_MEMBER",1),
+    ADMIN("ADMIN",2);
 
     private String name;
     private Integer number;
