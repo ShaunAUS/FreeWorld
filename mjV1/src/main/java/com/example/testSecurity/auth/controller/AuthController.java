@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,13 @@ public class AuthController {
     @GetMapping("/hello")
     public String hello(){
         return "hello";
+    }
+
+    @ApiOperation(value = "testController", notes = "test")
+    @GetMapping("/hello/redis/{test-key}")
+    @Cacheable(key = "#test-key", value = "test-value")
+    public String helloRedis(){
+        return "testData";
     }
 
     @ApiOperation(value = "createMember", notes = "멤버추가")
