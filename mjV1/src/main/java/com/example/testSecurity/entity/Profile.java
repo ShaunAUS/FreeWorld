@@ -15,12 +15,17 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "profile_no")
+    private Long no;
+
     @ApiModelProperty(value = "이름")
     private String name;
     @ApiModelProperty(value = "소개")
     private String introduce;
-    @ApiModelProperty(value = "사진")
-    private MultipartFile image;
+/*    @ApiModelProperty(value = "사진URL")
+    private MultipartFile image;*/
     @ApiModelProperty(value = "이메일")
     private String email;
     @ApiModelProperty(value = "연락처")
