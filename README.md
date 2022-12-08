@@ -10,3 +10,4 @@
 - mysql
 - SpringSecurity
 - Lombok
+- redis
