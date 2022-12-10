@@ -11,5 +11,5 @@ public interface ProfileService {
 
     void deleteProfile(Long no);
 
-    void search(ProfileDto.SearchCondition profileSearchConditionDto);
+    void search(ProfileDto.Search profileSearchConditionDto);
 }

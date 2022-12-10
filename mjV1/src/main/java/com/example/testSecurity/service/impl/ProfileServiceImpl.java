@@ -12,22 +12,22 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void getProfile(Long no) {
+    public void getProfile(Long profileNo) {
 
     }
 
     @Override
-    public void updateProfile(ProfileDto.Create profileCreateDTO, Long no) {
+    public void updateProfile(ProfileDto.Create profileCreateDTO, Long profileNo) {
 
     }
 
     @Override
-    public void deleteProfile(Long no) {
+    public void deleteProfile(Long profileNo) {
 
     }
 
     @Override
-    public void search(ProfileDto.SearchCondition profileSearchConditionDto) {
+    public void search(ProfileDto.Search profileSearchConditionDto) {
 
     }
 }

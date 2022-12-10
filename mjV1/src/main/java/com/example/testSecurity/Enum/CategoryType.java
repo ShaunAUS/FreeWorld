@@ -6,15 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.modelmapper.Converter;
 
-//큰 범주
+//큰 범주 분류
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public enum CategoryType {
 
-    PROGRAMMING("LOW",0),
-    ANNOUNCE("MIDDLE",1),
-    CHEF("HIGH",2);
+    PROGRAMMING("PROGRAMMING",0),
+    ANNOUNCE("ANNOUNCE",1),
+    CHEF("CHEF",2);
 
 
     private String name;
