@@ -27,8 +27,9 @@ public class Company {
     private String contactNumber;
     @ApiModelProperty(value = "회사주소")
     private String address;
-    @ApiModelProperty(value = "접속 비밀번호")
+    @ApiModelProperty(value = "사업자 번호")
     private Integer businessNumber;
-
+    @ApiModelProperty(value = "인증여부")
+    private Boolean isCertificated;
 
 }

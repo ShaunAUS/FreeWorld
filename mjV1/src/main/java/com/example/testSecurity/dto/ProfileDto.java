@@ -2,16 +2,12 @@ package com.example.testSecurity.dto;
 
 import com.example.testSecurity.Enum.CategoryDetailType;
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.entity.Career;
-import com.example.testSecurity.entity.Member;
-import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,7 +17,7 @@ public class ProfileDto {
     @Getter
     @Builder
     @Setter
-    @ApiModel(value = "ProfileDto.Info", description = "프로파일 생성")
+    @ApiModel(value = "ProfileDto.Create", description = "프로파일 생성")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Create {
@@ -61,7 +57,7 @@ public class ProfileDto {
     @ApiModel(value = "ProfileDto.SearchCondition", description = "프로파일 검색 객체")
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SearchCondition {
+    public static class Search {
         @ApiModelProperty(value = "이름")
         private String name;
         @ApiModelProperty(value = "카테고리")
