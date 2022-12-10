@@ -1,13 +1,18 @@
 package com.example.testSecurity.controller;
 
 
+import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.ProfileDto;
+import com.example.testSecurity.entity.Member;
+import com.example.testSecurity.exception.ServiceProcessException;
+import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.jwt.AuthenticationUser;
+import com.example.testSecurity.repository.MemberRepository;
+import com.example.testSecurity.service.MemberService;
 import com.example.testSecurity.service.ProfileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,64 +22,69 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Api("")
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final MemberService memberService;
 
-    //TODO 등록
+    //등록은 일반회원만 가능
     @ApiOperation(value = "등록", notes = "프로필 등록")
-    @PostMapping("/profile")
+    @PostMapping("")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER')")
     public void createProfile(
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
         @ApiIgnore Authentication authentication
     ) {
+        isAuthorizedMember(authentication);
         profileService.createProfile(profileCreateDTO);
     }
 
     //TODO 디테일
     @ApiOperation(value = "조회", notes = "프로필 조회")
-    @GetMapping("/profile/{no}")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @GetMapping("/{profileNo}")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void getProfile(
-        @PathVariable Long no,
+        @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        profileService.getProfile(no);
+        profileService.getProfile(profileNo);
     }
 
     //TODO 수정
     @ApiOperation(value = "수정", notes = "프로필 수정")
-    @PatchMapping("/profile/{no}")
+    @PatchMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void modifyProfile(
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
-        @PathVariable Long no,
+        @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        profileService.updateProfile(profileCreateDTO, no);
+        checkIsMyProfile(profileNo,getLoginMemberNo(authentication));
+        profileService.updateProfile(profileCreateDTO, profileNo);
     }
 
-    //TODO 삭제
+
     @ApiOperation(value = "삭제", notes = "프로필 삭제")
-    @DeleteMapping("/profile/{no}")
+    @DeleteMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void deleteProfile(
-        @PathVariable Long no,
+        @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        profileService.deleteProfile(no);
+        checkIsMyProfile(profileNo,getLoginMemberNo(authentication));
+        profileService.deleteProfile(profileNo);
     }
-    //TODO 검색
-    @ApiOperation(value = "삭제", notes = "프로필 삭제")
+
+    @ApiOperation(value = "검색", notes = "프로필 검색")
     @DeleteMapping("/profile/search")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void deleteProfile(
-        @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.SearchCondition profileSearchConditionDto,
+        @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.Search profileSearchConditionDto,
             @ApiIgnore Authentication authentication
     ) {
+
         profileService.search(profileSearchConditionDto);
     }
 
@@ -83,5 +93,24 @@ public class ProfileController {
 
     private Integer getLoginMemberNo(Authentication authentication) {
         return AuthenticationUser.extractMemberNo(authentication);
+    }
+    private void isAuthorizedMember(Authentication authentication) {
+        switch (RoleType.valueOf(getLoginMember(getLoginMemberNo(authentication)).getRoleType())) {
+            case ADMIN:
+            case GENERAL_MEMBER:
+                break;
+            default:
+                throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
+        }
+    }
+    private Member getLoginMember(Integer memberNo){
+        return memberService.findById(Long.valueOf(memberNo))
+                .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+    }
+
+    private void checkIsMyProfile(Long profileNo,Integer loginMemberNo){
+        if(!memberService.checkIsMyProfile(profileNo, Long.valueOf(loginMemberNo))){
+            throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
+        }
     }
 }
