@@ -1,6 +1,6 @@
-# server-build-test
+# project-m1
 
-- Server Build Practice
+- project-m1
 
 - Springboot
 - SpringDataJpa
