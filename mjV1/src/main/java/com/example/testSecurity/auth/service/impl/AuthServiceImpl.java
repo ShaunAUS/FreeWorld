@@ -11,7 +11,7 @@ import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.repository.MemberAccessRepository;
-import com.example.testSecurity.repository.MemberRepository;
+import com.example.testSecurity.repository.MemberJpaRepository;
 import com.example.testSecurity.utils.MapperUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthServiceImpl implements AuthService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -41,20 +41,15 @@ public class AuthServiceImpl implements AuthService {
     public MemberDto.Info createMember(MemberDto.Create createDto) {
 
         log.info("멤버 추가 시작");
-
         //아이디 중복체크
         checkDuplicateUserName(createDto);
 
         createDto.insertEncodedPassword(passwordEncoder.encode(createDto.getPassword()));
-
-        //Member savedMember = memberRepository.save(MapperUtils.getMapper().map(createDto, Member.class));
-
-
-        Member savedMember = memberRepository.save(MemberDto.Create.toEntity(createDto));
+        Member dMember = memberJpaRepository.save(MemberDto.Create.toEntity(createDto));
 
 
         //ModelMapper는 해당 클래스의 기본 생성자를 이용해 객체를 생성하고 setter를 이용해 매핑을 한다.
-        return MemberDto.Info.toDto(savedMember);
+        return MemberDto.Info.toDto(dMember);
     }
 
 
@@ -107,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
     private Optional<Member> checkUserNameAndPassword(LoginForm loginForm) {
 
         //일단 이름으로 DB에 있나 확인
-        Optional<Member> member = memberRepository.findByUserName(loginForm.getUserName());
+        Optional<Member> member = memberJpaRepository.findByUserName(loginForm.getUserName());
 
         //null이면
         member.orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
@@ -123,7 +118,7 @@ public class AuthServiceImpl implements AuthService {
     //만들때
     private void checkDuplicateUserName(MemberDto.Create createDto) {
 
-        Optional<Member> optionalMember = memberRepository.findByUserName(createDto.getUserName());
+        Optional<Member> optionalMember = memberJpaRepository.findByUserName(createDto.getUserName());
         if (optionalMember.isPresent()) {
             if (optionalMember.get().getUserName().equals(createDto.getUserName())) {
                 throw new ServiceProcessException(ServiceMessage.DUPLICATE_USERNAME);
