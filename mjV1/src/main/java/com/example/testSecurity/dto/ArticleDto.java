@@ -1,7 +1,11 @@
 package com.example.testSecurity.dto;
 
 import com.example.testSecurity.Enum.CategoryType;
+import com.example.testSecurity.Enum.RoleType;
+import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Career;
+import com.example.testSecurity.entity.Member;
+import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -31,6 +35,16 @@ public class ArticleDto {
         private Integer views = 0;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
+
+        public static Article toEntity(ArticleDto.Create createDto) {
+            return MapperUtils.getMapper()
+                    .typeMap(ArticleDto.Create.class, Article.class)
+                    .addMappings(mapper -> {
+                        mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
+                                .map(ArticleDto.Create::getCategory, Article::setCategory);
+                    })
+                    .map(createDto);
+        }
     }
 
     @Getter
@@ -58,7 +72,7 @@ public class ArticleDto {
     @Getter
     @Builder
     @Setter
-    @ApiModel(value = "ArticleDto.SearchCondition", description = "게시글 검색조건")
+    @ApiModel(value = "ArticleDto.SearchCondition", description = "게시글 조건")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Search {
