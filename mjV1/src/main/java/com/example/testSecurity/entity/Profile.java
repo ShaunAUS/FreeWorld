@@ -30,7 +30,4 @@ public class Profile {
     private String email;
     @ApiModelProperty(value = "연락처")
     private String contactNumber;
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "career_no")
-    private Career career;
 }

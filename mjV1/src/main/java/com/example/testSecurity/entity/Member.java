@@ -1,11 +1,9 @@
 package com.example.testSecurity.entity;
 
 import io.swagger.annotations.ApiModelProperty;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,4 +27,7 @@ public class Member extends BaseTime{
     @ApiModelProperty(value = "권한")
     private Integer roleType;
 
+    @OneToOne
+    @JoinColumn(name = "profile_no")
+    private Profile profile;
 }
