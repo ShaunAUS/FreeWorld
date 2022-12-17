@@ -29,4 +29,8 @@ public class Career {
     @ApiModelProperty(value = "종료날짜")
     private LocalDateTime endDate;
 
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "profile_no")
+    private Profile profile;
+
 }

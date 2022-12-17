@@ -13,7 +13,8 @@ public enum ServiceMessage {
     DUPLICATE_USERNAME(-2,"아이디 중복" ),
     NOT_FOUND_ACCESS_INFO(-3,"접근기록을 찾을 수 없습니다" ),
 
-    NOT_AUTHORIZED(-4,"인증되지 않은 사용자" );
+    NOT_AUTHORIZED(-4,"인증되지 않은 사용자" ),
+    NOT_FOUND(-5,"해당하는 정보가 없습니다." );
 
 
     

@@ -52,7 +52,7 @@ public class QMemberAccess extends EntityPathBase<MemberAccess> {
 
     public QMemberAccess(Class<? extends MemberAccess> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.testSecurity.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.testSecurity.entity.QMember(forProperty("member"), inits.get("member")) : null;
     }
 
 }

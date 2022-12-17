@@ -2,12 +2,10 @@ package com.example.testSecurity.controller;
 
 import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.CompanyDto;
-import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.jwt.AuthenticationUser;
-import com.example.testSecurity.repository.MemberRepository;
 import com.example.testSecurity.service.CompanyService;
 import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
