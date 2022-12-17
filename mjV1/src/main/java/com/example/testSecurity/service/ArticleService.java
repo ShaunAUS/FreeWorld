@@ -1,22 +1,20 @@
 package com.example.testSecurity.service;
 
 import com.example.testSecurity.dto.ArticleDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ArticleService {
-    void createArticle(ArticleDto.Create articleCreateDTO);
+    ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO);
 
-    void getArticle(Long no);
+    ArticleDto.Info getArticle(Long articleNo);
 
-    void updateArticle(ArticleDto.Create articleCreateDTO, Long no);
+    ArticleDto.Info updateArticle(ArticleDto.Create articleCreateDTO, Long no);
 
-    void deleteArticle(Long no);
+    void deleteArticle(Long articleNo);
+    void bookmarkArticle(Long articleNo, Integer loginMemberNo);
 
-    void search(ArticleDto.Search articleSearchConditionDto);
 
-    void likeArticle(Long no);
-
-    void bookmarkArticle(Long no, Integer loginMemberNo);
-
-    Boolean checkIsMemberArticle(Long no, Integer loginMemberNo);
+    Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo);
 
 }

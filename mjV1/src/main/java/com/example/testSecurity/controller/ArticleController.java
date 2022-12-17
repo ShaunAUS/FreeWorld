@@ -2,23 +2,24 @@ package com.example.testSecurity.controller;
 
 import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.jwt.AuthenticationUser;
-import com.example.testSecurity.repository.MemberRepository;
+import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
 import com.example.testSecurity.service.ArticleService;
 import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.management.relation.Role;
 
 @RestController
 @RequestMapping("/v1/article")
@@ -28,10 +29,12 @@ public class ArticleController {
     private final ArticleService articleService;
     private final MemberService memberService;
 
+    private final ArticleCustomRepository articleCustomRepository;
+
     //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
     @ApiOperation(value = "등록", notes = "개시글 등록")
-    @PostMapping("")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PostMapping("/register")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')®")
     public void createArticle(
             @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
             @ApiIgnore Authentication authentication
@@ -71,39 +74,52 @@ public class ArticleController {
 
 
     @ApiOperation(value = "삭제", notes = "게시글 삭제")
-    @DeleteMapping("/{no}")
+    @DeleteMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void deleteProfile(
-            @PathVariable Long no,
+            @PathVariable Long articleNo,
             @ApiIgnore Authentication authentication
     ) {
-        if(checkIsMemberArticle(no, getLoginMemberNo(authentication))){
-            articleService.deleteArticle(no);
+        if(checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))){
+            articleService.deleteArticle(articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
     }
 
     @ApiOperation(value = "북마크", notes = "게시글 북마크")
-    @DeleteMapping("/{no}")
+    @DeleteMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void bookmarkArticle(
-            @PathVariable Long no,
+            @PathVariable Long articleNo,
             @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleService.bookmarkArticle(no,getLoginMemberNo(authentication));
+        articleService.bookmarkArticle(articleNo,getLoginMemberNo(authentication));
     }
 
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
-    @DeleteMapping("/{no}")
+    @DeleteMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void likeArticle(
-            @PathVariable Long no,
+            @PathVariable Long articleNo,
             @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleService.likeArticle(no);
+        articleCustomRepository.likeArticle(articleNo);
     }
+
+    @ApiOperation(value = "검색", notes = "게시글 검색")
+    @DeleteMapping("/search")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    public Page<ArticleDto.Info> searchArticle(
+            @RequestBody ArticleDto.Search searchCondition,
+            @PageableDefault(sort = {"artilce_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+            @ApiIgnore Authentication authentication
+    ) {
+        return articleCustomRepository.search(searchCondition,pageable);
+    }
+
+
 
     private Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo){
         return articleService.checkIsMemberArticle(articleNo, loginMemberNo);
