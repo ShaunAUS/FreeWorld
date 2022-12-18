@@ -2,10 +2,13 @@ package com.example.testSecurity.querydlsRepository.impl;
 
 import com.example.testSecurity.Enum.CategoryType;
 import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.entity.Article;
+import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
-import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -14,10 +17,10 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.testSecurity.entity.QArticle.article;
 import static com.example.testSecurity.entity.QProfile.profile;
-import static com.example.testSecurity.entity.QMemberArticleBookmark.memberArticleBookmark;
 import static org.springframework.util.StringUtils.*;
 
 public class ArticleRepositoryImpl implements ArticleCustomRepository {
@@ -72,6 +75,23 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
                 .set(article.likeCnt,article.likeCnt.add(1))
                 .where(article.no.eq(articleNo))
                 .execute();
+    }
+
+    @Override
+    public Optional<Article> checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
+
+        return Optional.ofNullable(queryFactory
+                .select(article)
+                .from(article)
+                .where(article.profile.no.eq(
+                        (Expression<? super Long>) JPAExpressions
+                                .select(profile)
+                                .from(profile)
+                                .where(profile.member.no.eq(Long.valueOf(loginMemberNo)))
+                                .fetch()
+                                .stream()
+                                .map(Profile::getNo)
+                )).fetchOne());
     }
 
 /*    @Override
