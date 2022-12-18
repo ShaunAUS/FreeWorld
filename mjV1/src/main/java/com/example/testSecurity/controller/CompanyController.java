@@ -11,6 +11,7 @@ import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,21 +31,21 @@ public class CompanyController {
     public void createProfile(
             @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
             @ApiIgnore Authentication authentication
-    ) {
+    ) throws ParseException {
         isAuthorizedMember(authentication);
         companyService.createCompany(companyCreateDto);
     }
 
 
     @ApiOperation(value = "조회", notes = "회사 조회")
-    @GetMapping("/{no}")
+    @GetMapping("/{companyNo}")
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER','ADMIN')")
     public void getProfile(
-            @PathVariable Long no,
+            @PathVariable Long companyNo,
             @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        companyService.getCompany(no);
+        companyService.getCompany(companyNo);
     }
 
 
@@ -53,23 +54,23 @@ public class CompanyController {
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER','ADMIN')")
     public void modifyProfile(
             @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
-            @PathVariable Long no,
+            @PathVariable Long companyNo,
             @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        companyService.updateCompany(companyCreateDto, no);
+        companyService.updateCompany(companyCreateDto, companyNo);
     }
 
 
     @ApiOperation(value = "삭제", notes = "회사 삭제")
-    @DeleteMapping("/{no}")
+    @DeleteMapping("/{companyNo}")
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER','ADMIN')")
     public void deleteProfile(
-            @PathVariable Long no,
+            @PathVariable Long companyNo,
             @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        companyService.deleteCompany(no);
+        companyService.deleteCompany(companyNo);
     }
 
 

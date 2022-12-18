@@ -47,7 +47,7 @@ public class QMemberArticleBookmark extends EntityPathBase<MemberArticleBookmark
     public QMemberArticleBookmark(Class<? extends MemberArticleBookmark> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.article = inits.isInitialized("article") ? new QArticle(forProperty("article"), inits.get("article")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member"), inits.get("member")) : null;
+        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
     }
 
 }

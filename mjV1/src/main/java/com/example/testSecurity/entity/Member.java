@@ -27,7 +27,4 @@ public class Member extends BaseTime{
     @ApiModelProperty(value = "권한")
     private Integer roleType;
 
-    @OneToOne
-    @JoinColumn(name = "profile_no")
-    private Profile profile;
 }

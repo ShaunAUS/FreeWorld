@@ -1,13 +1,14 @@
 package com.example.testSecurity.service;
 
 import com.example.testSecurity.dto.CompanyDto;
+import org.json.simple.parser.ParseException;
 
 public interface CompanyService {
-    void createCompany(CompanyDto.Create companyCreateDTO);
+    CompanyDto.Info createCompany(CompanyDto.Create companyCreateDTO) throws ParseException;
 
-    void getCompany(Long no);
+    CompanyDto.Info getCompany(Long no);
 
-    void updateCompany(CompanyDto.Create companyCreateDTO, Long no);
+    CompanyDto.Info updateCompany(CompanyDto.Create companyCreateDTO, Long no);
 
     void deleteCompany(Long no);
 }

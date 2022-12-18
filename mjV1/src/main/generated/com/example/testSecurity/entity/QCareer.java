@@ -54,7 +54,7 @@ public class QCareer extends EntityPathBase<Career> {
 
     public QCareer(Class<? extends Career> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }
