@@ -8,6 +8,7 @@ import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,7 +42,7 @@ public class Article extends BaseTime{
     private Integer category;
 
     @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "profilee_no")
+    @JoinColumn(name = "profile_no")
     private Profile profile;
 
     public static ArticleDto.Info toDto(Article article) {
@@ -52,5 +53,13 @@ public class Article extends BaseTime{
                             .map(Article::getCategory, ArticleDto.Info::setCategory);
                 })
                 .map(article);
+    }
+
+
+    @Transactional
+    public static void update(Article article, ArticleDto.Create articleCreateDTO) {
+        MapperUtils.getMapper()
+                .typeMap(ArticleDto.Create.class, Article.class)
+                .map(articleCreateDTO, article);
     }
 }

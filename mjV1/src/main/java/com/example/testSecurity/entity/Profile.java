@@ -23,11 +23,16 @@ public class Profile {
     @ApiModelProperty(value = "이름")
     private String name;
     @ApiModelProperty(value = "소개")
-    private String introduce;
+    private String introducing;
 /*    @ApiModelProperty(value = "사진URL")
     private MultipartFile image;*/
     @ApiModelProperty(value = "이메일")
     private String email;
     @ApiModelProperty(value = "연락처")
     private String contactNumber;
+
+    //멤버당 프로필 하나가능
+    @OneToOne
+    @JoinColumn(name = "member_no")
+    private Member member;
 }
