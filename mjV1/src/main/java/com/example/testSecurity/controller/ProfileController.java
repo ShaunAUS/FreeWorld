@@ -7,6 +7,7 @@ import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.jwt.AuthenticationUser;;
+import com.example.testSecurity.querydlsRepository.impl.ProfileRepositoryImpl;
 import com.example.testSecurity.service.MemberService;
 import com.example.testSecurity.service.ProfileService;
 import io.swagger.annotations.Api;
@@ -27,6 +28,7 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final MemberService memberService;
+    private final ProfileRepositoryImpl profileRepository;
 
     //등록은 일반회원만 가능
     @ApiOperation(value = "등록", notes = "프로필 등록")
@@ -84,7 +86,7 @@ public class ProfileController {
             @ApiIgnore Authentication authentication
     ) {
 
-        profileService.search(profileSearchConditionDto);
+        profileRepository.search(profileSearchConditionDto);
     }
 
     //TODO 이미지 등록
