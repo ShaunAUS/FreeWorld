@@ -3,13 +3,12 @@ package com.example.testSecurity.service;
 import com.example.testSecurity.dto.ProfileDto;
 
 public interface ProfileService {
-    void createProfile(ProfileDto.Create profileCreateDTO);
+    ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO);
 
-    void getProfile(Long no);
+    ProfileDto.Info getProfile(Long no);
 
-    void updateProfile(ProfileDto.Create profileCreateDTO, Long no);
+    ProfileDto.Info updateProfile(ProfileDto.Create profileCreateDTO, Long no);
 
     void deleteProfile(Long no);
 
-    void search(ProfileDto.Search profileSearchConditionDto);
 }

@@ -15,7 +15,8 @@ public enum ServiceMessage {
 
     NOT_AUTHORIZED(-4,"인증되지 않은 사용자" ),
     NOT_FOUND(-5,"해당하는 정보가 없습니다." ),
-    COMPANY_NOT_FOUND(-6, "해당 회사가 존재하지 않습니다" );
+    COMPANY_NOT_FOUND(-6, "해당 회사가 존재하지 않습니다" ),
+    NOT_FOUND_PROFILE(-7,"프로파일이 존재하지 않습니다" );
 
 
     

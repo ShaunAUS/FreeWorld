@@ -68,6 +68,7 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
         return PageableExecutionUtils.getPage(result,pageable,() -> countQuery.fetchOne());
     }
 
+    //TODO 그냥 더티체킹으로 가능한지 check
     @Override
     public void likeArticle(Long articleNo) {
         queryFactory

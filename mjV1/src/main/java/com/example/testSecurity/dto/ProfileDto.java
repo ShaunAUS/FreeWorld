@@ -3,6 +3,8 @@ package com.example.testSecurity.dto;
 import com.example.testSecurity.Enum.CategoryDetailType;
 import com.example.testSecurity.Enum.CategoryType;
 import com.example.testSecurity.entity.Career;
+import com.example.testSecurity.entity.Profile;
+import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -33,6 +35,12 @@ public class ProfileDto {
         private String contactNumber;
         private List<Career> career;
 
+        public static Profile toEntity(ProfileDto.Create profileCreateDTO) {
+            return MapperUtils.getMapper()
+                    .typeMap(ProfileDto.Create.class, Profile.class)
+                    //TODO List
+                    .map(profileCreateDTO);
+        }
     }
     @Getter
     @Builder
@@ -49,6 +57,11 @@ public class ProfileDto {
         private String contactNumber;
         private List<Career> career;
 
+        public static ProfileDto.Info toDto(Profile saveedProfile) {
+            return MapperUtils.getMapper()
+                    .typeMap(Profile.class, ProfileDto.Info.class)
+                    .map(saveedProfile);
+        }
     }
 
     @Getter
