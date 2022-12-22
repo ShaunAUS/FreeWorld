@@ -14,9 +14,9 @@ import java.util.Arrays;
 @Getter
 public enum CategoryType {
 
-    PROGRAMMING("PROGRAMMING",0),
-    ANNOUNCE("ANNOUNCE",1),
-    CHEF("CHEF",2);
+    PROGRAMMING("PROGRAMMING", 0),
+    ANNOUNCE("ANNOUNCE", 1),
+    CHEF("CHEF", 2);
 
 
     private String name;
@@ -30,15 +30,16 @@ public enum CategoryType {
 
     public static CategoryType valueOf(Integer i) {
         return Arrays.stream(CategoryType.values())
-                .filter(v -> v.getNumber().intValue() == i.intValue())
-                .findFirst()
-                .orElseGet(null);
+            .filter(v -> v.getNumber().intValue() == i.intValue())
+            .findFirst()
+            .orElseGet(null);
     }
+
     public static Integer toInteger(CategoryType categoryType) {
         return Arrays.stream(CategoryType.values())
-                .filter(v -> v.getName() == categoryType.getName())
-                .findFirst()
-                .map(CategoryType::getNumber)
-                .orElseGet(null);
+            .filter(v -> v.getName() == categoryType.getName())
+            .findFirst()
+            .map(CategoryType::getNumber)
+            .orElseGet(null);
     }
 }

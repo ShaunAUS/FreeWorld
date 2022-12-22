@@ -34,7 +34,6 @@ public class JwtProvider {
     private final AppProperties properties;
 
 
-
     public static Credential getCredential(Authentication authentication) {
         if (Optional.ofNullable(authentication).isEmpty()) {
             throw new AuthenticationServiceException(ServiceMessage.NOT_AUTHORIZED.getMessage());
@@ -42,12 +41,11 @@ public class JwtProvider {
         // cast authentication.getCredentials() as Credential
         Credential credentials = (Credential) authentication.getCredentials();
         if (Optional.ofNullable(credentials).isEmpty()) {
-            throw new AuthenticationCredentialsNotFoundException(ServiceMessage.NOT_AUTHORIZED.getMessage());
+            throw new AuthenticationCredentialsNotFoundException(
+                ServiceMessage.NOT_AUTHORIZED.getMessage());
         }
         return credentials;
     }
-
-
 
 
     public String getJwtToken(Member member, Long memberAccessId) {
@@ -63,7 +61,8 @@ public class JwtProvider {
             .claim(AppProperties.ACCESS_ID, memberAccessId)  // accessId
             .claim("name", member.getUserName())
             //.claim("roles", member.getRole())
-            .setExpiration(new Date(System.currentTimeMillis() + 60 * properties.getAccessHoldTimeMillis()))  // 15분
+            .setExpiration(new Date(
+                System.currentTimeMillis() + 60 * properties.getAccessHoldTimeMillis()))  // 15분
 
             //SecretKey or privateKey 로 잠궈 시그니처 만듬
             //publicKey 는 사용권장 x
@@ -83,8 +82,10 @@ public class JwtProvider {
 
     //JWT 토큰 파싱 -> claim 추출 (MemberAccessId)
     public long getAccessId(String token) {
-        final Jws<Claims> claimsJws = parsingToken(token, (120 - properties.getAccessHoldTime()) * 60); //토큰 파싱
-        return claimsJws.getBody().get(properties.SESSION_ID, Long.class); // claim으로 넣어뒀던 값을 해당 타입으로 반환
+        final Jws<Claims> claimsJws = parsingToken(token,
+            (120 - properties.getAccessHoldTime()) * 60); //토큰 파싱
+        return claimsJws.getBody()
+            .get(properties.SESSION_ID, Long.class); // claim으로 넣어뒀던 값을 해당 타입으로 반환
     }
 
 
@@ -108,7 +109,8 @@ public class JwtProvider {
                 .build();
 
             //계정,권한 등등
-            return new UsernamePasswordAuthenticationToken(expiredUser, null, Collections.emptyList());
+            return new UsernamePasswordAuthenticationToken(expiredUser, null,
+                Collections.emptyList());
 
         } catch (JwtException e) {
 
@@ -119,20 +121,22 @@ public class JwtProvider {
                 .roles()
                 .build();
             //계정,권한 등등
-            return new UsernamePasswordAuthenticationToken(invalidUser, null, Collections.emptyList());
+            return new UsernamePasswordAuthenticationToken(invalidUser, null,
+                Collections.emptyList());
         }
 
         //JWT 문제 없으면
         //15분 재인증할 때마다 계정 유효성과 role를 다시 읽어온다
-        final Long sessionId = claimsJws.getBody().get(AppProperties.ACCESS_ID, Long.class);   //claim 에 저장한 정보 해당 타입으로 반환
+        final Long sessionId = claimsJws.getBody()
+            .get(AppProperties.ACCESS_ID, Long.class);   //claim 에 저장한 정보 해당 타입으로 반환
         String audience = claimsJws.getBody().getAudience();
-
 
         switch (claimsJws.getBody().getSubject()) {
 
             //subject
             case AppProperties.LOGIN_SERVICE: {
-                ArrayList<String> roles = claimsJws.getBody().get("roles", ArrayList.class);  // jwt - 권한claim 추출
+                ArrayList<String> roles = claimsJws.getBody()
+                    .get("roles", ArrayList.class);  // jwt - 권한claim 추출
 
                 UserDetails manager = User.withUsername(audience + ":" + sessionId)
                     //TODO roles.toArray(new String[roles.size()]) - entity 롤추가하면 넣기
@@ -141,7 +145,8 @@ public class JwtProvider {
                     .build();
 
                 //계정,권한 등등
-                return new UsernamePasswordAuthenticationToken(manager, null, manager.getAuthorities());
+                return new UsernamePasswordAuthenticationToken(manager, null,
+                    manager.getAuthorities());
             }
 
             default:
@@ -151,6 +156,7 @@ public class JwtProvider {
 
     @Builder
     public static class Credential {
+
         public String token;
         public AuthenticationUser user;
         public Jws<Claims> claims;

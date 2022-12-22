@@ -26,8 +26,8 @@ public class Profile {
     private String name;
     @ApiModelProperty(value = "소개")
     private String introducing;
-/*    @ApiModelProperty(value = "사진URL")
-    private MultipartFile image;*/
+    /*    @ApiModelProperty(value = "사진URL")
+        private MultipartFile image;*/
     @ApiModelProperty(value = "이메일")
     private String email;
     @ApiModelProperty(value = "연락처")
@@ -40,7 +40,7 @@ public class Profile {
 
     public static void update(ProfileDto.Create profileCreateDTO, Profile profile) {
         MapperUtils.getMapper()
-                .typeMap(ProfileDto.Create.class,Profile.class)
-                .map(profileCreateDTO,profile);
+            .typeMap(ProfileDto.Create.class, Profile.class)
+            .map(profileCreateDTO, profile);
     }
 }

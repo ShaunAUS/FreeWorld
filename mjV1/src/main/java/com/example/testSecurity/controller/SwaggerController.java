@@ -16,7 +16,7 @@ public class SwaggerController {
     @PostMapping("/register")
     public void insertAdmin(
 
-        @ApiParam(value = "testParameter", required = false)  String testParameter
+        @ApiParam(value = "testParameter", required = false) String testParameter
     ) {
 
     }

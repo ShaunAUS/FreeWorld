@@ -15,9 +15,11 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     private final ProfileJpaRepository profileJpaRepository;
+
     @Override
     public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO) {
-        Profile saveedProfile = profileJpaRepository.save(ProfileDto.Create.toEntity(profileCreateDTO));
+        Profile saveedProfile = profileJpaRepository.save(
+            ProfileDto.Create.toEntity(profileCreateDTO));
         return ProfileDto.Info.toDto(saveedProfile);
     }
 
@@ -26,9 +28,9 @@ public class ProfileServiceImpl implements ProfileService {
 
         Optional<Profile> getProfileById = profileJpaRepository.findById(profileNo);
 
-        if(getProfileById.isPresent()){
-           return  ProfileDto.Info.toDto(getProfileById.get());
-        }else{
+        if (getProfileById.isPresent()) {
+            return ProfileDto.Info.toDto(getProfileById.get());
+        } else {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE);
         }
     }
@@ -38,12 +40,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         Optional<Profile> profileById = profileJpaRepository.findById(profileNo);
 
-        if(profileById.isPresent()){
+        if (profileById.isPresent()) {
             //TODO dirtychecking
             Profile profile = profileById.get();
-            Profile.update(profileCreateDTO,profile);
+            Profile.update(profileCreateDTO, profile);
             return ProfileDto.Info.toDto(profile);
-        }else{
+        } else {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE);
         }
 

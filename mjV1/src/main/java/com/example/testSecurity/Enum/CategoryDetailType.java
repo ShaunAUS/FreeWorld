@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum CategoryDetailType {
 
-    PROGRAMMING("LOW",0),
-    ANNOUNCE("MIDDLE",1),
-    CHEF("HIGH",2);
+    PROGRAMMING("LOW", 0),
+    ANNOUNCE("MIDDLE", 1),
+    CHEF("HIGH", 2);
 
 
     private String name;

@@ -42,12 +42,11 @@ public class CompanyServiceImpl implements CompanyService {
         StringBuffer result = new StringBuffer();
         try {
             StringBuilder urlBuilder = new StringBuilder(
-                    "http://api.odcloud.kr/api/nts-businessman/v1/status?");
+                "http://api.odcloud.kr/api/nts-businessman/v1/status?");
             urlBuilder.append(
-                    "serviceKey="
-                            + "f1YWtB49b%2FzZmef6OUiFHg%2BZi4TMSJqHaYx8BNuajoctGpZ9luYfwWixyXDLb1wAvovSUUSN4pFP8plGyVhVgQ%3D%3D");
+                "serviceKey="
+                    + "f1YWtB49b%2FzZmef6OUiFHg%2BZi4TMSJqHaYx8BNuajoctGpZ9luYfwWixyXDLb1wAvovSUUSN4pFP8plGyVhVgQ%3D%3D");
             urlBuilder.append("&returnType=JSON"); // 호출문서 형태
-
 
             URL url = new URL(urlBuilder.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -56,11 +55,9 @@ public class CompanyServiceImpl implements CompanyService {
             conn.setRequestProperty("Accept", "application/json");  // 받기
             conn.setDoOutput(true); // 받아온 Json 출력 가능상태로
 
-
             log.info("Request URL = {}", url);
 
             String businessNumber = "{  \"b_no\": [    \"" + number + "\"  ]}";
-
 
             try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = businessNumber.getBytes("UTF-8");
@@ -116,9 +113,9 @@ public class CompanyServiceImpl implements CompanyService {
 
         Optional<Company> companyById = companyJpaRepository.findById(companyNo);
 
-        if(companyById.isPresent()){
+        if (companyById.isPresent()) {
             return CompanyDto.toDto(companyById.get());
-        }else{
+        } else {
             throw new ServiceProcessException(ServiceMessage.COMPANY_NOT_FOUND);
         }
     }
@@ -127,8 +124,8 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto.Info updateCompany(CompanyDto.Create companyCreateDTO, Long companyNo) {
 
         Optional<Company> companyById = companyJpaRepository.findById(companyNo);
-        if(companyById.isPresent()){
-            Company.changeCompany(companyCreateDTO,companyById.get());
+        if (companyById.isPresent()) {
+            Company.changeCompany(companyCreateDTO, companyById.get());
         }
         return CompanyDto.toDto(companyById.get());
     }

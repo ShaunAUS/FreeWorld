@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Article extends BaseTime{
+public class Article extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,25 +44,25 @@ public class Article extends BaseTime{
     private Integer categoryDetail;
 
 
-    @ManyToOne(fetch =  FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_no")
     private Profile profile;
 
     public static ArticleDto.Info toDto(Article article) {
         return MapperUtils.getMapper()
-                .typeMap(Article.class, ArticleDto.Info.class)
-                .addMappings(mapper -> {
-                    mapper.using(CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER)
-                            .map(Article::getCategory, ArticleDto.Info::setCategory);
-                })
-                .map(article);
+            .typeMap(Article.class, ArticleDto.Info.class)
+            .addMappings(mapper -> {
+                mapper.using(CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER)
+                    .map(Article::getCategory, ArticleDto.Info::setCategory);
+            })
+            .map(article);
     }
 
 
     @Transactional
     public static void update(Article article, ArticleDto.Create articleCreateDTO) {
         MapperUtils.getMapper()
-                .typeMap(ArticleDto.Create.class, Article.class)
-                .map(articleCreateDTO, article);
+            .typeMap(ArticleDto.Create.class, Article.class)
+            .map(articleCreateDTO, article);
     }
 }

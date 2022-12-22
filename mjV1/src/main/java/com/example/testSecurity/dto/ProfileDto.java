@@ -23,6 +23,7 @@ public class ProfileDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Create {
+
         @ApiModelProperty(value = "이름")
         private String name;
         @ApiModelProperty(value = "소개")
@@ -37,11 +38,12 @@ public class ProfileDto {
 
         public static Profile toEntity(ProfileDto.Create profileCreateDTO) {
             return MapperUtils.getMapper()
-                    .typeMap(ProfileDto.Create.class, Profile.class)
-                    //TODO List
-                    .map(profileCreateDTO);
+                .typeMap(ProfileDto.Create.class, Profile.class)
+                //TODO List
+                .map(profileCreateDTO);
         }
     }
+
     @Getter
     @Builder
     @Setter
@@ -49,6 +51,7 @@ public class ProfileDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Info {
+
         @ApiModelProperty(value = "이름")
         private String name;
         @ApiModelProperty(value = "이메일")
@@ -59,8 +62,8 @@ public class ProfileDto {
 
         public static ProfileDto.Info toDto(Profile saveedProfile) {
             return MapperUtils.getMapper()
-                    .typeMap(Profile.class, ProfileDto.Info.class)
-                    .map(saveedProfile);
+                .typeMap(Profile.class, ProfileDto.Info.class)
+                .map(saveedProfile);
         }
     }
 
@@ -71,6 +74,7 @@ public class ProfileDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Search {
+
         @ApiModelProperty(value = "이름")
         private String name;
         @ApiModelProperty(value = "카테고리")

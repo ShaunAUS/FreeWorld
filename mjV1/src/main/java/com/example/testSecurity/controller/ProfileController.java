@@ -65,7 +65,7 @@ public class ProfileController {
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        checkIsMyProfile(profileNo,getLoginMemberNo(authentication));
+        checkIsMyProfile(profileNo, getLoginMemberNo(authentication));
         profileService.updateProfile(profileCreateDTO, profileNo);
     }
 
@@ -77,7 +77,7 @@ public class ProfileController {
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        checkIsMyProfile(profileNo,getLoginMemberNo(authentication));
+        checkIsMyProfile(profileNo, getLoginMemberNo(authentication));
         profileService.deleteProfile(profileNo);
     }
 
@@ -86,11 +86,12 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void deleteProfile(
         @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.Search profileSearchConditionDto,
-        @PageableDefault(sort = {"profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+        @PageableDefault(sort = {
+            "profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
         @ApiIgnore Authentication authentication
     ) {
 
-        profileRepository.search(profileSearchConditionDto,pageable);
+        profileRepository.search(profileSearchConditionDto, pageable);
     }
 
     //TODO 이미지 등록
@@ -99,6 +100,7 @@ public class ProfileController {
     private Integer getLoginMemberNo(Authentication authentication) {
         return AuthenticationUser.extractMemberNo(authentication);
     }
+
     private void isAuthorizedMember(Authentication authentication) {
         switch (RoleType.valueOf(getLoginMember(getLoginMemberNo(authentication)).getRoleType())) {
             case ADMIN:
@@ -108,13 +110,14 @@ public class ProfileController {
                 throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
         }
     }
-    private Member getLoginMember(Integer memberNo){
+
+    private Member getLoginMember(Integer memberNo) {
         return memberService.findById(Long.valueOf(memberNo))
-                .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
     }
 
-    private void checkIsMyProfile(Long profileNo,Integer loginMemberNo){
-        if(!memberService.checkIsMyProfile(profileNo, Long.valueOf(loginMemberNo))){
+    private void checkIsMyProfile(Long profileNo, Integer loginMemberNo) {
+        if (!memberService.checkIsMyProfile(profileNo, Long.valueOf(loginMemberNo))) {
             throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
         }
     }

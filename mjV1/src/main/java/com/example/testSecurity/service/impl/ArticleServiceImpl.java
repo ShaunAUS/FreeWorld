@@ -23,9 +23,11 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleJpaRepository articleJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final ArticleCustomRepository articleCustomRepository;
+
     @Override
     public ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO) {
-        Article savedArticle = articleJpaRepository.save(ArticleDto.Create.toEntity(articleCreateDTO));
+        Article savedArticle = articleJpaRepository.save(
+            ArticleDto.Create.toEntity(articleCreateDTO));
         return Article.toDto(savedArticle);
     }
 
@@ -33,9 +35,9 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto.Info getArticle(Long no) {
 
         Optional<Article> articleByNo = articleJpaRepository.findById(no);
-        if(articleByNo.isPresent()){
+        if (articleByNo.isPresent()) {
             return Article.toDto(articleByNo.get());
-        }else{
+        } else {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND);
         }
     }
@@ -46,12 +48,12 @@ public class ArticleServiceImpl implements ArticleService {
 
         Optional<Article> articleById = articleJpaRepository.findById(no);
 
-        if(articleById.isPresent()) {
+        if (articleById.isPresent()) {
             Article article = articleById.get();
             //TODO : Dirty checking
             Article.update(article, articleCreateDTO);
             return Article.toDto(article);
-        }else{
+        } else {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND);
         }
     }
@@ -63,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void bookmarkArticle(Long articleNo, Integer loginMemberNo) {
-        articleJpaRepository.addArticleBookMark(Long.valueOf(loginMemberNo),articleNo);
+        articleJpaRepository.addArticleBookMark(Long.valueOf(loginMemberNo), articleNo);
     }
 
     @Override

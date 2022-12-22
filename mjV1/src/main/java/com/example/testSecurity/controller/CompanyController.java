@@ -29,8 +29,8 @@ public class CompanyController {
     @PostMapping("")
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER')")
     public void createProfile(
-            @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
-            @ApiIgnore Authentication authentication
+        @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
+        @ApiIgnore Authentication authentication
     ) throws ParseException {
         isAuthorizedMember(authentication);
         companyService.createCompany(companyCreateDto);
@@ -41,8 +41,8 @@ public class CompanyController {
     @GetMapping("/{companyNo}")
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER','ADMIN')")
     public void getProfile(
-            @PathVariable Long companyNo,
-            @ApiIgnore Authentication authentication
+        @PathVariable Long companyNo,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
         companyService.getCompany(companyNo);
@@ -53,9 +53,9 @@ public class CompanyController {
     @PatchMapping("/{no}")
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER','ADMIN')")
     public void modifyProfile(
-            @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
-            @PathVariable Long companyNo,
-            @ApiIgnore Authentication authentication
+        @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
+        @PathVariable Long companyNo,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
         companyService.updateCompany(companyCreateDto, companyNo);
@@ -66,8 +66,8 @@ public class CompanyController {
     @DeleteMapping("/{companyNo}")
     @PreAuthorize("hasAnyRole('COMPANY_MEMBER','ADMIN')")
     public void deleteProfile(
-            @PathVariable Long companyNo,
-            @ApiIgnore Authentication authentication
+        @PathVariable Long companyNo,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
         companyService.deleteCompany(companyNo);
@@ -77,9 +77,10 @@ public class CompanyController {
     private Integer getLoginMemberNo(Authentication authentication) {
         return AuthenticationUser.extractMemberNo(authentication);
     }
-    private Member getLoginMember(Integer memberNo){
+
+    private Member getLoginMember(Integer memberNo) {
         return memberService.findById(Long.valueOf(memberNo))
-                .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
     }
 
     private void isAuthorizedMember(Authentication authentication) {

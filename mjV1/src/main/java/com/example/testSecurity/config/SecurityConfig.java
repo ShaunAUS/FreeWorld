@@ -29,7 +29,8 @@ public class SecurityConfig {
             .csrf().disable()
             .cors().and()  // 교차출처 리소스 공유 x
 
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()// 세션 사용 x
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()// 세션 사용 x
             // http request
             .authorizeRequests()
             //.antMatchers("/**/refresh-token").permitAll()
@@ -44,7 +45,8 @@ public class SecurityConfig {
             .and()
 
             //id/password 인증 필터 전에 JWT 인증
-            .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
+                UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -57,7 +59,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
