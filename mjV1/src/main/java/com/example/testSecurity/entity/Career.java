@@ -24,10 +24,13 @@ public class Career {
     private String assignedTask;
     @ApiModelProperty(value = "설명")
     private String description;
-    @ApiModelProperty(value = "시작날짜")
-    private LocalDateTime startDate;
-    @ApiModelProperty(value = "종료날짜")
-    private LocalDateTime endDate;
+    @ApiModelProperty(value = "년차")
+    private Integer year;
+    @ApiModelProperty(value = "카테고리")
+    private Integer category;
+    @ApiModelProperty(value = "카테고리 상세")
+    private Integer categoryDetail;
+
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "profile_no")

@@ -78,7 +78,7 @@ public class ProfileDto {
         @ApiModelProperty(value = "카테고리 디테일")
         private CategoryDetailType categoryDetailType;
         @ApiModelProperty(value = "년차")
-        private Integer annual;
+        private Integer year;
 
     }
 

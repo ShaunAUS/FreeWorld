@@ -26,6 +26,8 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final NumberPath<Integer> category = createNumber("category", Integer.class);
 
+    public final NumberPath<Integer> categoryDetail = createNumber("categoryDetail", Integer.class);
+
     public final StringPath contents = createString("contents");
 
     //inherited

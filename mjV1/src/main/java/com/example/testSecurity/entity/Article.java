@@ -40,6 +40,9 @@ public class Article extends BaseTime{
     private Integer views;
     @ApiModelProperty(value = "카테고리")
     private Integer category;
+    @ApiModelProperty(value = "카테고리 상세")
+    private Integer categoryDetail;
+
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "profile_no")

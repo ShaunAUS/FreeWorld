@@ -24,17 +24,19 @@ public class QCareer extends EntityPathBase<Career> {
 
     public final StringPath assignedTask = createString("assignedTask");
 
+    public final NumberPath<Integer> category = createNumber("category", Integer.class);
+
+    public final NumberPath<Integer> categoryDetail = createNumber("categoryDetail", Integer.class);
+
     public final StringPath companyName = createString("companyName");
 
     public final StringPath description = createString("description");
-
-    public final DateTimePath<java.time.LocalDateTime> endDate = createDateTime("endDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> no = createNumber("no", Long.class);
 
     public final QProfile profile;
 
-    public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
+    public final NumberPath<Integer> year = createNumber("year", Integer.class);
 
     public QCareer(String variable) {
         this(Career.class, forVariable(variable), INITS);
