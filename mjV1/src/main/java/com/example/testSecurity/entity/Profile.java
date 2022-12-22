@@ -1,5 +1,7 @@
 package com.example.testSecurity.entity;
 
+import com.example.testSecurity.dto.ProfileDto;
+import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,4 +37,10 @@ public class Profile {
     @OneToOne
     @JoinColumn(name = "member_no")
     private Member member;
+
+    public static void update(ProfileDto.Create profileCreateDTO, Profile profile) {
+        MapperUtils.getMapper()
+                .typeMap(ProfileDto.Create.class,Profile.class)
+                .map(profileCreateDTO,profile);
+    }
 }

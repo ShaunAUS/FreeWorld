@@ -15,6 +15,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -83,10 +86,11 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void deleteProfile(
         @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.Search profileSearchConditionDto,
-            @ApiIgnore Authentication authentication
+        @PageableDefault(sort = {"profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+        @ApiIgnore Authentication authentication
     ) {
 
-        profileRepository.search(profileSearchConditionDto);
+        profileRepository.search(profileSearchConditionDto,pageable);
     }
 
     //TODO 이미지 등록

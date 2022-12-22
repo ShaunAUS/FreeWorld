@@ -35,7 +35,18 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDto.Info updateProfile(ProfileDto.Create profileCreateDTO, Long profileNo) {
-        return null;
+
+        Optional<Profile> profileById = profileJpaRepository.findById(profileNo);
+
+        if(profileById.isPresent()){
+            //TODO dirtychecking
+            Profile profile = profileById.get();
+            Profile.update(profileCreateDTO,profile);
+            return ProfileDto.Info.toDto(profile);
+        }else{
+            throw new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE);
+        }
+
     }
 
     @Override
