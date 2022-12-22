@@ -18,6 +18,7 @@ public class CompanyDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Create {
+
         @ApiModelProperty(value = "회사이름")
         private String name;
         @ApiModelProperty(value = "연락번호")
@@ -37,6 +38,7 @@ public class CompanyDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Info {
+
         @ApiModelProperty(value = "회사이름")
         private String name;
         @ApiModelProperty(value = "연락번호")
@@ -52,13 +54,13 @@ public class CompanyDto {
 
     public static Company toEntity(CompanyDto.Create createDto) {
         return MapperUtils.getMapper()
-                .typeMap(CompanyDto.Create.class, Company.class)
-                .map(createDto);
+            .typeMap(CompanyDto.Create.class, Company.class)
+            .map(createDto);
     }
 
     public static CompanyDto.Info toDto(Company company) {
         return MapperUtils.getMapper()
-                .typeMap(Company.class, CompanyDto.Info.class)
-                .map(company);
+            .typeMap(Company.class, CompanyDto.Info.class)
+            .map(company);
     }
 }

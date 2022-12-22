@@ -39,7 +39,7 @@ public class Company {
 
     public static void changeCompany(CompanyDto.Create companyCreateDTO, Company company) {
         MapperUtils.getMapper()
-                .typeMap(CompanyDto.Create.class, Company.class)
-                .map(companyCreateDTO, company);
+            .typeMap(CompanyDto.Create.class, Company.class)
+            .map(companyCreateDTO, company);
     }
 }

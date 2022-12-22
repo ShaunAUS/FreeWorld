@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 
 public class ServiceProcessException extends RuntimeException {
+
     private int code = -1;
     private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 

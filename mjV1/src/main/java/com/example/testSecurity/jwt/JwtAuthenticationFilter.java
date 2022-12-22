@@ -21,7 +21,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain)
         throws ServletException, IOException {
 
         final String token = getToken(request);
@@ -30,16 +31,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null) {
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext()
-                .setAuthentication(authentication);   // Authentication 객체를 SecurityContextHolder에 저장
+                .setAuthentication(
+                    authentication);   // Authentication 객체를 SecurityContextHolder에 저장
         }
         filterChain.doFilter(request, response);
     }
 
     //헤더에서 jwt 토큰꺼내기
     public String getToken(HttpServletRequest request) {
-        String token = request.getHeader(AppProperties.AUTH_TOKEN_NAME);// Header = Authorization key값 , token 은  value
+        String token = request.getHeader(
+            AppProperties.AUTH_TOKEN_NAME);// Header = Authorization key값 , token 은  value
 
-        if (StringUtils.hasText(token)) ;
+        if (StringUtils.hasText(token))
+            ;
         return token;
     }
 

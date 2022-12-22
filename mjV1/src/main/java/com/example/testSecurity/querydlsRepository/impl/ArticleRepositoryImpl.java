@@ -32,78 +32,79 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
     }
 
     @Override
-    public Page<ArticleDto.Info> search(ArticleDto.Search articleSearchConditionDto, Pageable pageable) {
+    public Page<ArticleDto.Info> search(ArticleDto.Search articleSearchConditionDto,
+        Pageable pageable) {
 
         List<ArticleDto.Info> result = queryFactory
-                .select(Projections.fields(ArticleDto.Info.class,
-                        profile.name.as("writer"),
-                        article.title,
-                        article.contents,
-                        article.likeCnt,
-                        article.views,
-                        article.category))
-                .from(article)
-                .leftJoin(profile)
-                .on(article.profile.no.eq(profile.no))
-                .where(titleContains(articleSearchConditionDto.getTitle()),
-                        contentContains(articleSearchConditionDto.getContents()),
-                        categoryContains(articleSearchConditionDto.getCategory()))
+            .select(Projections.fields(ArticleDto.Info.class,
+                profile.name.as("writer"),
+                article.title,
+                article.contents,
+                article.likeCnt,
+                article.views,
+                article.category))
+            .from(article)
+            .leftJoin(profile)
+            .on(article.profile.no.eq(profile.no))
+            .where(titleContains(articleSearchConditionDto.getTitle()),
+                contentContains(articleSearchConditionDto.getContents()),
+                categoryContains(articleSearchConditionDto.getCategory()))
 
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         //count쿼리
         JPAQuery<Long> countQuery = queryFactory
-                .select(article.count())
-                .from(article)
-                .leftJoin(profile)
-                .on(article.profile.no.eq(profile.no))
-                .where(titleContains(articleSearchConditionDto.getTitle()),
-                        contentContains(articleSearchConditionDto.getContents()),
-                        categoryContains(articleSearchConditionDto.getCategory()));
+            .select(article.count())
+            .from(article)
+            .leftJoin(profile)
+            .on(article.profile.no.eq(profile.no))
+            .where(titleContains(articleSearchConditionDto.getTitle()),
+                contentContains(articleSearchConditionDto.getContents()),
+                categoryContains(articleSearchConditionDto.getCategory()));
 
-
-        return PageableExecutionUtils.getPage(result,pageable,() -> countQuery.fetchOne());
+        return PageableExecutionUtils.getPage(result, pageable, () -> countQuery.fetchOne());
     }
 
 
     @Override
     public void likeArticle(Long articleNo) {
         queryFactory
-                .update(article)
-                .set(article.likeCnt,article.likeCnt.add(1))
-                .where(article.no.eq(articleNo))
-                .execute();
+            .update(article)
+            .set(article.likeCnt, article.likeCnt.add(1))
+            .where(article.no.eq(articleNo))
+            .execute();
     }
 
     @Override
     public Optional<Article> checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
 
         return Optional.ofNullable(queryFactory
-                .select(article)
-                .from(article)
-                .where(article.profile.no.eq(
-                        (Expression<? super Long>) JPAExpressions
-                                .select(profile)
-                                .from(profile)
-                                .where(profile.member.no.eq(Long.valueOf(loginMemberNo)))
-                                .fetch()
-                                .stream()
-                                .map(Profile::getNo)
-                )).fetchOne());
+            .select(article)
+            .from(article)
+            .where(article.profile.no.eq(
+                (Expression<? super Long>) JPAExpressions
+                    .select(profile)
+                    .from(profile)
+                    .where(profile.member.no.eq(Long.valueOf(loginMemberNo)))
+                    .fetch()
+                    .stream()
+                    .map(Profile::getNo)
+            )).fetchOne());
     }
 
     BooleanExpression titleContains(String title) {
-        return hasText(title) ? article.title.eq(title): null;
+        return hasText(title) ? article.title.eq(title) : null;
     }
-    BooleanExpression contentContains(String contents){
-        return hasText(contents) ? article.contents.eq(contents):null;
+
+    BooleanExpression contentContains(String contents) {
+        return hasText(contents) ? article.contents.eq(contents) : null;
     }
-    BooleanExpression categoryContains(CategoryType categoryType){
+
+    BooleanExpression categoryContains(CategoryType categoryType) {
         Integer categoryInteger = CategoryType.toInteger(categoryType);
-        return hasText(String.valueOf(categoryType)) ? article.category.eq(categoryInteger):null;
+        return hasText(String.valueOf(categoryType)) ? article.category.eq(categoryInteger) : null;
     }
 
 }

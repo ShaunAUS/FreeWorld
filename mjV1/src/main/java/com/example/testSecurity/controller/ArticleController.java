@@ -36,22 +36,20 @@ public class ArticleController {
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')®")
     public void createArticle(
-            @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
-            @ApiIgnore Authentication authentication
+        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
         articleService.createArticle(articleCreateDto);
     }
 
 
-
-
     @ApiOperation(value = "조회", notes = "개시글 조회")
     @GetMapping("/{no}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void getArticle(
-            @PathVariable Long no,
-            @ApiIgnore Authentication authentication
+        @PathVariable Long no,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
         articleService.getArticle(no);
@@ -62,11 +60,11 @@ public class ArticleController {
     @PatchMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void modifyArticle(
-            @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
-            @PathVariable Long articleNo,
-            @ApiIgnore Authentication authentication
+        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
+        @PathVariable Long articleNo,
+        @ApiIgnore Authentication authentication
     ) {
-        if(checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))){
+        if (checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))) {
             articleService.updateArticle(articleCreateDto, articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
@@ -77,10 +75,10 @@ public class ArticleController {
     @DeleteMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void deleteProfile(
-            @PathVariable Long articleNo,
-            @ApiIgnore Authentication authentication
+        @PathVariable Long articleNo,
+        @ApiIgnore Authentication authentication
     ) {
-        if(checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))){
+        if (checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))) {
             articleService.deleteArticle(articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
@@ -90,19 +88,19 @@ public class ArticleController {
     @DeleteMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void bookmarkArticle(
-            @PathVariable Long articleNo,
-            @ApiIgnore Authentication authentication
+        @PathVariable Long articleNo,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleService.bookmarkArticle(articleNo,getLoginMemberNo(authentication));
+        articleService.bookmarkArticle(articleNo, getLoginMemberNo(authentication));
     }
 
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
     @DeleteMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void likeArticle(
-            @PathVariable Long articleNo,
-            @ApiIgnore Authentication authentication
+        @PathVariable Long articleNo,
+        @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
         articleCustomRepository.likeArticle(articleNo);
@@ -112,32 +110,35 @@ public class ArticleController {
     @DeleteMapping("/search")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public Page<ArticleDto.Info> searchArticle(
-            @RequestBody ArticleDto.Search searchCondition,
-            @PageableDefault(sort = {"artilce_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
-            @ApiIgnore Authentication authentication
+        @RequestBody ArticleDto.Search searchCondition,
+        @PageableDefault(sort = {
+            "artilce_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+        @ApiIgnore Authentication authentication
     ) {
-        return articleCustomRepository.search(searchCondition,pageable);
+        return articleCustomRepository.search(searchCondition, pageable);
     }
 
 
-
-    private Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo){
+    private Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
         return articleService.checkIsMemberArticle(articleNo, loginMemberNo);
     }
+
     private void isAuthorizedMember(Authentication authentication) {
         switch (RoleType.valueOf(getLoginMember(getLoginMemberNo(authentication)).getRoleType())) {
             case ADMIN:
             case GENERAL_MEMBER:
-                 break;
+                break;
             default:
                 throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
         }
     }
+
     private Integer getLoginMemberNo(Authentication authentication) {
         return AuthenticationUser.extractMemberNo(authentication);
     }
-    private Member getLoginMember(Integer memberNo){
+
+    private Member getLoginMember(Integer memberNo) {
         return memberService.findById(Long.valueOf(memberNo))
-                .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
     }
 }

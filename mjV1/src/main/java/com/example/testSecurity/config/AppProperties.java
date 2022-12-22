@@ -25,5 +25,5 @@ public class AppProperties {
 
     //private byte[] memberAuthKey;
 
-    public  String SESSION_ID = "sId";
+    public String SESSION_ID = "sId";
 }

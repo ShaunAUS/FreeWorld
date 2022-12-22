@@ -13,11 +13,11 @@ import org.modelmapper.Converter;
 @Getter
 public enum RoleType {
 
-    ANONYMOUS("ANONYMOUS",0),
-    GENERAL_MEMBER("GENERAL_MEMBER",1), // 게시글 참여회원
+    ANONYMOUS("ANONYMOUS", 0),
+    GENERAL_MEMBER("GENERAL_MEMBER", 1), // 게시글 참여회원
 
-    COMPANY_MEMBER("COMPANY_MEMBER",2), // 회사 사업번호 인증해야 부여받을수 있음 // 헤드헌팅
-    ADMIN("ADMIN",3);
+    COMPANY_MEMBER("COMPANY_MEMBER", 2), // 회사 사업번호 인증해야 부여받을수 있음 // 헤드헌팅
+    ADMIN("ADMIN", 3);
 
     private String name;
     private Integer number;

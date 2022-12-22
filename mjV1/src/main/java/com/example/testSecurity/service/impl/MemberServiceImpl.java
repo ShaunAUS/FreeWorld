@@ -24,9 +24,10 @@ public class MemberServiceImpl implements MemberService {
 
         Optional<Profile> profileById = profileJpaRepository.findById(profileNo);
 
-        if(profileById.isPresent()){
-            if(profileById.get().getMember().getNo().equals(loginMemberNo))
+        if (profileById.isPresent()) {
+            if (profileById.get().getMember().getNo().equals(loginMemberNo)) {
                 return true;
+            }
         }
         return false;
     }

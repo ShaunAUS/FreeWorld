@@ -27,6 +27,7 @@ public class MemberDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Info {
+
         private String userName;
         private LocalDateTime createDate;
         private LocalDateTime updateDate;
@@ -48,11 +49,13 @@ public class MemberDto {
     @ApiModel(value = "MemberDto.Create", description = "멤버 생성")
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Create  {
+    public static class Create {
+
         private String userName;   // = LoginForm UserName
         private String password;
         @ApiModelProperty(value = "권한 - ( ANONYMOUS:로그인전 회원, GENERAL_MEMBER:일반회원, ADMIN:어드민 )")
         private RoleType roleType;
+
         public void insertEncodedPassword(String encodedPassword) {
             this.password = encodedPassword;
         }
