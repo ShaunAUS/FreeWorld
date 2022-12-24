@@ -10,4 +10,4 @@
 - Lombok
 - redis
 
-+ googleStyleGuide
+- code style => googleStyleGuide
