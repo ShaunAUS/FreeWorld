@@ -34,6 +34,8 @@ public class QProfile extends EntityPathBase<Profile> {
 
     public final NumberPath<Long> no = createNumber("no", Long.class);
 
+    public final ListPath<ProfileImage, QProfileImage> profileImages = this.<ProfileImage, QProfileImage>createList("profileImages", ProfileImage.class, QProfileImage.class, PathInits.DIRECT2);
+
     public QProfile(String variable) {
         this(Profile.class, forVariable(variable), INITS);
     }
