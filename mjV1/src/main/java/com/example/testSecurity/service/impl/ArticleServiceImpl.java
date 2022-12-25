@@ -2,22 +2,20 @@ package com.example.testSecurity.service.impl;
 
 import com.example.testSecurity.dto.ArticleDto;
 import com.example.testSecurity.entity.Article;
-import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
 import com.example.testSecurity.repository.ArticleJpaRepository;
 import com.example.testSecurity.repository.MemberJpaRepository;
-import com.example.testSecurity.service.ArticleService;
 import com.example.testSecurity.exception.enums.ServiceMessage;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.example.testSecurity.service.ArticleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Service
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleJpaRepository articleJpaRepository;

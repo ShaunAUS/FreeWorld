@@ -13,6 +13,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -22,7 +23,7 @@ import java.util.List;
 import static com.example.testSecurity.entity.QProfile.profile;
 import static com.example.testSecurity.entity.QCareer.career;
 
-
+@Repository
 public class ProfileRepositoryImpl implements ProfileCustomRepository {
 
     private final JPAQueryFactory queryFactory;

@@ -6,9 +6,11 @@ import com.example.testSecurity.querydlsRepository.ProfileImageCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import javax.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
 import static com.example.testSecurity.entity.QProfileImage.profileImage;
 
+@Repository
 public class ProfileImageRepositoryImpl implements ProfileImageCustomRepository {
 
 

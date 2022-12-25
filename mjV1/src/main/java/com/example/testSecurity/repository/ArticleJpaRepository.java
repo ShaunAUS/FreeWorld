@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
-@Repository
+
 public interface ArticleJpaRepository extends JpaRepository<Article, Long> {
 
     //artilce bookmark @Query사용해야하는가?
