@@ -3,6 +3,7 @@ package com.example.testSecurity.entity;
 import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,7 @@ public class Profile {
     private String name;
     @ApiModelProperty(value = "소개")
     private String introducing;
-    /*    @ApiModelProperty(value = "사진URL")
-        private MultipartFile image;*/
+
     @ApiModelProperty(value = "이메일")
     private String email;
     @ApiModelProperty(value = "연락처")
@@ -37,6 +37,9 @@ public class Profile {
     @OneToOne
     @JoinColumn(name = "member_no")
     private Member member;
+
+    @OneToMany(mappedBy = "profile")
+    private List<ProfileImage> profileImages;
 
     public static void update(ProfileDto.Create profileCreateDTO, Profile profile) {
         MapperUtils.getMapper()

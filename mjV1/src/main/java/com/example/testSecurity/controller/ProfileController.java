@@ -9,11 +9,13 @@ import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.jwt.AuthenticationUser;;
 import com.example.testSecurity.querydlsRepository.impl.ProfileRepositoryImpl;
 import com.example.testSecurity.service.MemberService;
+import com.example.testSecurity.service.ProfileImageService;
 import com.example.testSecurity.service.ProfileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Api("")
@@ -32,6 +35,8 @@ public class ProfileController {
     private final ProfileService profileService;
     private final MemberService memberService;
     private final ProfileRepositoryImpl profileRepository;
+    private final ProfileImageService profileImageService;
+
 
     //등록은 일반회원만 가능
     @ApiOperation(value = "등록", notes = "프로필 등록")
@@ -94,7 +99,22 @@ public class ProfileController {
         profileRepository.search(profileSearchConditionDto, pageable);
     }
 
-    //TODO 이미지 등록
+
+    @ApiOperation(value = "등록", notes = "이미지 등록")
+    @DeleteMapping("/profile/{profileNo}/image")
+    @PreAuthorize("hasAnyRole('ADMIN','COMPANY_MEMBER')")
+    public void registerProfileImage(
+        @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.Search profileSearchConditionDto,
+        @RequestParam List<MultipartFile> imageList,
+        @PathVariable Long profileNo,
+        @ApiIgnore Authentication authentication
+    ) {
+        if (imageList == null || imageList.size() == 0) {
+            throw new ServiceProcessException(ServiceMessage.IMAGE_LOAD_ERROR);
+        } else {
+            profileImageService.registerImage(imageList, profileNo);
+        }
+    }
 
 
     private Integer getLoginMemberNo(Authentication authentication) {
