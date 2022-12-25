@@ -18,11 +18,13 @@ import org.springframework.data.support.PageableExecutionUtils;
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 import static com.example.testSecurity.entity.QArticle.article;
 import static com.example.testSecurity.entity.QProfile.profile;
 import static org.springframework.util.StringUtils.*;
 
+@Repository
 public class ArticleRepositoryImpl implements ArticleCustomRepository {
 
     private final JPAQueryFactory queryFactory;

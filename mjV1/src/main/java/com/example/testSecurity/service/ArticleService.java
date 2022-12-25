@@ -4,6 +4,7 @@ import com.example.testSecurity.dto.ArticleDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+
 public interface ArticleService {
 
     ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO);

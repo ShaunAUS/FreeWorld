@@ -22,9 +22,11 @@ import org.json.simple.parser.ParseException;
 import javax.transaction.Transactional;
 import java.net.HttpURLConnection;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyJpaRepository companyJpaRepository;

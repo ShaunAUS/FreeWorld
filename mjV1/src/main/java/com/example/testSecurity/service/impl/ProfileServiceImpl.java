@@ -9,8 +9,10 @@ import com.example.testSecurity.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Service
 public class ProfileServiceImpl implements ProfileService {
 
 

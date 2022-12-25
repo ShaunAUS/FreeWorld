@@ -8,12 +8,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@ComponentScan(basePackages = "com.example.testSecurity.repository")
 @EnableCaching //redis
 public class TestSecurityApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TestSecurityApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TestSecurityApplication.class, args);
+    }
 
 }

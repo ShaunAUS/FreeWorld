@@ -12,6 +12,7 @@ import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,10 +32,20 @@ public class ArticleController {
 
     private final ArticleCustomRepository articleCustomRepository;
 
+
+    //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
+    @ApiOperation(value = "등록", notes = "개시글 등록")
+    @GetMapping("/hello")
+    public String hello(
+        @ApiIgnore Authentication authentication
+    ) {
+        return "hello";
+    }
+
     //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
     @ApiOperation(value = "등록", notes = "개시글 등록")
     @PostMapping("/register")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')®")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void createArticle(
         @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
         @ApiIgnore Authentication authentication
@@ -85,7 +96,7 @@ public class ArticleController {
     }
 
     @ApiOperation(value = "북마크", notes = "게시글 북마크")
-    @DeleteMapping("/{articleNo}")
+    @PostMapping("/{articleNo}/bookmark")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void bookmarkArticle(
         @PathVariable Long articleNo,
@@ -96,7 +107,7 @@ public class ArticleController {
     }
 
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
-    @DeleteMapping("/{articleNo}")
+    @PostMapping("/{articleNo}/like")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public void likeArticle(
         @PathVariable Long articleNo,

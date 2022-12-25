@@ -35,7 +35,7 @@ public class SecurityConfig {
             .authorizeRequests()
             //.antMatchers("/**/refresh-token").permitAll()
             //.antMatchers("/**/change-mode").permitAll()
-            .antMatchers("/v1/hello").permitAll()
+            .antMatchers("/v1/article/hello").permitAll()
             .antMatchers("/v1/**").permitAll()
             .anyRequest().authenticated()
 

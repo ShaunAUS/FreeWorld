@@ -10,9 +10,11 @@ import com.example.testSecurity.service.ImageService;
 import com.example.testSecurity.service.ProfileImageService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
+@Service
 public class ProfileImageServiceImpl implements ProfileImageService {
 
     private final ImageService imageService;
