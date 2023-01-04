@@ -11,8 +11,4 @@ import javax.transaction.Transactional;
 
 public interface ArticleJpaRepository extends JpaRepository<Article, Long> {
 
-    //artilce bookmark @Query사용해야하는가?
-    @Transactional
-    @Query(value = "insert into MemberArticleBookmark  ('member','article') values (:loginMemberNo,:articleNo)", nativeQuery = true)
-    MemberArticleBookmark addArticleBookMark(Long loginMemberNo, Long articleNo);
 }

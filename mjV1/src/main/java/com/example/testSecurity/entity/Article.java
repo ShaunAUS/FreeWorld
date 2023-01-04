@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 public class Article extends BaseTime {
 
     @Id
@@ -59,10 +60,29 @@ public class Article extends BaseTime {
     }
 
 
-    @Transactional
     public static void update(Article article, ArticleDto.Create articleCreateDTO) {
         MapperUtils.getMapper()
             .typeMap(ArticleDto.Create.class, Article.class)
+            .addMappings(mapper -> {
+                mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
+                    .map(ArticleDto.Create::getCategory, Article::setCategory);
+            })
             .map(articleCreateDTO, article);
+    }
+
+
+    public void addLike() {
+        this.likeCnt += 1;
+    }
+
+
+    //TODO need to check, so inefficient
+    public Article chageProfile(Profile profile) {
+        this.profile = profile;
+        return this;
+    }
+
+    public void addView() {
+        this.views += 1;
     }
 }

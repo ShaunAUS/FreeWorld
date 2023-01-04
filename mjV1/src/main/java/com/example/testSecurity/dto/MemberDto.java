@@ -14,8 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @RequiredArgsConstructor
 public class MemberDto {
@@ -40,7 +38,14 @@ public class MemberDto {
                     mapper.using(RoleType.INTEGER_ROLE_TYPE_CONVERTER)
                         .map(Member::getRoleType, MemberDto.Info::setRoleType);
                 })
-                .map(member);
+                .map(member)
+                .setCurrentTime();
+        }
+
+        private Info setCurrentTime() {
+            this.createDate = LocalDateTime.now(ZoneOffset.UTC);
+            this.updateDate = LocalDateTime.now(ZoneOffset.UTC);
+            return this;
         }
     }
 
@@ -63,10 +68,8 @@ public class MemberDto {
         public static Member toEntity(MemberDto.Create createDto) {
             return MapperUtils.getMapper()
                 .typeMap(MemberDto.Create.class, Member.class)
-                .addMappings(mapper -> {
-                    mapper.using(RoleType.ROLE_TYPE_INTEGER_CONVERTER)
-                        .map(MemberDto.Create::getRoleType, Member::setRoleType);
-                })
+                .addMappings(mapper -> mapper.using(RoleType.ROLE_TYPE_INTEGER_CONVERTER)
+                    .map(Create::getRoleType, Member::setRoleType))
                 .map(createDto);
         }
 

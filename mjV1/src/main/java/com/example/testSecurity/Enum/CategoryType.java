@@ -1,6 +1,7 @@
 package com.example.testSecurity.Enum;
 
 
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +38,7 @@ public enum CategoryType {
 
     public static Integer toInteger(CategoryType categoryType) {
         return Arrays.stream(CategoryType.values())
-            .filter(v -> v.getName() == categoryType.getName())
+            .filter(v -> Objects.equals(v.getName(), categoryType.getName()))
             .findFirst()
             .map(CategoryType::getNumber)
             .orElseGet(null);

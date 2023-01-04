@@ -2,6 +2,7 @@ package com.example.testSecurity.controller;
 
 import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -12,7 +13,6 @@ import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,53 +32,45 @@ public class ArticleController {
 
     private final ArticleCustomRepository articleCustomRepository;
 
-
     //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
-    @ApiOperation(value = "등록", notes = "개시글 등록")
-    @GetMapping("/hello")
-    public String hello(
-        @ApiIgnore Authentication authentication
-    ) {
-        return "hello";
-    }
-
-    //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
-    @ApiOperation(value = "등록", notes = "개시글 등록")
+    @ApiOperation(value = "등록", notes = "게시글 등록")
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public void createArticle(
+    public ArticleDto.Info createArticle(
         @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
         @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleService.createArticle(articleCreateDto);
+        Integer loginMemberNo = getLoginMemberNo(authentication);
+        return articleService.createArticle(articleCreateDto, loginMemberNo);
     }
 
 
-    @ApiOperation(value = "조회", notes = "개시글 조회")
-    @GetMapping("/{no}")
+    @ApiOperation(value = "조회", notes = "게시글 조회")
+    @GetMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
-    public void getArticle(
-        @PathVariable Long no,
+    public ArticleDto.Info getArticle(
+        @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleService.getArticle(no);
+        return articleService.getArticle(articleNo);
     }
 
-    //TODO 수정
-    @ApiOperation(value = "수정", notes = "개시글 수정")
+
+    @ApiOperation(value = "수정", notes = "게시글 수정")
     @PatchMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public void modifyArticle(
+    public ArticleDto.Info modifyArticle(
         @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
         @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
     ) {
         if (checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))) {
-            articleService.updateArticle(articleCreateDto, articleNo);
+            return articleService.updateArticle(articleCreateDto, articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
+
     }
 
 
@@ -103,30 +95,30 @@ public class ArticleController {
         @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleService.bookmarkArticle(articleNo, getLoginMemberNo(authentication));
+        articleService.bookmarkArticle(articleNo, getLoginMember(getLoginMemberNo(authentication)));
     }
 
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
-    @PostMapping("/{articleNo}/like")
+    @PatchMapping("/{articleNo}/like")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
-    public void likeArticle(
+    public ArticleDto.Info likeArticle(
         @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        articleCustomRepository.likeArticle(articleNo);
+        return articleService.likeArticle(articleNo);
     }
 
     @ApiOperation(value = "검색", notes = "게시글 검색")
-    @DeleteMapping("/search")
+    @GetMapping("/search")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public Page<ArticleDto.Info> searchArticle(
         @RequestBody ArticleDto.Search searchCondition,
         @PageableDefault(sort = {
-            "artilce_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
         @ApiIgnore Authentication authentication
     ) {
-        return articleCustomRepository.search(searchCondition, pageable);
+        return articleService.search(searchCondition, pageable);
     }
 
 
