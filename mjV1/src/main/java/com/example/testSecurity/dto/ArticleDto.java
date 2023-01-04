@@ -1,17 +1,12 @@
 package com.example.testSecurity.dto;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.entity.Article;
-import com.example.testSecurity.entity.Career;
-import com.example.testSecurity.entity.Member;
+import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class ArticleDto {
@@ -37,15 +32,21 @@ public class ArticleDto {
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
 
-        public static Article toEntity(ArticleDto.Create createDto) {
+        public static Article toEntity(ArticleDto.Create createDto, Profile profile) {
             return MapperUtils.getMapper()
                 .typeMap(ArticleDto.Create.class, Article.class)
                 .addMappings(mapper -> {
                     mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
                         .map(ArticleDto.Create::getCategory, Article::setCategory);
                 })
-                .map(createDto);
+                .map(createDto)
+                .chageProfile(profile);
         }
+
+        public void changeWriter(String writer) {
+            this.writer = writer;
+        }
+
     }
 
     @Getter

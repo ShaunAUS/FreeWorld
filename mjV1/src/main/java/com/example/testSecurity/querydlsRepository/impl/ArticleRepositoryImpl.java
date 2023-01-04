@@ -1,7 +1,7 @@
 package com.example.testSecurity.querydlsRepository.impl;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.dto.ArticleDto.Search;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
@@ -34,20 +34,30 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
     }
 
     @Override
-    public Page<ArticleDto.Info> search(ArticleDto.Search articleSearchConditionDto,
+    public Page<Article> search(Search articleSearchConditionDto,
         Pageable pageable) {
 
-        List<ArticleDto.Info> result = queryFactory
-            .select(Projections.fields(ArticleDto.Info.class,
-                profile.name.as("writer"),
+
+        /*List<ArticleDto.Info> result = queryFactory
+            .select(Projections.fields(ArticleDto.Info.class, //넣기
+                article.writer,
                 article.title,
                 article.contents,
                 article.likeCnt,
                 article.views,
                 article.category))
             .from(article)
-            .leftJoin(profile)
-            .on(article.profile.no.eq(profile.no))
+            .where(titleContains(articleSearchConditionDto.getTitle()),
+                contentContains(articleSearchConditionDto.getContents()),
+                categoryContains(articleSearchConditionDto.getCategory()))
+
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();*/
+
+        List<Article> result = queryFactory
+            .select(article)
+            .from(article)
             .where(titleContains(articleSearchConditionDto.getTitle()),
                 contentContains(articleSearchConditionDto.getContents()),
                 categoryContains(articleSearchConditionDto.getCategory()))
@@ -60,23 +70,11 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
         JPAQuery<Long> countQuery = queryFactory
             .select(article.count())
             .from(article)
-            .leftJoin(profile)
-            .on(article.profile.no.eq(profile.no))
             .where(titleContains(articleSearchConditionDto.getTitle()),
                 contentContains(articleSearchConditionDto.getContents()),
                 categoryContains(articleSearchConditionDto.getCategory()));
 
         return PageableExecutionUtils.getPage(result, pageable, () -> countQuery.fetchOne());
-    }
-
-
-    @Override
-    public void likeArticle(Long articleNo) {
-        queryFactory
-            .update(article)
-            .set(article.likeCnt, article.likeCnt.add(1))
-            .where(article.no.eq(articleNo))
-            .execute();
     }
 
     @Override
@@ -96,6 +94,7 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
             )).fetchOne());
     }
 
+    //null이면 그냥 무시 됌 , 에러 x
     BooleanExpression titleContains(String title) {
         return hasText(title) ? article.title.eq(title) : null;
     }
@@ -105,6 +104,9 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
     }
 
     BooleanExpression categoryContains(CategoryType categoryType) {
+        if (categoryType == null) {
+            return null;
+        }
         Integer categoryInteger = CategoryType.toInteger(categoryType);
         return hasText(String.valueOf(categoryType)) ? article.category.eq(categoryInteger) : null;
     }
