@@ -30,7 +30,7 @@ public class QMemberAccess extends EntityPathBase<MemberAccess> {
 
     public final StringPath refreshToken = createString("refreshToken");
 
-    public final DateTimePath<java.time.LocalDateTime> tokenCreateToken = createDateTime("tokenCreateToken", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> tokenCreateDate = createDateTime("tokenCreateDate", java.time.LocalDateTime.class);
 
     public final DateTimePath<java.time.LocalDateTime> tokenExpireDate = createDateTime("tokenExpireDate", java.time.LocalDateTime.class);
 

@@ -2,6 +2,8 @@ package com.example.testSecurity.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class MemberArticleBookmark {
 
     @Id
