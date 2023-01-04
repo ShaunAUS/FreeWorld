@@ -1,5 +1,6 @@
 package com.example.testSecurity.jwt;
 
+import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.config.AppProperties;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -60,7 +62,9 @@ public class JwtProvider {
             .setAudience(member.getUserName())
             .claim(AppProperties.ACCESS_ID, memberAccessId)  // accessId
             .claim("name", member.getUserName())
-            //.claim("roles", member.getRole())
+            .claim("password", member.getPassword())
+            //.claim("roles", Arrays.asList(RoleType.valueOf(member.getRoleType())))
+            .claim("roles", Arrays.asList(RoleType.valueOf(member.getRoleType())))
             .setExpiration(new Date(
                 System.currentTimeMillis() + 60 * properties.getAccessHoldTimeMillis()))  // 15분
 
@@ -140,7 +144,7 @@ public class JwtProvider {
 
                 UserDetails manager = User.withUsername(audience + ":" + sessionId)
                     //TODO roles.toArray(new String[roles.size()]) - entity 롤추가하면 넣기
-                    .roles()
+                    .roles(roles.toArray(new String[roles.size()]))
                     .password("")
                     .build();
 

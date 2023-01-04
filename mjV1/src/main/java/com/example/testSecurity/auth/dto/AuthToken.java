@@ -26,7 +26,7 @@ public class AuthToken {
      * 접속 유저 정보
      */
     @ApiModelProperty("접속 유저 정보")
-    private MemberDto.Info manager;
+    private MemberDto.Info managerInfo;
 
     /**
      * 리플레쉬 토큰

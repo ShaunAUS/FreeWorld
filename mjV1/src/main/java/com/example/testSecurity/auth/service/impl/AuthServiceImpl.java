@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
         createDto.insertEncodedPassword(passwordEncoder.encode(createDto.getPassword()));
         Member dMember = memberJpaRepository.save(MemberDto.Create.toEntity(createDto));
 
-
+        log.info("멤버 추가 완료");
         //ModelMapper는 해당 클래스의 기본 생성자를 이용해 객체를 생성하고 setter를 이용해 매핑을 한다.
         return MemberDto.Info.toDto(dMember);
     }
@@ -64,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         MemberAccess memberAccess = MemberAccess.builder()
             .member(member.get())
             .refreshToken(UUID.randomUUID().toString())
-            .tokenCreateToken(loginTime)
+            .tokenCreateDate(loginTime)
             .tokenExpireDate(loginTime.plusMinutes(appProperties.getAccessHoldTime()))
             .build();
         memberAccessRepository.save(memberAccess);
@@ -75,16 +76,18 @@ public class AuthServiceImpl implements AuthService {
         return AuthToken.builder()
             .jwt(token)
             .refreshToken(memberAccess.getRefreshToken())
-            .manager(MapperUtils.getMapper().map(member.get(), MemberDto.Info.class))
+            .managerInfo(MemberDto.Info.toDto(member.get()))
             .build();
 
     }
 
     @Override
+    @Transactional
     public void logout(String token) {
 
         //Access 정보로 토큰시간 만료시키기
-        MemberAccess memberAccess = memberAccessRepository.findById(jwtProvider.getAccessId(token)).get();
+        MemberAccess memberAccess = memberAccessRepository.findById(jwtProvider.getAccessId(token))
+            .get();
 
         if (memberAccess == null) {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND_ACCESS_INFO);
@@ -118,7 +121,8 @@ public class AuthServiceImpl implements AuthService {
     //만들때
     private void checkDuplicateUserName(MemberDto.Create createDto) {
 
-        Optional<Member> optionalMember = memberJpaRepository.findByUserName(createDto.getUserName());
+        Optional<Member> optionalMember = memberJpaRepository.findByUserName(
+            createDto.getUserName());
         if (optionalMember.isPresent()) {
             if (optionalMember.get().getUserName().equals(createDto.getUserName())) {
                 throw new ServiceProcessException(ServiceMessage.DUPLICATE_USERNAME);

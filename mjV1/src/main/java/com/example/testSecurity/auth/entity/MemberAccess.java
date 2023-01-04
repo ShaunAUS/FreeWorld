@@ -34,18 +34,12 @@ public class MemberAccess {
     @Column(name = "member_access_no")
     private Long id;
 
-    /**
-     * 관리자 정보
-     */
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
 
     /**
      * 토큰 발급 일시
      */
     @Column(length = 100)
-    private LocalDateTime tokenCreateToken;
+    private LocalDateTime tokenCreateDate;
 
     /**
      * 토큰 만료 일시
@@ -61,9 +55,15 @@ public class MemberAccess {
      * 재인증 일시
      */
     private LocalDateTime refreshDate;
+    /**
+     * 관리자 정보
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_no")
+    private Member member;
 
 
-    public void  expireJwtToken() {
+    public void expireJwtToken() {
         this.tokenExpireDate = LocalDateTime.now();
         this.refreshDate = null;
     }
