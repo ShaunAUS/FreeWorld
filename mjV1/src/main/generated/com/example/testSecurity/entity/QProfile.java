@@ -22,11 +22,13 @@ public class QProfile extends EntityPathBase<Profile> {
 
     public static final QProfile profile = new QProfile("profile");
 
+    public final ListPath<Career, QCareer> careers = this.<Career, QCareer>createList("careers", Career.class, QCareer.class, PathInits.DIRECT2);
+
     public final StringPath contactNumber = createString("contactNumber");
 
     public final StringPath email = createString("email");
 
-    public final StringPath introducing = createString("introducing");
+    public final StringPath introduce = createString("introduce");
 
     public final QMember member;
 
