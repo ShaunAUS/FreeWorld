@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,44 +35,43 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final MemberService memberService;
-    private final ProfileRepositoryImpl profileRepository;
     private final ProfileImageService profileImageService;
 
 
     //등록은 일반회원만 가능
     @ApiOperation(value = "등록", notes = "프로필 등록")
-    @PostMapping("")
+    @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER')")
-    public void createProfile(
+    public ProfileDto.Info createProfile(
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
         @ApiIgnore Authentication authentication
     ) {
         isAuthorizedMember(authentication);
-        profileService.createProfile(profileCreateDTO);
+        return profileService.createProfile(profileCreateDTO);
     }
 
-    //TODO 디테일
+
     @ApiOperation(value = "조회", notes = "프로필 조회")
     @GetMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
-    public void getProfile(
+    public ProfileDto.Info getProfile(
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        profileService.getProfile(profileNo);
+        return profileService.getProfile(profileNo);
     }
 
-    //TODO 수정
+
     @ApiOperation(value = "수정", notes = "프로필 수정")
     @PatchMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public void modifyProfile(
+    public ProfileDto.Info modifyProfile(
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
         checkIsMyProfile(profileNo, getLoginMemberNo(authentication));
-        profileService.updateProfile(profileCreateDTO, profileNo);
+        return profileService.updateProfile(profileCreateDTO, profileNo);
     }
 
 
@@ -87,24 +87,23 @@ public class ProfileController {
     }
 
     @ApiOperation(value = "검색", notes = "프로필 검색")
-    @DeleteMapping("/profile/search")
+    @GetMapping("/search")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
-    public void deleteProfile(
-        @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.Search profileSearchConditionDto,
+    public Page<ProfileDto.Info> searchProfile(
+        @RequestBody ProfileDto.Search profileSearchConditionDto,
         @PageableDefault(sort = {
-            "profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
-        @ApiIgnore Authentication authentication
+            "profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable
     ) {
 
-        profileRepository.search(profileSearchConditionDto, pageable);
+        return profileService.search(profileSearchConditionDto, pageable);
+
     }
 
 
     @ApiOperation(value = "등록", notes = "이미지 등록")
-    @DeleteMapping("/profile/{profileNo}/image")
+    @PostMapping("/{profileNo}/image")
     @PreAuthorize("hasAnyRole('ADMIN','COMPANY_MEMBER')")
     public void registerProfileImage(
-        @ApiParam(value = "ProfileSearchConditionDto") @RequestBody ProfileDto.Search profileSearchConditionDto,
         @RequestParam List<MultipartFile> imageList,
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
