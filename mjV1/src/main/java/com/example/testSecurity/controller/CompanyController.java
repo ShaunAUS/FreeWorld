@@ -1,11 +1,9 @@
 package com.example.testSecurity.controller;
 
-import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.CompanyDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
-import com.example.testSecurity.jwt.AuthenticationUser;
 import com.example.testSecurity.service.CompanyService;
 import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +30,6 @@ public class CompanyController {
         @ApiParam(value = "CompanyCreateDto") @RequestBody CompanyDto.Create companyCreateDto,
         @ApiIgnore Authentication authentication
     ) throws ParseException {
-        isAuthorizedMember(authentication);
         companyService.createCompany(companyCreateDto);
     }
 
@@ -44,7 +41,6 @@ public class CompanyController {
         @PathVariable Long companyNo,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
         companyService.getCompany(companyNo);
     }
 
@@ -57,7 +53,6 @@ public class CompanyController {
         @PathVariable Long companyNo,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
         companyService.updateCompany(companyCreateDto, companyNo);
     }
 
@@ -69,13 +64,7 @@ public class CompanyController {
         @PathVariable Long companyNo,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
         companyService.deleteCompany(companyNo);
-    }
-
-
-    private Integer getLoginMemberNo(Authentication authentication) {
-        return AuthenticationUser.extractMemberNo(authentication);
     }
 
     private Member getLoginMember(Integer memberNo) {
@@ -83,13 +72,4 @@ public class CompanyController {
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
     }
 
-    private void isAuthorizedMember(Authentication authentication) {
-        switch (RoleType.valueOf(getLoginMember(getLoginMemberNo(authentication)).getRoleType())) {
-            case ADMIN:
-            case COMPANY_MEMBER:
-                break;
-            default:
-                throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
-        }
-    }
 }

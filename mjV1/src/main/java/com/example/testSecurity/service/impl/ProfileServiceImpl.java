@@ -33,9 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     private final ProfileJpaRepository profileJpaRepository;
-    private final CareerJpaRepository careerJpaRepository;
     private final ProfileCustomRepository profileCustomRepository;
-    private final CareerCustomRepository careerCustomRepository;
 
     @Override
     @Transactional
@@ -108,10 +106,8 @@ public class ProfileServiceImpl implements ProfileService {
     //porifle + career
     @Override
     public Page<Info> search(Search profileSearchConditionDto, Pageable pageable) {
-        Page<Info> profileBySearch = profileCustomRepository.search(profileSearchConditionDto,
-                pageable)
-            .map(Info::toInfoDto);
-        return profileBySearch;
+        return profileCustomRepository.search(profileSearchConditionDto,
+            pageable).map(Info::toInfoDto);
     }
 
 }

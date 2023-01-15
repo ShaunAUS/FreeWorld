@@ -21,9 +21,5 @@ public class AppProperties {
     //tokenExpiredDate
     private Long accessHoldTime = 15L;
 
-    private Long accessHoldTimeMillis = 10000L;
 
-    //private byte[] memberAuthKey;
-
-    public String SESSION_ID = "sId";
 }

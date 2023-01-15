@@ -37,24 +37,6 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
     public Page<Article> search(Search articleSearchConditionDto,
         Pageable pageable) {
 
-
-        /*List<ArticleDto.Info> result = queryFactory
-            .select(Projections.fields(ArticleDto.Info.class, //넣기
-                article.writer,
-                article.title,
-                article.contents,
-                article.likeCnt,
-                article.views,
-                article.category))
-            .from(article)
-            .where(titleContains(articleSearchConditionDto.getTitle()),
-                contentContains(articleSearchConditionDto.getContents()),
-                categoryContains(articleSearchConditionDto.getCategory()))
-
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();*/
-
         List<Article> result = queryFactory
             .select(article)
             .from(article)

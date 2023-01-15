@@ -28,19 +28,6 @@ public class AuthController {
     final private AuthService authService;
 
 
-    @ApiOperation(value = "testController", notes = "test")
-    @GetMapping("/hello")
-    public String hello(){
-        return "hello";
-    }
-
-    @ApiOperation(value = "testController", notes = "test")
-    @GetMapping("/hello/redis/{test-key}")
-    @Cacheable(key = "#test-key", value = "test-value")
-    public String helloRedis(){
-        return "testData";
-    }
-
     @ApiOperation(value = "createMember", notes = "멤버추가")
     @PostMapping("/create")
     public MemberDto.Info createMember(@RequestBody MemberDto.Create createDto){

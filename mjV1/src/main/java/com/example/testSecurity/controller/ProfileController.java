@@ -46,8 +46,7 @@ public class ProfileController {
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
-        return profileService.createProfile(profileCreateDTO);
+        return profileService.createProfile(profileCreateDTO, getLoginMember(authentication));
     }
 
 
@@ -55,8 +54,7 @@ public class ProfileController {
     @GetMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public ProfileDto.Info getProfile(
-        @PathVariable Long profileNo,
-        @ApiIgnore Authentication authentication
+        @PathVariable Long profileNo
     ) {
         return profileService.getProfile(profileNo);
     }
