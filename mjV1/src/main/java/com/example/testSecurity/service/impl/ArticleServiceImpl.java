@@ -38,10 +38,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO,
-        Integer loginMemberNo) {
+        Long loginMemberNo) {
 
         //게시글 작성시 프로필이 최소 하나
-        Profile profile = profileJpaRepository.findByMemberNo(Long.valueOf(loginMemberNo))
+        Profile profile = profileJpaRepository.findByMemberNo(loginMemberNo)
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
 
         //게시글의 작성자는 Profile name으로 자동 등록
@@ -125,8 +125,12 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
-        return articleCustomRepository.checkIsMemberArticle(articleNo, loginMemberNo).isPresent();
+    public Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo) {
+        if (articleCustomRepository.checkIsMemberArticle(articleNo, loginMemberNo) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
