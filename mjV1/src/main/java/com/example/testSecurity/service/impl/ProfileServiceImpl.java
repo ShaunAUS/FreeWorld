@@ -21,12 +21,14 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
 
@@ -47,6 +49,10 @@ public class ProfileServiceImpl implements ProfileService {
         }
         //Profile + Career save
         Profile savedProfile = profileJpaRepository.save(profile);
+
+        log.info("============savedProfile============");
+        log.info("savedProfile : {}", savedProfile);
+        log.info("============savedProfile============");
 
         return savedProfile.toInfoDto();
 
@@ -71,6 +77,10 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profileById = profileJpaRepository.findById(profileNo)
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
 
+        log.info("============before update profile============");
+        log.info("profileById : {}", profileById);
+        log.info("============before update profile============");
+
         //Only profile update
         profileById.update(profileCreateDto);
 
@@ -81,6 +91,10 @@ public class ProfileServiceImpl implements ProfileService {
             originCareers.get(i).updateCareer(updateCareers.get(i));
 
         }
+
+        log.info("============after update profile============");
+        log.info("profileById : {}", profileById);
+        log.info("============after update profile============");
 
         return profileById.toInfoDto();
 
