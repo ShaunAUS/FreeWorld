@@ -7,6 +7,7 @@ import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.dto.ProfileDto.Info;
 import com.example.testSecurity.dto.ProfileDto.Search;
 import com.example.testSecurity.entity.Career;
+import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -37,13 +38,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO) {
+    public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO, Member loginMember) {
 
         Profile profile = profileCreateDTO.toEntity();
+        profile.changeMember(loginMember);
 
         List<Career> careers = profile.getCareers();
         for (Career career : careers) {
-            career.setProfile(profile);
+            career.changeProfile(profile);
         }
         //Profile + Career save
         Profile savedProfile = profileJpaRepository.save(profile);
