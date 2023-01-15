@@ -7,6 +7,7 @@ import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.dto.ProfileDto.Info;
 import com.example.testSecurity.dto.ProfileDto.Search;
 import com.example.testSecurity.entity.Career;
+import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -21,32 +22,37 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
 
     private final ProfileJpaRepository profileJpaRepository;
-    private final CareerJpaRepository careerJpaRepository;
     private final ProfileCustomRepository profileCustomRepository;
-    private final CareerCustomRepository careerCustomRepository;
 
     @Override
     @Transactional
-    public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO) {
+    public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO, Member loginMember) {
 
         Profile profile = profileCreateDTO.toEntity();
+        profile.changeMember(loginMember);
 
         List<Career> careers = profile.getCareers();
         for (Career career : careers) {
-            career.setProfile(profile);
+            career.changeProfile(profile);
         }
         //Profile + Career save
         Profile savedProfile = profileJpaRepository.save(profile);
+
+        log.info("============savedProfile============");
+        log.info("savedProfile : {}", savedProfile);
+        log.info("============savedProfile============");
 
         return savedProfile.toInfoDto();
 
@@ -71,6 +77,10 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profileById = profileJpaRepository.findById(profileNo)
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
 
+        log.info("============before update profile============");
+        log.info("profileById : {}", profileById);
+        log.info("============before update profile============");
+
         //Only profile update
         profileById.update(profileCreateDto);
 
@@ -81,6 +91,10 @@ public class ProfileServiceImpl implements ProfileService {
             originCareers.get(i).updateCareer(updateCareers.get(i));
 
         }
+
+        log.info("============after update profile============");
+        log.info("profileById : {}", profileById);
+        log.info("============after update profile============");
 
         return profileById.toInfoDto();
 
@@ -94,10 +108,8 @@ public class ProfileServiceImpl implements ProfileService {
     //porifle + career
     @Override
     public Page<Info> search(Search profileSearchConditionDto, Pageable pageable) {
-        Page<Info> profileBySearch = profileCustomRepository.search(profileSearchConditionDto,
-                pageable)
-            .map(Info::toInfoDto);
-        return profileBySearch;
+        return profileCustomRepository.search(profileSearchConditionDto,
+            pageable).map(Info::toInfoDto);
     }
 
 }

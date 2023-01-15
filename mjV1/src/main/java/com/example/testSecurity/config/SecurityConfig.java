@@ -5,6 +5,7 @@ import com.example.testSecurity.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
@@ -33,15 +35,10 @@ public class SecurityConfig {
             .and()// 세션 사용 x
             // http request
             .authorizeRequests()
-            //.antMatchers("/**/refresh-token").permitAll()
-            //.antMatchers("/**/change-mode").permitAll()
             .antMatchers("/v1/article/hello").permitAll()
             .antMatchers("/v1/**").permitAll()
             .anyRequest().authenticated()
 
-            /*           .exceptionHandling()
-                       .accessDeniedHandler(accessDeniedHandler())
-                       .authenticationEntryPoint(authenticationEntryPoint())*/
             .and()
 
             //id/password 인증 필터 전에 JWT 인증
@@ -50,12 +47,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-/*    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/v1/hello","/v2/api-docs", "/v3/api-docs", "/swagger-resources/**", "/webjars/**",
-            "/swagger-ui.html", "/swagger-ui/*");
-    }*/
 
 
     @Bean

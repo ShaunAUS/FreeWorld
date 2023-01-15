@@ -1,17 +1,14 @@
 package com.example.testSecurity.controller;
 
-import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
-import com.example.testSecurity.jwt.AuthenticationUser;
-import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
 import com.example.testSecurity.service.ArticleService;
 import com.example.testSecurity.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +27,6 @@ public class ArticleController {
     private final ArticleService articleService;
     private final MemberService memberService;
 
-    private final ArticleCustomRepository articleCustomRepository;
-
     //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
     @ApiOperation(value = "등록", notes = "게시글 등록")
     @PostMapping("/register")
@@ -40,9 +35,7 @@ public class ArticleController {
         @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
-        Integer loginMemberNo = getLoginMemberNo(authentication);
-        return articleService.createArticle(articleCreateDto, loginMemberNo);
+        return articleService.createArticle(articleCreateDto, getLoginMemberNo(authentication));
     }
 
 
@@ -50,10 +43,8 @@ public class ArticleController {
     @GetMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public ArticleDto.Info getArticle(
-        @PathVariable Long articleNo,
-        @ApiIgnore Authentication authentication
+        @PathVariable Long articleNo
     ) {
-        isAuthorizedMember(authentication);
         return articleService.getArticle(articleNo);
     }
 
@@ -94,7 +85,6 @@ public class ArticleController {
         @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
         articleService.bookmarkArticle(articleNo, getLoginMember(getLoginMemberNo(authentication)));
     }
 
@@ -102,10 +92,8 @@ public class ArticleController {
     @PatchMapping("/{articleNo}/like")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public ArticleDto.Info likeArticle(
-        @PathVariable Long articleNo,
-        @ApiIgnore Authentication authentication
+        @PathVariable Long articleNo
     ) {
-        isAuthorizedMember(authentication);
         return articleService.likeArticle(articleNo);
     }
 
@@ -115,33 +103,36 @@ public class ArticleController {
     public Page<ArticleDto.Info> searchArticle(
         @RequestBody ArticleDto.Search searchCondition,
         @PageableDefault(sort = {
-            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
-        @ApiIgnore Authentication authentication
+            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable
     ) {
         return articleService.search(searchCondition, pageable);
     }
 
 
-    private Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
+    private Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo) {
         return articleService.checkIsMemberArticle(articleNo, loginMemberNo);
     }
 
-    private void isAuthorizedMember(Authentication authentication) {
-        switch (RoleType.valueOf(getLoginMember(getLoginMemberNo(authentication)).getRoleType())) {
-            case ADMIN:
-            case GENERAL_MEMBER:
-                break;
-            default:
-                throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
+
+    private Member getLoginMember(Long memberNo) {
+        return memberService.findById(memberNo)
+            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+    }
+
+    private Long getLoginMemberNo(Authentication authentication) {
+
+        Optional<Member> findByUserName = memberService.findByUserName(getUserName(authentication));
+        if (findByUserName.isPresent()) {
+            return findByUserName.get().getNo();
+        } else {
+            throw new ServiceProcessException(ServiceMessage.USER_NOT_FOUND);
         }
     }
 
-    private Integer getLoginMemberNo(Authentication authentication) {
-        return AuthenticationUser.extractMemberNo(authentication);
-    }
-
-    private Member getLoginMember(Integer memberNo) {
-        return memberService.findById(Long.valueOf(memberNo))
-            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+    private String getUserName(Authentication authentication) {
+        final int i = authentication.getName().lastIndexOf(":");
+        final String username =
+            i > -1 ? authentication.getName().substring(0, i) : authentication.getName();
+        return username;
     }
 }

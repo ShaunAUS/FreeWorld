@@ -2,6 +2,7 @@ package com.example.testSecurity.querydlsRepository;
 
 import com.example.testSecurity.dto.ArticleDto.Search;
 import com.example.testSecurity.entity.Article;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,6 +12,6 @@ public interface ArticleCustomRepository {
 
     Page<Article> search(Search articleSearchConditionDto, Pageable pageable);
 
-    Optional<Article> checkIsMemberArticle(Long articleNo, Integer loginMemberNo);
+    List<Article> checkIsMemberArticle(Long articleNo, Long loginMemberNo);
 
 }

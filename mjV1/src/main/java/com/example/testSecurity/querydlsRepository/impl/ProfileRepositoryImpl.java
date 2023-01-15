@@ -36,37 +36,6 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
     public Page<Profile> search(Search profileSearchConditionDto,
         Pageable pageable) {
 
-        /*List<ProfileDto.Info> result = queryFactory
-            .select(Projections.fields(ProfileDto.Info.class,
-                profile.name,
-                profile.introducing,
-                profile.email,
-                profile.contactNumber
-            ))
-            .from(profile)
-            .leftJoin(career)
-            .on(profile.no.eq(career.profile.no))
-            .where(containSearchName(profileSearchConditionDto.getName()),
-                containsearchCategory(profileSearchConditionDto.getCategoryType()),
-                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()),
-                containSearchYear(profileSearchConditionDto.getYear())
-            )
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
-
-        //count query
-        JPAQuery<Long> countQuery = queryFactory
-            .select(profile.count())
-            .from(profile)
-            .leftJoin(career)
-            .on(profile.no.eq(career.profile.no))
-            .where(containSearchName(profileSearchConditionDto.getName()),
-                containsearchCategory(profileSearchConditionDto.getCategoryType()),
-                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()),
-                containSearchYear(profileSearchConditionDto.getYear())
-            );*/
-
         List<Profile> result = queryFactory
             .select(profile)
             .from(profile)
@@ -85,6 +54,8 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
         JPAQuery<Long> countQuery = queryFactory
             .select(profile.count())
             .from(profile)
+            .leftJoin(career)
+            .on(profile.no.eq(career.profile.no))
             .where(containSearchName(profileSearchConditionDto.getName()),
                 containSearchCategory(profileSearchConditionDto.getCategoryType()),
                 containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()),

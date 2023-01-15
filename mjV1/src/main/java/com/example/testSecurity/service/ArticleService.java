@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ArticleService {
 
-    ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO, Integer loginMemberNo);
+    ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO, Long loginMemberNo);
 
     ArticleDto.Info getArticle(Long articleNo);
 
@@ -21,7 +21,7 @@ public interface ArticleService {
     void bookmarkArticle(Long articleNo, Member loginMember);
 
 
-    Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo);
+    Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo);
 
     ArticleDto.Info likeArticle(Long articleNo);
 

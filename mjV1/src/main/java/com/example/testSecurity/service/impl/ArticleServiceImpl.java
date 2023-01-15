@@ -1,7 +1,6 @@
 package com.example.testSecurity.service.impl;
 
 import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ArticleDto.Info;
 import com.example.testSecurity.dto.ArticleDto.Search;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
@@ -19,12 +18,14 @@ import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleJpaRepository articleJpaRepository;
@@ -35,11 +36,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
+    @Transactional
     public ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO,
-        Integer loginMemberNo) {
+        Long loginMemberNo) {
 
         //게시글 작성시 프로필이 최소 하나
-        Profile profile = profileJpaRepository.findByMemberNo(Long.valueOf(loginMemberNo))
+        Profile profile = profileJpaRepository.findByMemberNo(loginMemberNo)
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
 
         //게시글의 작성자는 Profile name으로 자동 등록
@@ -48,7 +50,11 @@ public class ArticleServiceImpl implements ArticleService {
         Article savedArticle = articleJpaRepository.save(
             ArticleDto.Create.toEntity(articleCreateDTO, profile));
 
-        return Article.toDto(savedArticle);
+        log.info("============savedArticle============");
+        log.info("savedArticle : {}", savedArticle);
+        log.info("============savedArticle============");
+
+        return savedArticle.toInfoDto();
     }
 
     @Override
@@ -61,7 +67,8 @@ public class ArticleServiceImpl implements ArticleService {
             Article article = articleByNo.get();
             //조회수 증가
             article.addView();
-            return Article.toDto(articleByNo.get());
+            return article.toInfoDto();
+
         } else {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND);
         }
@@ -76,9 +83,20 @@ public class ArticleServiceImpl implements ArticleService {
         if (articleById.isPresent()) {
             Article article = articleById.get();
 
+            log.info("============before update article============");
+            log.info("article : {}", article);
+            log.info("============before update article============");
+
             //조회로 인한 영속성 상태+ 트랜젹선 안에서 +  엔티티 변경 = 더티체킹
-            Article.update(article, articleCreateDTO);
-            return Article.toDto(article);
+            //Article.update(article, articleCreateDTO);
+            article.update(articleCreateDTO);
+
+            log.info("===========after update article============");
+            log.info("updatedArticle : {}", article);
+            log.info("===========after update article============");
+
+            return article.toInfoDto();
+
         } else {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND);
         }
@@ -99,24 +117,43 @@ public class ArticleServiceImpl implements ArticleService {
             .member(member)
             .build();
         bookmarkJpaRepository.save(bookmark);
+
+        log.info("============savedBookmark============");
+        log.info("savedBookmark : {}", bookmark);
+        log.info("============savedBookmark============");
+
     }
 
     @Override
-    public Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
-        return articleCustomRepository.checkIsMemberArticle(articleNo, loginMemberNo).isPresent();
+    public Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo) {
+        if (articleCustomRepository.checkIsMemberArticle(articleNo, loginMemberNo) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     @Transactional
     public ArticleDto.Info likeArticle(Long articleNo) {
         Article article = articleJpaRepository.findById(articleNo).get();
+
+        log.info("============before like article============");
+        log.info("likeArticle : {}", article);
+        log.info("============Before like Article============");
+
         article.addLike();
-        return Article.toDto(article);
+
+        log.info("============after like article============");
+        log.info("likeArticle : {}", article);
+        log.info("============after like article============");
+
+        return article.toInfoDto();
     }
 
     @Override
     public Page<ArticleDto.Info> search(Search searchCondition, Pageable pageable) {
         return articleCustomRepository.search(searchCondition, pageable)
-            .map(Article::toDto);
+            .map(Article::toInfoDto);
     }
 }

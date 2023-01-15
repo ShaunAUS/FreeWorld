@@ -1,13 +1,9 @@
 package com.example.testSecurity.controller;
 
-
-import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
-import com.example.testSecurity.jwt.AuthenticationUser;;
-import com.example.testSecurity.querydlsRepository.impl.ProfileRepositoryImpl;
 import com.example.testSecurity.service.MemberService;
 import com.example.testSecurity.service.ProfileImageService;
 import com.example.testSecurity.service.ProfileService;
@@ -16,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +43,7 @@ public class ProfileController {
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
         @ApiIgnore Authentication authentication
     ) {
-        isAuthorizedMember(authentication);
-        return profileService.createProfile(profileCreateDTO);
+        return profileService.createProfile(profileCreateDTO, getLoginMember(authentication));
     }
 
 
@@ -55,8 +51,7 @@ public class ProfileController {
     @GetMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
     public ProfileDto.Info getProfile(
-        @PathVariable Long profileNo,
-        @ApiIgnore Authentication authentication
+        @PathVariable Long profileNo
     ) {
         return profileService.getProfile(profileNo);
     }
@@ -70,7 +65,7 @@ public class ProfileController {
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        checkIsMyProfile(profileNo, getLoginMemberNo(authentication));
+        checkIsMyProfile(profileNo, getLoginMember(authentication).getNo());
         return profileService.updateProfile(profileCreateDTO, profileNo);
     }
 
@@ -82,7 +77,7 @@ public class ProfileController {
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
-        checkIsMyProfile(profileNo, getLoginMemberNo(authentication));
+        checkIsMyProfile(profileNo, getLoginMember(authentication).getNo());
         profileService.deleteProfile(profileNo);
     }
 
@@ -115,29 +110,26 @@ public class ProfileController {
         }
     }
 
-
-    private Integer getLoginMemberNo(Authentication authentication) {
-        return AuthenticationUser.extractMemberNo(authentication);
-    }
-
-    private void isAuthorizedMember(Authentication authentication) {
-        switch (RoleType.valueOf(getLoginMember(getLoginMemberNo(authentication)).getRoleType())) {
-            case ADMIN:
-            case GENERAL_MEMBER:
-                break;
-            default:
-                throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
-        }
-    }
-
-    private Member getLoginMember(Integer memberNo) {
-        return memberService.findById(Long.valueOf(memberNo))
-            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
-    }
-
-    private void checkIsMyProfile(Long profileNo, Integer loginMemberNo) {
-        if (!memberService.checkIsMyProfile(profileNo, Long.valueOf(loginMemberNo))) {
+    private void checkIsMyProfile(Long profileNo, Long loginMemberNo) {
+        if (!memberService.checkIsMyProfile(profileNo, loginMemberNo)) {
             throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
         }
+    }
+
+    private Member getLoginMember(Authentication authentication) {
+
+        Optional<Member> findByUserName = memberService.findByUserName(getUserName(authentication));
+        if (findByUserName.isPresent()) {
+            return findByUserName.get();
+        } else {
+            throw new ServiceProcessException(ServiceMessage.USER_NOT_FOUND);
+        }
+    }
+
+    private String getUserName(Authentication authentication) {
+        final int i = authentication.getName().lastIndexOf(":");
+        final String username =
+            i > -1 ? authentication.getName().substring(0, i) : authentication.getName();
+        return username;
     }
 }

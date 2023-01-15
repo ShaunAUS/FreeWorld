@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.modelmapper.Converter;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "careers")
 public class Profile {
 
     @Id
@@ -75,4 +77,7 @@ public class Profile {
             .map(career -> career.toInfoDto())
             .collect(Collectors.toList());
 
+    public void changeMember(Member loginMember) {
+        this.member = loginMember;
+    }
 }

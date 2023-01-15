@@ -17,9 +17,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,20 +41,24 @@ public class AuthServiceImpl implements AuthService {
     private final AppProperties appProperties;
     private final JwtProvider jwtProvider;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
 
     @Override
     public MemberDto.Info createMember(MemberDto.Create createDto) {
 
-        log.info("멤버 추가 시작");
         //아이디 중복체크
         checkDuplicateUserName(createDto);
 
         createDto.insertEncodedPassword(passwordEncoder.encode(createDto.getPassword()));
-        Member dMember = memberJpaRepository.save(MemberDto.Create.toEntity(createDto));
+        Member savedMember = memberJpaRepository.save(MemberDto.Create.toEntity(createDto));
 
-        log.info("멤버 추가 완료");
+        log.info("============savedMember============");
+        log.info("createMember : {}", savedMember);
+        log.info("============savedMember============");
+
         //ModelMapper는 해당 클래스의 기본 생성자를 이용해 객체를 생성하고 setter를 이용해 매핑을 한다.
-        return MemberDto.Info.toDto(dMember);
+        return MemberDto.Info.toDto(savedMember);
     }
 
 
@@ -71,7 +79,11 @@ public class AuthServiceImpl implements AuthService {
         memberAccessRepository.save(memberAccess);
 
         //토큰생성
-        String token = jwtProvider.getJwtToken(member.get(), memberAccess.getId());
+        String token = jwtProvider.getJwtToken(member.get(), memberAccess);
+
+        log.info("============loginMember============");
+        log.info("loginMember : {}", member.get());
+        log.info("============loginMember============");
 
         return AuthToken.builder()
             .jwt(token)
@@ -86,18 +98,63 @@ public class AuthServiceImpl implements AuthService {
     public void logout(String token) {
 
         //Access 정보로 토큰시간 만료시키기
-        MemberAccess memberAccess = memberAccessRepository.findById(jwtProvider.getAccessId(token))
-            .get();
+        Optional<MemberAccess> memberAccessById = memberAccessRepository.findById(
+            jwtProvider.getAccessId(token));
 
-        if (memberAccess == null) {
+        if (!memberAccessById.isPresent()) {
             throw new ServiceProcessException(ServiceMessage.NOT_FOUND_ACCESS_INFO);
         }
+
+        MemberAccess memberAccess = memberAccessById.get();
+
+        //Access 기록만 수정
         memberAccess.expireJwtToken();
+        Long accessId = memberAccess.getId();
+
+        // 로그아웃시 사용한 토큰 저장
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        vop.set(String.valueOf(accessId), token);
+
+        // 15분뒤 기록 삭제
+        redisTemplate.expire(String.valueOf(accessId), 900, TimeUnit.SECONDS);
+
+        log.info("=========logoutMember=========");
+        log.info("logoutMember : {}", memberAccess.getMember());
+        log.info("=========logoutMember=========");
+
     }
 
     @Override
-    public void refresh() {
+    @Transactional
+    public AuthToken refresh(String token, String refreshToken) {
 
+        Long accessId = jwtProvider.getAccessId(token);
+
+        //refresh token 으로 로그인 멤버 가져오기
+        Optional<MemberAccess> memberAccessIdAndRefreshToken = memberAccessRepository.findByIdAndRefreshToken(
+            accessId, refreshToken);
+        if (!memberAccessIdAndRefreshToken.isPresent()) {
+            throw new UsernameNotFoundException("Authentication error");
+        }
+        MemberAccess memberAccess = memberAccessIdAndRefreshToken.get();
+
+        //로그인 시간을 늘릴 멤버
+        final Member loginManager = memberAccess.getMember();
+
+        //MemberAccess 시간 늘리기
+        memberAccess.refresh(appProperties.getAccessHoldTime());
+
+        // 로그인 멤버로 토큰 재발급
+        Member member = memberJpaRepository.findById(loginManager.getNo()).get();
+        final String refreshedToken = jwtProvider.getJwtToken(member, memberAccess);
+
+        log.info("=========refreshMember=========");
+        log.info("refreshMember : {}", member);
+        log.info("=========refreshMember=========");
+
+        return AuthToken.builder()
+            .jwt(refreshedToken)
+            .build();
     }
 
 

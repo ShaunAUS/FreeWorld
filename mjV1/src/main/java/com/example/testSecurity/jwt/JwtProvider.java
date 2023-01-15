@@ -1,14 +1,17 @@
 package com.example.testSecurity.jwt;
 
 import com.example.testSecurity.Enum.RoleType;
+import com.example.testSecurity.auth.entity.MemberAccess;
 import com.example.testSecurity.config.AppProperties;
 import com.example.testSecurity.entity.Member;
+import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +21,9 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,22 +41,9 @@ public class JwtProvider {
     private final JwtSigningKeyResolver signingKeyResolver;
     private final AppProperties properties;
 
-
-    public static Credential getCredential(Authentication authentication) {
-        if (Optional.ofNullable(authentication).isEmpty()) {
-            throw new AuthenticationServiceException(ServiceMessage.NOT_AUTHORIZED.getMessage());
-        }
-        // cast authentication.getCredentials() as Credential
-        Credential credentials = (Credential) authentication.getCredentials();
-        if (Optional.ofNullable(credentials).isEmpty()) {
-            throw new AuthenticationCredentialsNotFoundException(
-                ServiceMessage.NOT_AUTHORIZED.getMessage());
-        }
-        return credentials;
-    }
-
-
-    public String getJwtToken(Member member, Long memberAccessId) {
+    private final RedisTemplate<String, String> redisTemplate;
+    
+    public String getJwtToken(Member member, MemberAccess memberAccess) {
 
         return Jwts.builder()
             //header
@@ -60,13 +53,12 @@ public class JwtProvider {
             //payload
             .setSubject(AppProperties.LOGIN_SERVICE)
             .setAudience(member.getUserName())
-            .claim(AppProperties.ACCESS_ID, memberAccessId)  // accessId
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + properties.getAccessHoldTime()))
+            .claim(AppProperties.ACCESS_ID, memberAccess.getId())  // accessId
             .claim("name", member.getUserName())
             .claim("password", member.getPassword())
-            //.claim("roles", Arrays.asList(RoleType.valueOf(member.getRoleType())))
             .claim("roles", Arrays.asList(RoleType.valueOf(member.getRoleType())))
-            .setExpiration(new Date(
-                System.currentTimeMillis() + 60 * properties.getAccessHoldTimeMillis()))  // 15분
 
             //SecretKey or privateKey 로 잠궈 시그니처 만듬
             //publicKey 는 사용권장 x
@@ -74,22 +66,32 @@ public class JwtProvider {
             .compact();
     }
 
+
     //토큰파싱
     public Jws<Claims> parsingToken(@NonNull String token, long allowedClockSkewSeconds) {
-        return Jwts.parserBuilder()
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
             .setSigningKeyResolver(signingKeyResolver) // SecretKey or privateKey 아닐경우
             .setAllowedClockSkewSeconds(allowedClockSkewSeconds)
             .build()
             .parseClaimsJws(token);
+
+        Long accessId = claimsJws.getBody().get(AppProperties.ACCESS_ID, Long.class);
+
+        //토큰 검증 - redis에 로그아웃으로 등록된 토큰이 있으면
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        if (vop.get(accessId.toString()) != null) {
+            throw new ServiceProcessException(ServiceMessage.ALREADY_LOGOUT);
+        }
+
+        return claimsJws;
     }
 
 
     //JWT 토큰 파싱 -> claim 추출 (MemberAccessId)
     public long getAccessId(String token) {
-        final Jws<Claims> claimsJws = parsingToken(token,
-            (120 - properties.getAccessHoldTime()) * 60); //토큰 파싱
+        final Jws<Claims> claimsJws = parsingToken(token, 5 * 60); //토큰 파싱
         return claimsJws.getBody()
-            .get(properties.SESSION_ID, Long.class); // claim으로 넣어뒀던 값을 해당 타입으로 반환
+            .get(AppProperties.ACCESS_ID, Long.class); // claim으로 넣어뒀던 값을 해당 타입으로 반환
     }
 
 
@@ -143,7 +145,6 @@ public class JwtProvider {
                     .get("roles", ArrayList.class);  // jwt - 권한claim 추출
 
                 UserDetails manager = User.withUsername(audience + ":" + sessionId)
-                    //TODO roles.toArray(new String[roles.size()]) - entity 롤추가하면 넣기
                     .roles(roles.toArray(new String[roles.size()]))
                     .password("")
                     .build();
@@ -157,14 +158,5 @@ public class JwtProvider {
                 throw new IllegalStateException();
         }
     }
-
-    @Builder
-    public static class Credential {
-
-        public String token;
-        public AuthenticationUser user;
-        public Jws<Claims> claims;
-    }
-
 
 }

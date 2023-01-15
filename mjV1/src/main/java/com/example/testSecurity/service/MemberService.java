@@ -10,4 +10,5 @@ public interface MemberService {
 
     boolean checkIsMyProfile(Long profileNo, Long loginMemberNo);
 
+    Optional<Member> findByUserName(String name);
 }

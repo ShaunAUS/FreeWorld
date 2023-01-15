@@ -1,26 +1,23 @@
 package com.example.testSecurity.entity;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.MemberDto;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 //게시글
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor()
+@ToString
 public class Article extends BaseTime {
 
     @Id
@@ -49,25 +46,25 @@ public class Article extends BaseTime {
     @JoinColumn(name = "profile_no")
     private Profile profile;
 
-    public static ArticleDto.Info toDto(Article article) {
+    public ArticleDto.Info toInfoDto() {
         return MapperUtils.getMapper()
             .typeMap(Article.class, ArticleDto.Info.class)
             .addMappings(mapper -> {
                 mapper.using(CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER)
                     .map(Article::getCategory, ArticleDto.Info::setCategory);
             })
-            .map(article);
+            .map(this);
     }
 
 
-    public static void update(Article article, ArticleDto.Create articleCreateDTO) {
+    public void update(ArticleDto.Create createDto) {
         MapperUtils.getMapper()
             .typeMap(ArticleDto.Create.class, Article.class)
             .addMappings(mapper -> {
                 mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
                     .map(ArticleDto.Create::getCategory, Article::setCategory);
             })
-            .map(articleCreateDTO, article);
+            .map(createDto, this);
     }
 
 
