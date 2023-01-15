@@ -67,4 +67,9 @@ public class MemberAccess {
         this.tokenExpireDate = LocalDateTime.now();
         this.refreshDate = null;
     }
+
+    public void refresh(long sessionHoldTime) {
+        refreshDate = LocalDateTime.now();
+        tokenExpireDate = refreshDate.plusMinutes(sessionHoldTime);
+    }
 }

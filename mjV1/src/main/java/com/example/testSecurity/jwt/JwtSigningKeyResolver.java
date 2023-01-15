@@ -18,7 +18,7 @@ public class JwtSigningKeyResolver extends SigningKeyResolverAdapter {
     private final AppProperties properties;
 
     /**
-     * 관리자 권한 jwt 인증 키
+     * 멤버 권한 jwt 인증 키
      */
     @Getter
     private Key memberAuthKey;
