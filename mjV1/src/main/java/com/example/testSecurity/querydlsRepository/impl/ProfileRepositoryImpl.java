@@ -54,6 +54,8 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
         JPAQuery<Long> countQuery = queryFactory
             .select(profile.count())
             .from(profile)
+            .leftJoin(career)
+            .on(profile.no.eq(career.profile.no))
             .where(containSearchName(profileSearchConditionDto.getName()),
                 containSearchCategory(profileSearchConditionDto.getCategoryType()),
                 containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()),

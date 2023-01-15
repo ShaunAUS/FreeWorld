@@ -60,20 +60,18 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
     }
 
     @Override
-    public Optional<Article> checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
+    public List<Article> checkIsMemberArticle(Long articleNo, Long loginMemberNo) {
 
-        return Optional.ofNullable(queryFactory
+        return queryFactory
             .select(article)
             .from(article)
             .where(article.profile.no.eq(
-                (Expression<? super Long>) JPAExpressions
-                    .select(profile)
+                JPAExpressions
+                    .select(profile.no)
                     .from(profile)
-                    .where(profile.member.no.eq(Long.valueOf(loginMemberNo)))
-                    .fetch()
-                    .stream()
-                    .map(Profile::getNo)
-            )).fetchOne());
+                    .where(profile.member.no.eq(loginMemberNo))
+            )).fetch();
+
     }
 
     //null이면 그냥 무시 됌 , 에러 x
