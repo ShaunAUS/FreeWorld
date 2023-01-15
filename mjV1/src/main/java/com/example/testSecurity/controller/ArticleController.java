@@ -109,17 +109,30 @@ public class ArticleController {
     }
 
 
-    private Boolean checkIsMemberArticle(Long articleNo, Integer loginMemberNo) {
+    private Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo) {
         return articleService.checkIsMemberArticle(articleNo, loginMemberNo);
     }
 
 
-    private Integer getLoginMemberNo(Authentication authentication) {
-        return AuthenticationUser.extractMemberNo(authentication);
+    private Member getLoginMember(Long memberNo) {
+        return memberService.findById(memberNo)
+            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
     }
 
-    private Member getLoginMember(Integer memberNo) {
-        return memberService.findById(Long.valueOf(memberNo))
-            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
+    private Long getLoginMemberNo(Authentication authentication) {
+
+        Optional<Member> findByUserName = memberService.findByUserName(getUserName(authentication));
+        if (findByUserName.isPresent()) {
+            return findByUserName.get().getNo();
+        } else {
+            throw new ServiceProcessException(ServiceMessage.USER_NOT_FOUND);
+        }
+    }
+
+    private String getUserName(Authentication authentication) {
+        final int i = authentication.getName().lastIndexOf(":");
+        final String username =
+            i > -1 ? authentication.getName().substring(0, i) : authentication.getName();
+        return username;
     }
 }

@@ -77,4 +77,7 @@ public class Profile {
             .map(career -> career.toInfoDto())
             .collect(Collectors.toList());
 
+    public void changeMember(Member loginMember) {
+        this.member = loginMember;
+    }
 }
