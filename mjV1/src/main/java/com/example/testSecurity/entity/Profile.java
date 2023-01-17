@@ -43,7 +43,7 @@ public class Profile {
     private String contactNumber;
 
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Career> careers;
 
     @OneToMany(mappedBy = "profile")

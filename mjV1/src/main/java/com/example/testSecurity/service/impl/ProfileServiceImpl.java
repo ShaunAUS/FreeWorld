@@ -59,6 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    //FIXME 조회해서 연관된 테이블 사용하는데 (레이지로딩) Transactional 없이도 동작이 왜 잘되는것인가..?
     public ProfileDto.Info getProfile(Long profileNo) {
 
         Optional<Profile> profileById = profileJpaRepository.findById(profileNo);
@@ -69,7 +70,6 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-    //FIXME should i update like this?
     @Override
     @Transactional
     public ProfileDto.Info updateProfile(ProfileDto.Create profileCreateDto, Long profileNo) {
