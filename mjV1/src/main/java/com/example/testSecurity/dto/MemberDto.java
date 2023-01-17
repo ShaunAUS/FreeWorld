@@ -54,6 +54,7 @@ public class MemberDto {
     @ApiModel(value = "MemberDto.Create", description = "멤버 생성")
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class Create {
 
         private String userName;   // = LoginForm UserName
