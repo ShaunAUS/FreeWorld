@@ -107,7 +107,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    @Transactional()
+    @Transactional
     void getProfile() {
 
         //given
