@@ -49,7 +49,7 @@ public class ProfileController {
 
     @ApiOperation(value = "조회", notes = "프로필 조회")
     @GetMapping("/{profileNo}")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public ProfileDto.Info getProfile(
         @PathVariable Long profileNo
     ) {
@@ -83,7 +83,7 @@ public class ProfileController {
 
     @ApiOperation(value = "검색", notes = "프로필 검색")
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public Page<ProfileDto.Info> searchProfile(
         @RequestBody ProfileDto.Search profileSearchConditionDto,
         @PageableDefault(sort = {
@@ -97,7 +97,7 @@ public class ProfileController {
 
     @ApiOperation(value = "등록", notes = "이미지 등록")
     @PostMapping("/{profileNo}/image")
-    @PreAuthorize("hasAnyRole('ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('ADMIN','GENERAL_MEMBER')")
     public void registerProfileImage(
         @RequestParam List<MultipartFile> imageList,
         @PathVariable Long profileNo
