@@ -24,7 +24,7 @@ public enum ServiceMessage {
     NOT_FOUND_PROFILE(-2000, "프로파일이 존재하지 않습니다"),
 
     //Image
-    IMAGE_LOAD_ERROR(-3000, "이미지가 로드 에러");
+    IMAGE_LOAD_ERROR(-3000, "이미지 로드 에러");
 
 
     private int code;

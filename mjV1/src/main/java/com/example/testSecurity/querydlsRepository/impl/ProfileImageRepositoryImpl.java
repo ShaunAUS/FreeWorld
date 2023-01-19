@@ -20,16 +20,6 @@ public class ProfileImageRepositoryImpl implements ProfileImageCustomRepository 
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-
-    @Override
-    public void insert(String url, Profile profileById, int countImage) {
-        queryFactory.insert(profileImage)
-            .set(profileImage.imageUrl, url)
-            .set(profileImage.imageOrder, countImage)
-            .set(profileImage.profile, profileById)
-            .execute();
-    }
-
     @Override
     public int countCurrentImages(Long profileNo) {
         return (int) queryFactory.select()

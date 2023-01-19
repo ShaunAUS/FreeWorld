@@ -42,6 +42,7 @@ public class ImageServiceImpl implements ImageService {
             File location = new File(getStorageFilePath(storeFilename));
 
             try {
+                //로컬 기본저장위치에 저장
                 multipartFile.transferTo(location);
             } catch (IOException e) {
                 throw new ServiceProcessException(ServiceMessage.IMAGE_LOAD_ERROR);

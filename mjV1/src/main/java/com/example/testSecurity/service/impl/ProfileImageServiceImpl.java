@@ -2,9 +2,11 @@ package com.example.testSecurity.service.impl;
 
 import com.example.testSecurity.dto.ImageInfo;
 import com.example.testSecurity.entity.Profile;
+import com.example.testSecurity.entity.ProfileImage;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.querydlsRepository.ProfileImageCustomRepository;
+import com.example.testSecurity.repository.ProfileImageJpaRepository;
 import com.example.testSecurity.repository.ProfileJpaRepository;
 import com.example.testSecurity.service.ImageService;
 import com.example.testSecurity.service.ProfileImageService;
@@ -20,6 +22,7 @@ public class ProfileImageServiceImpl implements ProfileImageService {
     private final ImageService imageService;
     private final ProfileImageCustomRepository profileImageCustomRepository;
     private final ProfileJpaRepository profileJpaRepository;
+    private final ProfileImageJpaRepository profileImageJpaRepository;
 
 
     @Override
@@ -37,8 +40,13 @@ public class ProfileImageServiceImpl implements ProfileImageService {
                 throw new ServiceProcessException(ServiceMessage.IMAGE_LOAD_ERROR);
             }
 
-            profileImageCustomRepository.insert(imageInfo.getUrl(), profileById,
-                countImages(profileNo) + 1);
+            //querydsl insert 라이브러리 에러로인한 JPARepo 사용
+            ProfileImage profileImage = ProfileImage.builder()
+                .imageUrl(imageInfo.getUrl())
+                .imageOrder(countImages(profileNo) + 1)
+                .profile(profileById)
+                .build();
+            profileImageJpaRepository.save(profileImage);
         }
         return imageInfoList;
     }

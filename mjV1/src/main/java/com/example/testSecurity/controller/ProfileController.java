@@ -100,8 +100,7 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('ADMIN','COMPANY_MEMBER')")
     public void registerProfileImage(
         @RequestParam List<MultipartFile> imageList,
-        @PathVariable Long profileNo,
-        @ApiIgnore Authentication authentication
+        @PathVariable Long profileNo
     ) {
         if (imageList == null || imageList.size() == 0) {
             throw new ServiceProcessException(ServiceMessage.IMAGE_LOAD_ERROR);
