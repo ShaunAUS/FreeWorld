@@ -41,7 +41,7 @@ public class ArticleController {
 
     @ApiOperation(value = "조회", notes = "게시글 조회")
     @GetMapping("/{articleNo}")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public ArticleDto.Info getArticle(
         @PathVariable Long articleNo
     ) {
@@ -80,7 +80,7 @@ public class ArticleController {
 
     @ApiOperation(value = "북마크", notes = "게시글 북마크")
     @PostMapping("/{articleNo}/bookmark")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void bookmarkArticle(
         @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
@@ -90,7 +90,7 @@ public class ArticleController {
 
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
     @PatchMapping("/{articleNo}/like")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public ArticleDto.Info likeArticle(
         @PathVariable Long articleNo
     ) {
@@ -99,7 +99,7 @@ public class ArticleController {
 
     @ApiOperation(value = "검색", notes = "게시글 검색")
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN','COMPANY_MEMBER')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public Page<ArticleDto.Info> searchArticle(
         @RequestBody ArticleDto.Search searchCondition,
         @PageableDefault(sort = {
