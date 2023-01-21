@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  mysqldb:
+    #Compose로부터 독커파일 위치
+    build: ./database
+    image: database-personal
+    restart: always
+    environment:
+      MYSQL_DATABASE: sbt
+      MYSQL_ROOT_PASSWORD: rh3dlekx123@
+    ports:
+      - 3307:3306
+    volumes:
+      - volume_personal:/var/lib/mysql  
+
+  redis:
+      image: redis
+      command: redis-server --port 6379
+      container_name: "docker-redis"
+      labels:
+      - "name=redis"
+      - "mode=standalone"
+      ports:
+      - 6379:6379
+
+  backend:
+    build: ./mjV1/build/libs
+    image: backend-personal
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/sbt
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rh3dlekx123@
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysqldb
+      - redis
+
+volumes:
+    volume_personal:
+       
