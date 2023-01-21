@@ -26,8 +26,10 @@ public class ArticleDto {
         @ApiModelProperty(value = "작성자")
         private String writer;
         @ApiModelProperty(value = "좋아요")
+        @Builder.Default
         private Integer likeCnt = 0;
         @ApiModelProperty(value = "조회수")
+        @Builder.Default
         private Integer views = 0;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;

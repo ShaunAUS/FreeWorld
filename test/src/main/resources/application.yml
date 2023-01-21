@@ -1,5 +1,0 @@
-server:
-  port: 8090
-
-test:
-  api-version: 0.0.1
