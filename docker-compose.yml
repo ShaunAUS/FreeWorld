@@ -2,8 +2,8 @@ version: '3.8'
 services:
   mysqldb:
     #Compose로부터 독커파일 위치
-    build: ./database
-    image: mysql:5.7
+    #build: ./database
+    image: database-personal
     restart: always
     environment:
       MYSQL_DATABASE: sbt
