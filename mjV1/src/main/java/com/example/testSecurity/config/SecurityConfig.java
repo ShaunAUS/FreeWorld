@@ -35,6 +35,7 @@ public class SecurityConfig {
             .and()// 세션 사용 x
             // http request
             .authorizeRequests()
+            .antMatchers("/**").permitAll()
             .antMatchers("/v1/**").permitAll()
             .anyRequest().authenticated()
 
