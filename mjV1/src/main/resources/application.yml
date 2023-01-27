@@ -17,7 +17,7 @@ spring:
         max-active: 5
         max-idle: 5
         min-idle: 2
-    host: redis
+    host: 127.0.0.1
     port: 6379
     password:
 
@@ -41,6 +41,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    view:
+      suffix: .html
 
 
 
