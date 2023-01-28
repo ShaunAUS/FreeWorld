@@ -1,121 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8">
+  <title>register</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
 </head>
-<script src="https://cdn01.jotfor.ms/static/prototype.forms.js?3.3.38898" type="text/javascript"></script>
-<script src="https://cdn02.jotfor.ms/static/jotform.forms.js?3.3.38898" type="text/javascript"></script>
-<script src="https://cdn03.jotfor.ms/js/vendor/jquery-1.8.0.min.js?v=3.3.38898" type="text/javascript"></script>
-<script defer src="https://cdn01.jotfor.ms/js/vendor/maskedinput.min.js?v=3.3.38898" type="text/javascript"></script>
-<script defer src="https://cdn02.jotfor.ms/js/vendor/jquery.maskedinput.min.js?v=3.3.38898" type="text/javascript"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/punycode/1.4.1/punycode.js"></script>
-<script src="https://cdn03.jotfor.ms/js/jotStorage.js?v=3.3.38898" type="text/javascript"></script>
-<script src="https://cdn01.jotfor.ms/js/vendor/autoFill.min.js?v=3.3.38898" type="text/javascript"></script>
-<style type="text/css">@media print{.form-section{display:inline!important}.form-pagebreak{display:none!important}.form-section-closed{height:auto!important}.page-section{position:initial!important}}</style>
-<link type="text/css" rel="stylesheet" href="https://cdn01.jotfor.ms/themes/CSS/5e6b428acc8c4e222d1beb91.css?themeRevisionID=6310a6ad592c72439615db25"/>
-<script type="text/javascript">	JotForm.newDefaultTheme = true;
-	JotForm.extendsNewTheme = false;
-	JotForm.singleProduct = false;
-	JotForm.newPaymentUIForNewCreatedForms = false;
-	JotForm.newPaymentUI = true;
-
-	JotForm.init(function(){
-	/*INIT-START*/
-      JotForm.setPhoneMaskingValidator( 'input_7_full', '(###) ###-####' );
-      setTimeout(function() {
-          $('input_8').hint('');
-       }, 20);
-
- JotForm.calendarMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
- JotForm.calendarDays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
- JotForm.calendarOther = {"today":"Today"};
- var languageOptions = document.querySelectorAll('#langList li');
- for(var langIndex = 0; langIndex < languageOptions.length; langIndex++) {
-   languageOptions[langIndex].on('click', function(e) { setTimeout(function(){ JotForm.setCalendar("14", false, {"days":{"monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":true,"sunday":true},"future":true,"past":true,"custom":false,"ranges":false,"start":"","end":""}); }, 0); });
- }
- JotForm.onTranslationsFetch(function() { JotForm.setCalendar("14", false, {"days":{"monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":true,"sunday":true},"future":true,"past":true,"custom":false,"ranges":false,"start":"","end":""}); });
- JotForm.formatDate({date:(new Date()), dateField:$("id_"+14)});
- JotForm.displayLocalTime("input_14_hourSelect", "input_14_minuteSelect","input_14_ampm", "input_14_timeInput", false);
-      productID = {"0":"input_24_1000","1":"input_24_1001","2":"input_24_1002"};
-      paymentType = "product";
-      JotForm.setCurrencyFormat('USD',true, 'point');
-      JotForm.totalCounter({"input_24_1000":{"price":"10","quantityField":"input_24_quantity_1000_0"},"input_24_1001":{"price":"012","custom_0":"input_24_custom_1001_0","quantityField":"input_24_quantity_1001_1"},"input_24_1002_0":{"price":"0","child":true,"specialPriceField":"input_24_1002_0","specialPriceList":["2","3","4"],"quantityField":"input_24_quantity_1002_0_0"},"input_24_1002_1":{"price":"0","child":true,"specialPriceField":"input_24_1002_1","specialPriceList":["2","3","4"],"quantityField":"input_24_quantity_1002_1_0"},"input_24_1002_2":{"price":"0","child":true,"specialPriceField":"input_24_1002_2","specialPriceList":["2","3","4"],"quantityField":"input_24_quantity_1002_2_0"}});
-      $$('.form-product-custom_quantity').each(function(el, i){el.observe('blur', function(){isNaN(this.value) || this.value < 1 ? this.value = '0' : this.value = parseInt(this.value)})});
-      $$('.form-product-custom_quantity').each(function(el, i){el.observe('focus', function(){this.value == 0 ? this.value = '' : this.value})});
-if(typeof PaymentStock !== "undefined") { PaymentStock.orderedSubproductOptionNames = {"1002":["Kind of Food"]} }
-      JotForm.handleProductLightbox();
-if (window.JotForm && JotForm.accessible) $('input_26').setAttribute('tabindex',0);
-      JotForm.setCustomHint( 'input_26', 'Type here...' );
-      JotForm.alterTexts({"couponApply":"Apply","couponBlank":"Please enter a coupon.","couponChange":"","couponEnter":"Enter coupon","couponExpired":"Coupon is expired. Please try another one.","couponInvalid":"Coupon is invalid.","couponValid":"Coupon is valid.","shippingShipping":"Shipping","taxTax":"Tax","totalSubtotal":"Subtotal","totalTotal":"Total"}, true);
-          JotForm.isNewSaveAndContinueLaterActive = true;
-	/*INIT-END*/
-	});
-
-
-</script>
-<link type="text/css" rel="stylesheet" href="https://cdn02.jotfor.ms/css/styles/payment/payment_styles.css?3.3.38898" />
-<link type="text/css" rel="stylesheet" href="https://cdn03.jotfor.ms/css/styles/payment/payment_feature.css?3.3.38898" />
-<form class="jotform-form" action="https://submit.jotform.com/submit/230261622303441/" method="post" name="form_230261622303441" id="230261622303441" accept-charset="utf-8" autocomplete="on"><input type="hidden" name="formID" value="230261622303441" /><input type="hidden" id="JWTContainer" value="" /><input type="hidden" id="cardinalOrderNumber" value="" />
-  <div role="main" class="form-all">
-    <style>
-      .form-all:before
-      {
-        background: none;
-      }
-    </style>
-    <ul class="form-section page-section">
-      <li id="cid_1" class="form-input-wide" data-type="control_head">
-        <div class="form-header-group  header-large">
-          <div class="header-text httac htvam">
-            <h1 id="header_1" class="form-header" data-component="header">회원가입</h1>
-          </div>
-        </div>
-      </li>
-      <li class="form-line jf-required" data-type="control_fullname" id="id_6"><label class="form-label form-label-top form-label-extended form-label-auto" id="label_6" for="first_6"> 아이디<span class="form-required">*</span> </label>
-        <div id="cid_6" class="form-input-wide jf-required" data-layout="full">
-          <div data-wrapper-react="true" class="extended"><span class="form-sub-label-container" style="vertical-align:top" data-input-type="first"><input type="text" id="first_6" name="q6_fullName6[first]" class="form-textbox validate[required]" data-defaultvalue="" autoComplete="section-input_6 given-name" size="10" value="" data-component="first" aria-labelledby="label_6 sublabel_6_first" required="" /><label class="form-sub-label" for="first_6" id="sublabel_6_first" style="min-height:13px" aria-hidden="false"></label></span><span class="form-sub-label-container" style="vertical-align:top" data-input-type="middle">
-        </div>
-      </li>
-
-      <li class="form-line form-line-column form-col-2 jf-required" data-type="control_email" id="id_8"><label class="form-label form-label-top form-label-auto" id="label_8" for="input_8"> 비밀번호<span class="form-required">*</span> </label>
-        <div id="cid_8" class="form-input-wide jf-required" data-layout="half"> <span class="form-sub-label-container" style="vertical-align:top"><input type="email" id="input_8" name="q8_email8" class="form-textbox validate" data-defaultvalue="" style="width:310px" size="310" value=""  data-component="email" aria-labelledby="label_8 sublabel_input_8" required="" /><label class="form-sub-label" for="input_8" id="sublabel_input_8" style="min-height:13px" aria-hidden="false"></label></span> </div>
-      </li>
-      <li class="form-line jf-required" data-type="control_address" id="id_9"><label class="form-label form-label-top form-label-auto" id="label_9" for="input_9_addr_line1"> 권한<span class="form-required">*</span> </label>
-
-        <div id="cid_9" class="form-input-wide jf-required" data-layout="full">
-          <div summary="" class="form-address-table jsTest-addressField">
-            <div class="form-address-line-wrapper jsTest-address-line-wrapperField"><span class="form-address-line form-address-street-line jsTest-address-lineField"><span class="form-sub-label-container" style="vertical-align:top"><input type="text" id="input_9_addr_line1" name="q9_address9[addr_line1]" class="form-textbox validate[required] form-address-line" data-defaultvalue="" autoComplete="section-input_9 address-line1" value="" data-component="address_line_1" aria-labelledby="label_9 sublabel_9_addr_line1" required="" /><label class="form-sub-label" for="input_9_addr_line1" id="sublabel_9_addr_line1" style="min-height:13px" aria-hidden="false"></label></span></span></div>
-          </div>
-        </div>
-      </li>
-
-      <li class="form-line" data-type="control_button" id="id_25">
-        <div id="cid_25" class="form-input-wide" data-layout="full">
-          <div data-align="auto" class="form-buttons-wrapper form-buttons-auto   jsTest-button-wrapperField"><button id="input_25" type="submit" class="form-submit-button submit-button jf-form-buttons jsTest-submitField" data-component="button" data-content="">Submit</button></div>
-        </div>
-      </li>
-      <li style="display:none">Should be Empty: <input type="text" name="website" value="" /></li>
-    </ul>
+  <!-- Navigation-->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">FreeWorld</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">구인광고</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">프로필</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#" tabindex="-1" aria-disabled="true">회원가입</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">최신 소식</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">헤드헌팅</a>
+        </li>
+      </ul>
+    </div>
   </div>
-  <script>
-    JotForm.showJotFormPowered = "new_footer";
-  </script>
-  <script>
-    JotForm.poweredByText = "Powered by Jotform";
-  </script><input type="hidden" class="simple_spc" id="simple_spc" name="simple_spc" value="230261622303441" />
-  <script type="text/javascript">
-    var all_spc = document.querySelectorAll("form[id='230261622303441'] .si" + "mple" + "_spc");
-    for (var i = 0; i < all_spc.length; i++)
-    {
-      all_spc[i].value = "230261622303441-230261622303441";
-    }
-  </script>
-  <div class="formFooter-heightMask"></div>
+</nav>
 
-</form><script type="text/javascript">JotForm.ownerView=true;</script><script src="https://cdn.jotfor.ms//js/vendor/smoothscroll.min.js?v=3.3.38898"></script>
-<script src="https://cdn.jotfor.ms//js/errorNavigation.js?v=3.3.38898"></script>
-<script type="text/javascript">window.GOOGLE_SIGNON = "172124630376-qk1qmdfmur2ojaf39e070iqhpt2foaip.apps.googleusercontent.com"</script>
-<script type="text/javascript">window.FACEBOOK_SIGNON_APP_ID = "1140740696088074"</script>
-<script type="text/javascript">window.MICROSOFT_SIGNON_CLIENT_ID = "482577e8-f8d0-4a09-bbbb-15de3d05eebe"</script>
-<script>window.JotFormAPIEndpoint = "https://api.jotform.com"; </script>
-<script>window.___JFsclActive = true; </script>
-<script>window.JFForm = { id: '230261622303441', skippable: true, isHipaa: '' };</script>
-<script defer src="https://cdn.jotfor.ms/s/umd/d8c46f68ea6/for-formuser.js"></script>
+
+<body>
+<form>
+  <div class="mb-3">
+    <h4>아이디</h4>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+  </div>
+  <div class="mb-3">
+    <h4>비밀번호</h4>
+    <input type="password" class="form-control" id="exampleInputPassword1">
+    <div id="emailHelp" class="form-text">비밀번호는 최소 특수문자 2개 조합 해주세요</div>
+  </div>
+  <button type="submit" class="btn btn-primary">회원가입</button>
+</form>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+
+</html>
