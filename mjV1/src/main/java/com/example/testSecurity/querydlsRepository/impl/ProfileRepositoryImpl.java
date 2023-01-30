@@ -32,6 +32,7 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    //Profile 검색은 (년차)와 (카테고리(career테이블)로 검색한다
     @Override
     public Page<Profile> search(Search profileSearchConditionDto,
         Pageable pageable) {
@@ -41,10 +42,10 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
             .from(profile)
             .leftJoin(career)
             .on(profile.no.eq(career.profile.no))
-            .where(containSearchName(profileSearchConditionDto.getName()),
-                containSearchCategory(profileSearchConditionDto.getCategoryType()),
-                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()),
-                containSearchYear(profileSearchConditionDto.getYear())
+            .where(
+                containSearchYear(profileSearchConditionDto.getExperienceYear()),
+                containSearchCategory(profileSearchConditionDto.getCategoryType()), //from career table
+                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()) //from career table
             )
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -56,15 +57,16 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
             .from(profile)
             .leftJoin(career)
             .on(profile.no.eq(career.profile.no))
-            .where(containSearchName(profileSearchConditionDto.getName()),
+            .where(
+                containSearchYear(profileSearchConditionDto.getExperienceYear()),
                 containSearchCategory(profileSearchConditionDto.getCategoryType()),
-                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()),
-                containSearchYear(profileSearchConditionDto.getYear())
+                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType())
             );
 
         return PageableExecutionUtils.getPage(result, pageable, () -> countQuery.fetchOne());
 
     }
+
 
     //TODO profile + carrer  한방쿼리 방법 DTO에 넣는게 잘안됌,,, or  일단 따로따로 해서 넣는거로 처리
     @Override
@@ -81,13 +83,6 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
             .fetchOne();
     }
 
-    private BooleanExpression containSearchYear(Integer year) {
-        if (year == null) {
-            return null;
-        }
-        return career.year.eq(year);
-
-    }
 
     private BooleanExpression containSearchCategoryDetailType(
         CategoryDetailType categoryDetailType) {
@@ -100,6 +95,14 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
             categoryDetailTypeNumber) : null;
     }
 
+    private BooleanExpression containSearchYear(Integer year) {
+
+        if(year != null){
+           return profile.experienceYear.eq(year);
+        }
+        return null;
+    }
+
     private BooleanExpression containSearchCategory(CategoryType categoryType) {
         if (categoryType == null) {
             return null;
@@ -108,9 +111,5 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
         Integer categoryTypeNumber = categoryType.getNumber();
         return hasText(String.valueOf(categoryTypeNumber)) ? career.category.eq(
             categoryTypeNumber) : null;
-    }
-
-    private BooleanExpression containSearchName(String name) {
-        return hasText(name) ? profile.name.eq(name) : null;
     }
 }

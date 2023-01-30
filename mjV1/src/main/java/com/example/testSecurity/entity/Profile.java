@@ -36,6 +36,8 @@ public class Profile {
     private String name;
     @ApiModelProperty(value = "소개")
     private String introduce;
+    @ApiModelProperty(value = "년차")
+    private Integer experienceYear;
 
     @ApiModelProperty(value = "이메일")
     private String email;

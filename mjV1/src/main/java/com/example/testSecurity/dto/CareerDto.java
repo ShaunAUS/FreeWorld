@@ -38,8 +38,10 @@ public class CareerDto {
         private String assignedTask;
         @ApiModelProperty(value = "설명")
         private String description;
-        @ApiModelProperty(value = "년차")
-        private Integer year;
+        @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+        private Integer startPeriod;
+        @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+        private Integer finishPeriod;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
         @ApiModelProperty(value = "카테고리 상세")
@@ -79,8 +81,10 @@ public class CareerDto {
         private String companyName;
         @ApiModelProperty(value = "담당업무")
         private String assignedTask;
-        @ApiModelProperty(value = "년차")
-        private Integer year;
+        @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+        private Integer startPeriod;
+        @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+        private Integer finishPeriod;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
 

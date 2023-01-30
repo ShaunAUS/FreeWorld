@@ -76,7 +76,8 @@ class ArticleServiceTest {
                 .companyName("company" + i)
                 .assignedTask("assignedTask" + i)
                 .description("description" + i)
-                .year(2020)
+                .startPeriod(20200610)
+                .finishPeriod(20210610)
                 .category(CategoryType.PROGRAMMING)
                 //.categoryDetail()
                 .build();
@@ -226,6 +227,7 @@ class ArticleServiceTest {
         assertThat(article.getLikeCnt()).isEqualTo(1);
     }
 
+    //제목+내용 , 카테고리로 검색
     @Test
     void search() {
 
@@ -239,27 +241,44 @@ class ArticleServiceTest {
             .category(CategoryType.ANNOUNCE)
             .build();
 
+        ArticleDto.Create secondArticle = ArticleDto.Create.builder()
+            .title("article title")
+            .contents("article contents")
+            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .likeCnt(0)
+            .views(55)
+            .category(CategoryType.PROGRAMMING)
+            .build();
+
+        ArticleDto.Create thirdArticle = ArticleDto.Create.builder()
+            .title("third article title")
+            .contents("third article contents")
+            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .likeCnt(0)
+            .views(55)
+            .category(CategoryType.PROGRAMMING)
+            .build();
+
         Long loginMemberNo = memberJpaRepository.findAll().get(0).getNo();
         articleService.createArticle(create, loginMemberNo);
+        articleService.createArticle(secondArticle, loginMemberNo);
+        articleService.createArticle(thirdArticle, loginMemberNo);
 
-        ArticleDto.Search firstSearchCondition = new Search("second test title", null, null);
-        ArticleDto.Search secondSearchCondition = new Search("test title", null, null);
-        ArticleDto.Search thirdSearchCondition = new Search(null, "test contents", null);
+        ArticleDto.Search searchCondition = new Search("third", CategoryType.PROGRAMMING);
+        ArticleDto.Search secondSearchCondition = new Search(null, CategoryType.PROGRAMMING);
 
         Sort sort = Sort.by("article_no").descending();
         Pageable pageable = PageRequest.of(0, 10, sort);
 
         //when
-        Page<Info> firstSearchResult = articleService.search(firstSearchCondition, pageable);
+        Page<Info> firstSearchResult = articleService.search(searchCondition, pageable); // 0
         Page<Info> secondSearchResult = articleService.search(secondSearchCondition, pageable);
-        Page<Info> thirdSearchResult = articleService.search(thirdSearchCondition, pageable);
 
         //then
-        assertThat(firstSearchResult.getContent().get(0).getContents()).isEqualTo("test contents");
         assertThat(firstSearchResult.getTotalElements()).isEqualTo(1);
-        assertThat(thirdSearchResult.getTotalElements()).isEqualTo(2);
-        assertThat(thirdSearchResult.getContent().get(1).getViews()).isEqualTo(55);
+        assertThat(firstSearchResult.getContent().get(0).getContents()).isEqualTo("third article contents");
 
-
+        assertThat(secondSearchResult.getTotalElements()).isEqualTo(3);
+        assertThat(secondSearchResult.getContent().get(1).getTitle()).isEqualTo("article title");
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
 <head>
   <meta charset="UTF-8">
   <title>register</title>
@@ -37,7 +37,7 @@
 
 
 <body>
-<form>
+<form th:action="@{/v1/create}" method = "post">
   <div class="mb-3">
     <h4>아이디</h4>
     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">

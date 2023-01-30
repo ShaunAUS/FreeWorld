@@ -5,8 +5,6 @@ import static com.example.testSecurity.Enum.CategoryType.INTEGER_CATEGORY_TYPE_C
 
 import com.example.testSecurity.dto.CareerDto;
 import com.example.testSecurity.dto.CareerDto.Create;
-import com.example.testSecurity.dto.ProfileDto;
-import com.example.testSecurity.dto.ProfileDto.Info;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -34,8 +32,11 @@ public class Career {
     private String assignedTask;
     @ApiModelProperty(value = "설명")
     private String description;
-    @ApiModelProperty(value = "년차")
-    private Integer year;
+    @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+    private Integer startPeriod;
+    @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+    private Integer finishPeriod;
+
     @ApiModelProperty(value = "카테고리")
     private Integer category;
     @ApiModelProperty(value = "카테고리 상세")

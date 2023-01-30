@@ -27,6 +27,12 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.7.0'
 
 
+    //타임리프
+    implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.11.RELEASE'
+    implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+    // 타임리프에서 스프링시큐리티의 문법이나 형식을 지원하는 확장팩 라이브러리
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
     //swagger
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     //implementation "io.springfox:springfox-swagger-ui:3.0.0"

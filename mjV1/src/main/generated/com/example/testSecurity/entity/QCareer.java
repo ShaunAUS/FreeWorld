@@ -32,11 +32,13 @@ public class QCareer extends EntityPathBase<Career> {
 
     public final StringPath description = createString("description");
 
+    public final NumberPath<Integer> finishPeriod = createNumber("finishPeriod", Integer.class);
+
     public final NumberPath<Long> no = createNumber("no", Long.class);
 
     public final QProfile profile;
 
-    public final NumberPath<Integer> year = createNumber("year", Integer.class);
+    public final NumberPath<Integer> startPeriod = createNumber("startPeriod", Integer.class);
 
     public QCareer(String variable) {
         this(Career.class, forVariable(variable), INITS);
