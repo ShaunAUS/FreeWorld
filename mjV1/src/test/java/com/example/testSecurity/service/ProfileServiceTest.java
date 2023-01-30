@@ -29,6 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.testSecurity.Enum.CategoryType.ANNOUNCE;
+import static com.example.testSecurity.Enum.CategoryType.PROGRAMMING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -66,8 +68,9 @@ class ProfileServiceTest {
                 .companyName("company" + i)
                 .assignedTask("assignedTask" + i)
                 .description("description" + i)
-                .year(2020)
-                .category(CategoryType.PROGRAMMING)
+                .startPeriod(20200613)
+                .finishPeriod(20200615)
+                .category(PROGRAMMING)
                 //.categoryDetail()
                 .build();
             careerList.add(careerCreateDto);
@@ -78,6 +81,7 @@ class ProfileServiceTest {
             .introduce("test introduce")
             .email("test email")
             .contactNumber("010-1234-5678")
+            .experienceYear(3)
             .careers(careerList)
             .build();
 
@@ -133,7 +137,8 @@ class ProfileServiceTest {
                 .companyName("update company" + i)
                 .assignedTask("update assignedTask" + i)
                 .description("update description" + i)
-                .year(2020)
+                .startPeriod(20200613)
+                .finishPeriod(20200615)
                 .category(CategoryType.ANNOUNCE)
                 //.categoryDetail()
                 .build();
@@ -143,6 +148,7 @@ class ProfileServiceTest {
             .name("update test")
             .introduce("update test introduce")
             .email("update test email")
+            .experienceYear(3)
             .contactNumber("update number")
             .careers(updateCareerList)
             .build();
@@ -181,8 +187,9 @@ class ProfileServiceTest {
                 .companyName("different company" + i)
                 .assignedTask("different assignedTask" + i)
                 .description("different description" + i)
-                .year(2020)
-                .category(CategoryType.PROGRAMMING)
+                .startPeriod(20200613)
+                .finishPeriod(20200615)
+                .category(ANNOUNCE)
                 //.categoryDetail()
                 .build();
             careerList.add(careerCreateDto);
@@ -193,6 +200,7 @@ class ProfileServiceTest {
             .introduce("different test introduce")
             .email("different test email")
             .contactNumber("010-1234-5678")
+            .experienceYear(4)
             .careers(careerList)
             .build();
 
@@ -206,23 +214,20 @@ class ProfileServiceTest {
         Member secondMember = memberJpaRepository.findAll().get(1);
         profileService.createProfile(create, secondMember);
 
-        addProfile();
-        ProfileDto.Search fisrtSearchCondition = new Search("test", null, null, null);
-        ProfileDto.Search secondSearchCondition = new Search("different test", null, null, null);
+        ProfileDto.Search firstSearchCondition = new Search(null,null,3);
+        ProfileDto.Search secondSearchCondition = new Search(ANNOUNCE,null,null);
 
         Sort sort = Sort.by("profile_no").descending();
         Pageable pageable = PageRequest.of(0, 10, sort);
 
         //when
-        Page<Info> firstSearchResult = profileService.search(fisrtSearchCondition, pageable);
+        Page<Info> firstSearchResult = profileService.search(firstSearchCondition, pageable);
         Page<Info> secondSearchResult = profileService.search(secondSearchCondition, pageable);
 
         //then
-        assertThat(firstSearchResult.getTotalElements()).isEqualTo(2);
+        assertThat(firstSearchResult.getTotalElements()).isEqualTo(1);
         assertThat(firstSearchResult.getContent().get(0).getName()).isEqualTo("test");
         assertThat(secondSearchResult.getTotalElements()).isEqualTo(1);
         assertThat(secondSearchResult.getContent().get(0).getName()).isEqualTo("different test");
-
-
     }
 }

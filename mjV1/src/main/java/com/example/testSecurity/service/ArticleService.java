@@ -1,8 +1,6 @@
 package com.example.testSecurity.service;
 
 import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ArticleDto.Search;
-import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,5 +23,5 @@ public interface ArticleService {
 
     ArticleDto.Info likeArticle(Long articleNo);
 
-    Page<ArticleDto.Info> search(Search searchCondition, Pageable pageable);
+    Page<ArticleDto.Info> search(ArticleDto.Search searchCondition, Pageable pageable);
 }

@@ -82,10 +82,8 @@ public class ArticleDto {
     @AllArgsConstructor
     public static class Search {
 
-        @ApiModelProperty(value = "제목")
-        private String title;
-        @ApiModelProperty(value = "내용")
-        private String contents;
+        @ApiModelProperty(value = "제목+내용")
+        private String keyword;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
     }

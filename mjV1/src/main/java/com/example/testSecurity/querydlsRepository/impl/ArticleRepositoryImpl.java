@@ -1,12 +1,9 @@
 package com.example.testSecurity.querydlsRepository.impl;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ArticleDto.Search;
+import com.example.testSecurity.dto.ArticleDto;
 import com.example.testSecurity.entity.Article;
-import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -17,7 +14,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import static com.example.testSecurity.entity.QArticle.article;
@@ -33,16 +29,18 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    //게시글 검색은  키워드(제목+내용), 카테고리 로 한다
     @Override
-    public Page<Article> search(Search articleSearchConditionDto,
-        Pageable pageable) {
+    public Page<Article> search(ArticleDto.Search searchCondition, Pageable pageable) {
 
         List<Article> result = queryFactory
             .select(article)
             .from(article)
-            .where(titleContains(articleSearchConditionDto.getTitle()),
-                contentContains(articleSearchConditionDto.getContents()),
-                categoryContains(articleSearchConditionDto.getCategory()))
+            .where(
+                keywordContains(searchCondition.getKeyword()),
+                //contentContains(searchCondition.getKeyword()),
+                categoryContains(searchCondition.getCategory())
+            )
 
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -52,9 +50,9 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
         JPAQuery<Long> countQuery = queryFactory
             .select(article.count())
             .from(article)
-            .where(titleContains(articleSearchConditionDto.getTitle()),
-                contentContains(articleSearchConditionDto.getContents()),
-                categoryContains(articleSearchConditionDto.getCategory()));
+            .where(keywordContains(searchCondition.getKeyword()),
+                //contentContains(searchCondition.getKeyword()),
+                categoryContains(searchCondition.getCategory()));
 
         return PageableExecutionUtils.getPage(result, pageable, () -> countQuery.fetchOne());
     }
@@ -75,12 +73,12 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
     }
 
     //null이면 그냥 무시 됌 , 에러 x
-    BooleanExpression titleContains(String title) {
-        return hasText(title) ? article.title.eq(title) : null;
+    BooleanExpression keywordContains(String keyword) {
+        return hasText(keyword) ? article.title.contains(keyword).or(article.contents.contains(keyword)) : null;
     }
 
     BooleanExpression contentContains(String contents) {
-        return hasText(contents) ? article.contents.eq(contents) : null;
+        return hasText(contents) ? article.contents.contains(contents) : null;
     }
 
     BooleanExpression categoryContains(CategoryType categoryType) {

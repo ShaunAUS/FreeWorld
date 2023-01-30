@@ -1,6 +1,9 @@
 package com.example.testSecurity.controller;
 
+import com.example.testSecurity.Enum.CategoryType;
 import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.dto.ArticleDto.Info;
+import com.example.testSecurity.dto.ArticleDto.Search;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -16,10 +19,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-@RestController
+@Controller
 @RequestMapping("/v1/article")
 @RequiredArgsConstructor
 public class ArticleController {
@@ -27,7 +32,7 @@ public class ArticleController {
     private final ArticleService articleService;
     private final MemberService memberService;
 
-    //회사멤버는 글을 올리지 못하고 헤드헌팅만 가능하다.
+
     @ApiOperation(value = "등록", notes = "게시글 등록")
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
@@ -97,15 +102,26 @@ public class ArticleController {
         return articleService.likeArticle(articleNo);
     }
 
+
+    //제목+내용 , 카테고리로 검색
     @ApiOperation(value = "검색", notes = "게시글 검색")
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public Page<ArticleDto.Info> searchArticle(
-        @RequestBody ArticleDto.Search searchCondition,
+    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    public String searchArticle(
+        @ApiParam(value = "키워드") @RequestParam String keyword,
+        @ApiParam(value = "카테고리") @RequestParam CategoryType categoryType,
         @PageableDefault(sort = {
-            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable
+            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable, Model model
+
     ) {
-        return articleService.search(searchCondition, pageable);
+        ArticleDto.Search searchCondition = Search.builder()
+            .keyword(keyword)
+            .category(categoryType)
+            .build();
+        Page<Info> search = articleService.search(searchCondition, pageable);
+        model.addAttribute("searchResult",search);
+
+        return "article";
     }
 
 

@@ -28,6 +28,8 @@ public class QProfile extends EntityPathBase<Profile> {
 
     public final StringPath email = createString("email");
 
+    public final NumberPath<Integer> experienceYear = createNumber("experienceYear", Integer.class);
+
     public final StringPath introduce = createString("introduce");
 
     public final QMember member;

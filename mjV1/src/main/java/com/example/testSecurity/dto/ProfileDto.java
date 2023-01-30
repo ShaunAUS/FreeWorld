@@ -1,6 +1,5 @@
 package com.example.testSecurity.dto;
 
-import static com.example.testSecurity.Enum.CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER;
 import static com.example.testSecurity.dto.ProfileDto.Info.CAREER_CREATE_LIST_TO_INFO_LIST;
 import static com.example.testSecurity.entity.Profile.CAREER_LIST_TO_INFO_LIST;
 
@@ -34,6 +33,9 @@ public class ProfileDto {
         @ApiModelProperty(value = "소개")
         private String introduce;
 
+        @ApiModelProperty(value = "년차")
+        private Integer experienceYear;
+
         @ApiModelProperty(value = "이메일")
         private String email;
         @ApiModelProperty(value = "연락처")
@@ -57,22 +59,6 @@ public class ProfileDto {
             context -> context.getSource() == null ? null : context.getSource().stream()
                 .map(CareerDto.Create::toEntity)
                 .collect(Collectors.toList());
-
-
-/*        public static void update(ProfileDto.Create profileCreateDTO, Profile profile) {
-            MapperUtils.getMapper()
-                .typeMap(Create.class, Profile.class)
-                .addMappings(mapper -> {
-                    mapper.using(CAREER_CREATE_LIST_TO_ENTITY_LIST)
-                        .map(ProfileDto.Create::getCareers, Profile::setCareers);
-                })
-                .map(profileCreateDTO, profile);
-        }
-
-        public static final Converter<List<CareerDto.Create>, List<Career>> CAREER_CREATE_LIST_TO_ENTITY_LIST =
-            context -> context.getSource() == null ? null : context.getSource().stream()
-                .map(create -> create.toEntity())
-                .collect(Collectors.toList());*/
 
         public ProfileDto.Info toInfo() {
 
@@ -103,6 +89,8 @@ public class ProfileDto {
         private String email;
         @ApiModelProperty(value = "연락처")
         private String contactNumber;
+        @ApiModelProperty(value = "년차")
+        private Integer experienceYear;
         private List<CareerDto.Info> careers;
 
 
@@ -131,43 +119,20 @@ public class ProfileDto {
     @Getter
     @Builder
     @Setter
-    @ApiModel(value = "ProfileDto.SearchCondition", description = "프로파일 검색 객체")
+    @ApiModel(value = "ProfileDto.SearchCondition", description = "프로파일 검색 ")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Search {
 
-        @ApiModelProperty(value = "이름")
-        private String name;
         @ApiModelProperty(value = "카테고리")
         private CategoryType categoryType;
         @ApiModelProperty(value = "카테고리 디테일")
         private CategoryDetailType categoryDetailType;
         @ApiModelProperty(value = "년차")
-        private Integer year;
+        private Integer experienceYear;
 
     }
 
-
-    @Getter
-    @Builder
-    @Setter
-    @ApiModel(value = "ProfileDto.CreateTest", description = "프로파일 생성")
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CreateTest {
-
-        @ApiModelProperty(value = "이름")
-        private String name;
-        @ApiModelProperty(value = "소개")
-        private String introduce;
-
-        @ApiModelProperty(value = "이메일")
-        private String email;
-        @ApiModelProperty(value = "연락처")
-        private String contactNumber;
-        private List<Career> career;
-
-    }
 
     @Getter
     @Builder
@@ -181,6 +146,9 @@ public class ProfileDto {
         private String name;
         @ApiModelProperty(value = "소개")
         private String introduce;
+
+        @ApiModelProperty(value = "년차")
+        private Integer experienceYear;
 
         @ApiModelProperty(value = "이메일")
         private String email;
