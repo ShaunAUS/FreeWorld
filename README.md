@@ -10,6 +10,7 @@
 - Lombok
 - redis
 - Docker
+- ThymeLeaf
 
 STYLE
 - googleStyleGguide
