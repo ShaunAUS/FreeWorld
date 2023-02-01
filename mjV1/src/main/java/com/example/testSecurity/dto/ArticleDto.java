@@ -59,6 +59,8 @@ public class ArticleDto {
     @AllArgsConstructor
     public static class Info {
 
+        @ApiModelProperty(value = "no")
+        private String no;
         @ApiModelProperty(value = "제목")
         private String title;
         @ApiModelProperty(value = "내용")

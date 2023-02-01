@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
 
 <head>
   <meta charset="utf-8"/>
@@ -11408,10 +11408,10 @@ footer.footer {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">구인광고</a>
+          <a class="nav-link active" aria-current="page" th:href="@{/v1/article/all}">구인광고</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">프로필</a>
+          <a class="nav-link active" href="#">프로필</a>고
         </li>
         <li class="nav-item">
           <a class="nav-link active" href="#" tabindex="-1" aria-disabled="true">회원가입</a>
@@ -11434,21 +11434,13 @@ footer.footer {
         <div class="text-center text-white">
           <!-- Page heading-->
           <h1 class="mb-5">원하는 프리랜서를 찾으세요!</h1>
-          <!-- Signup form-->
-          <!-- * * * * * * * * * * * * * * *-->
-          <!-- * * SB Forms Contact Form * *-->
-          <!-- * * * * * * * * * * * * * * *-->
-          <!-- This form is pre-integrated with SB Forms.-->
-          <!-- To make this form functional, sign up at-->
-          <!-- https://startbootstrap.com/solution/contact-forms-->
-          <!-- to get an API token!-->
-          <form th:action="@{/v1/profile/search}" class="form-subscribe" id="contactForm"   method ="get">
+          <form th:action="@{/v1/profile/search}" class="form-subscribe" id="contactForm" method ="get">
             <div class="row">
               <div class="col">
                 <input class="form-control form-control-lg" id="category" name ="category"type="text" placeholder="카테고리" />
               </div>
               <div class="col">
-                <input class="form-control form-control-lg" id="year" name ="year"type="text" placeholder="년차" />
+                <input class="form-control form-control-lg" id="year" name ="year"type="number" placeholder="년차" />
               </div>
               <div class="col-auto">
                 <button class="btn btn-primary btn-lg" id="submit" type="submit">검색</button>
@@ -11496,72 +11488,6 @@ footer.footer {
   <div class="container-fluid p-0">
 
 
-    <!--프로젝트-->
-    <section class="pt-4">
-      <div class="container px-lg-5">
-        <!-- Page Features-->
-        <div class="row gx-lg-5">
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <h2 class="fs-4 fw-bold">진행중 프로젝트1</h2>
-                <p class="mb-0">With Bootstrap 5, we've created a fresh new layout for this
-                  template!</p>
-                <button type="button" class="btn btn-primary btn-sm">자세히</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <h2 class="fs-4 fw-bold">진행중 프로젝트2</h2>
-                <p class="mb-0">회사 홈페이지 퍼블리싱</p>
-                <button type="button" class="btn btn-primary btn-sm">자세히</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <h2 class="fs-4 fw-bold">진행중 프로젝트3</h2>
-                <p class="mb-0">자바 백엔드 개발자 급구!</p>
-                <button type="button" class="btn btn-primary btn-sm">자세히</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <h2 class="fs-4 fw-bold">진행중 프로젝트4</h2>
-                <p class="mb-0">We've created some custom feature boxes using Bootstrap icons!</p>
-                <button type="button" class="btn btn-primary btn-sm">자세히</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <h2 class="fs-4 fw-bold">진행중 프로젝트5</h2>
-                <p class="mb-0">We keep our dependencies up to date and squash bugs as they
-                  come!</p>
-                <button type="button" class="btn btn-primary btn-sm">자세히</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <h2 class="fs-4 fw-bold">진행중 프로젝트16</h2>
-                <p class="mb-0">Start Bootstrap has been the leader in free Bootstrap templates
-                  since 2013!</p>
-                <button type="button" class="btn btn-primary btn-sm">자세히</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!--프로젝트-->
     <!-- Testimonials-->
     <section class="testimonials text-center bg-light">
       <div class="container">

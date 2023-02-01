@@ -10,6 +10,7 @@ import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -81,10 +82,12 @@ public class CareerDto {
         private String companyName;
         @ApiModelProperty(value = "담당업무")
         private String assignedTask;
+        @ApiModelProperty(value = "담당업무 설명")
+        private String description;
         @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
-        private Integer startPeriod;
+        private String startPeriod;
         @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
-        private Integer finishPeriod;
+        private String finishPeriod;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
 

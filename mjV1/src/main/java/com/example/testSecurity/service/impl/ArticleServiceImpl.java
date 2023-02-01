@@ -1,6 +1,7 @@
 package com.example.testSecurity.service.impl;
 
 import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.dto.ArticleDto.Info;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.MemberArticleBookmark;
@@ -154,5 +155,11 @@ public class ArticleServiceImpl implements ArticleService {
     public Page<ArticleDto.Info> search(ArticleDto.Search searchCondition, Pageable pageable) {
         return articleCustomRepository.search(searchCondition, pageable)
             .map(Article::toInfoDto);
+    }
+
+    @Override
+    public Page<Info> findAllArticles(Pageable pageable) {
+          return articleJpaRepository.findAll(pageable)
+              .map(article -> article.toInfoDto());
     }
 }

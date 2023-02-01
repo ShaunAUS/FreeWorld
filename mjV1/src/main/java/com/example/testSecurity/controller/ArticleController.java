@@ -46,11 +46,27 @@ public class ArticleController {
 
     @ApiOperation(value = "조회", notes = "게시글 조회")
     @GetMapping("/{articleNo}")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public ArticleDto.Info getArticle(
-        @PathVariable Long articleNo
+    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    public String getArticle(
+        @PathVariable Long articleNo,
+        Model model
     ) {
-        return articleService.getArticle(articleNo);
+        ArticleDto.Info articleInfo = articleService.getArticle(articleNo);
+        model.addAttribute("articleInfo", articleInfo);
+        return "articleDetail";
+    }
+
+    //index
+    @ApiOperation(value = "조회", notes = "게시글 전체조회")
+    @GetMapping("/all")
+    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    public String getAllArticle(
+        @PageableDefault(sort = {
+            "no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable, Model model
+    ) {
+        Page<Info> allArticles = articleService.findAllArticles(pageable);
+        model.addAttribute("allArticles", allArticles);
+        return "articleAll";
     }
 
 
@@ -111,7 +127,8 @@ public class ArticleController {
         @ApiParam(value = "키워드") @RequestParam String keyword,
         @ApiParam(value = "카테고리") @RequestParam CategoryType categoryType,
         @PageableDefault(sort = {
-            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable, Model model
+            "article_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable,
+        Model model
 
     ) {
         ArticleDto.Search searchCondition = Search.builder()
@@ -119,9 +136,9 @@ public class ArticleController {
             .category(categoryType)
             .build();
         Page<Info> search = articleService.search(searchCondition, pageable);
-        model.addAttribute("searchResult",search);
+        model.addAttribute("searchResult", search);
 
-        return "article";
+        return "articleSearch";
     }
 
 
