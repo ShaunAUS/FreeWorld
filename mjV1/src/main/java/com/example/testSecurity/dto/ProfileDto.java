@@ -83,12 +83,17 @@ public class ProfileDto {
     @AllArgsConstructor
     public static class Info {
 
+        @ApiModelProperty(value = "no")
+        private String no;
         @ApiModelProperty(value = "이름")
         private String name;
         @ApiModelProperty(value = "이메일")
         private String email;
         @ApiModelProperty(value = "연락처")
         private String contactNumber;
+
+        @ApiModelProperty(value = "소개")
+        private String introduce;
         @ApiModelProperty(value = "년차")
         private Integer experienceYear;
         private List<CareerDto.Info> careers;

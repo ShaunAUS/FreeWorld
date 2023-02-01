@@ -7,6 +7,7 @@ import com.example.testSecurity.dto.CareerDto;
 import com.example.testSecurity.dto.CareerDto.Create;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,12 +31,12 @@ public class Career {
     private String companyName;
     @ApiModelProperty(value = "담당업무")
     private String assignedTask;
-    @ApiModelProperty(value = "설명")
+    @ApiModelProperty(value = "담당업무 설명")
     private String description;
     @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
-    private Integer startPeriod;
+    private String startPeriod;
     @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
-    private Integer finishPeriod;
+    private String finishPeriod;
 
     @ApiModelProperty(value = "카테고리")
     private Integer category;

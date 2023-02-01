@@ -2,6 +2,7 @@ package com.example.testSecurity.controller;
 
 import com.example.testSecurity.Enum.CategoryType;
 import com.example.testSecurity.dto.ProfileDto;
+import com.example.testSecurity.dto.ProfileDto.Info;
 import com.example.testSecurity.dto.ProfileDto.Search;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
@@ -16,12 +17,14 @@ import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -51,11 +54,15 @@ public class ProfileController {
 
     @ApiOperation(value = "조회", notes = "프로필 조회")
     @GetMapping("/{profileNo}")
-    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public ProfileDto.Info getProfile(
-        @PathVariable Long profileNo
+    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    public String getProfile(
+        @PathVariable Long profileNo,
+        Model model
     ) {
-        return profileService.getProfile(profileNo);
+        Info profile = profileService.getProfile(profileNo);
+        model.addAttribute("profileDetail",profile);
+
+        return "profileDetail";
     }
 
 
@@ -89,7 +96,7 @@ public class ProfileController {
     //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String searchProfile(
         @ApiParam(value = "카테고리") @RequestParam CategoryType category, //from career table
-        @ApiParam(value = "경력") @RequestParam Integer year,
+        @ApiParam(value = "경력") @RequestParam Integer year, Model model,
         @PageableDefault(sort = {
             "profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable
     ) {
@@ -97,9 +104,10 @@ public class ProfileController {
             .categoryType(category)
             .experienceYear(year)
             .build();
-        profileService.search(profileSearchConditionDto, pageable);
+        Page<Info> search = profileService.search(profileSearchConditionDto, pageable);
 
-        return null;
+        model.addAttribute("searchResult",search);
+        return "profile";
     }
 
 

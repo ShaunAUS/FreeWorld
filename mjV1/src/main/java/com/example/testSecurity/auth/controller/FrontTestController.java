@@ -14,7 +14,8 @@ public class FrontTestController {
 
     @GetMapping("")
     public String getTestLanding() {
-        System.out.println("index Page 호출");
+        log.info("index Page call");
         return "index";
     }
+
 }
