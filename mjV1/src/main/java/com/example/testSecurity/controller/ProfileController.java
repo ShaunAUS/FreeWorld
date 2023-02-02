@@ -54,13 +54,13 @@ public class ProfileController {
 
     @ApiOperation(value = "조회", notes = "프로필 조회")
     @GetMapping("/{profileNo}")
-    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String getProfile(
         @PathVariable Long profileNo,
         Model model
     ) {
         Info profile = profileService.getProfile(profileNo);
-        model.addAttribute("profileDetail",profile);
+        model.addAttribute("profileDetail", profile);
 
         return "profileDetail";
     }
@@ -93,7 +93,7 @@ public class ProfileController {
     //랜딩 페이지 검색창
     @ApiOperation(value = "검색", notes = "프로필 검색")
     @GetMapping("/search")
-    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String searchProfile(
         @ApiParam(value = "카테고리") @RequestParam CategoryType category, //from career table
         @ApiParam(value = "경력") @RequestParam Integer year, Model model,
@@ -106,7 +106,7 @@ public class ProfileController {
             .build();
         Page<Info> search = profileService.search(profileSearchConditionDto, pageable);
 
-        model.addAttribute("searchResult",search);
+        model.addAttribute("searchResult", search);
         return "profile";
     }
 

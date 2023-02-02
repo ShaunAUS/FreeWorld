@@ -46,7 +46,7 @@ public class ArticleController {
 
     @ApiOperation(value = "조회", notes = "게시글 조회")
     @GetMapping("/{articleNo}")
-    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String getArticle(
         @PathVariable Long articleNo,
         Model model
@@ -59,7 +59,7 @@ public class ArticleController {
     //index
     @ApiOperation(value = "조회", notes = "게시글 전체조회")
     @GetMapping("/all")
-    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String getAllArticle(
         @PageableDefault(sort = {
             "no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable, Model model
@@ -122,7 +122,7 @@ public class ArticleController {
     //제목+내용 , 카테고리로 검색
     @ApiOperation(value = "검색", notes = "게시글 검색")
     @GetMapping("/search")
-    //@PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String searchArticle(
         @ApiParam(value = "키워드") @RequestParam String keyword,
         @ApiParam(value = "카테고리") @RequestParam CategoryType categoryType,
