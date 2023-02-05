@@ -40,7 +40,7 @@ public class ProfileDto {
         private String email;
         @ApiModelProperty(value = "연락처")
         private String contactNumber;
-        private List<CareerDto.Create> careers;
+        private List<CareerDto.Create> career;
 
 
         public Profile toEntity() {
@@ -49,7 +49,7 @@ public class ProfileDto {
                 .addMappings(mapper -> {
                     mapper.using(
                             CAREER_LIST_CONVERTER)   //List<CareerDto.Create> -> List<Career>
-                        .map(ProfileDto.Create::getCareers, Profile::setCareers);
+                        .map(ProfileDto.Create::getCareer, Profile::setCareers);
                 })
                 .map(this);
         }
@@ -68,7 +68,7 @@ public class ProfileDto {
                 //List<CareerDto.Create> career -> List<CareerDto.Info> career
                 .addMappings(mapper -> {
                     mapper.using(CAREER_CREATE_LIST_TO_INFO_LIST)
-                        .map(ProfileDto.Create::getCareers, ProfileDto.Info::setCareers);
+                        .map(ProfileDto.Create::getCareer, ProfileDto.Info::setCareer);
                 })
                 .map(this);
         }
@@ -96,7 +96,7 @@ public class ProfileDto {
         private String introduce;
         @ApiModelProperty(value = "년차")
         private Integer experienceYear;
-        private List<CareerDto.Info> careers;
+        private List<CareerDto.Info> career;
 
 
         public static final Converter<List<CareerDto.Create>, List<CareerDto.Info>> CAREER_CREATE_LIST_TO_INFO_LIST =
@@ -110,7 +110,7 @@ public class ProfileDto {
                 .typeMap(Profile.class, ProfileDto.Info.class)
                 .addMappings(mapper -> {
                     mapper.using(CAREER_LIST_TO_INFO_LIST)
-                        .map(Profile::getCareers, ProfileDto.Info::setCareers);
+                        .map(Profile::getCareers, ProfileDto.Info::setCareer);
                 })
                 .map(profile);
         }
@@ -139,7 +139,7 @@ public class ProfileDto {
     @Getter
     @Builder
     @Setter
-    @ApiModel(value = "ProfileDto.Update", description = "프로파일 t수정")
+    @ApiModel(value = "ProfileDto.Update", description = "프로파일 수정")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Update {
@@ -156,7 +156,7 @@ public class ProfileDto {
         private String email;
         @ApiModelProperty(value = "연락처")
         private String contactNumber;
-        private List<CareerDto.Create> career;
+        private List<CareerDto.Update> career;
 
     }
 

@@ -2,8 +2,6 @@ package com.example.testSecurity.service;
 
 import com.example.testSecurity.Enum.CategoryType;
 import com.example.testSecurity.Enum.RoleType;
-import com.example.testSecurity.auth.dto.AuthToken;
-import com.example.testSecurity.auth.dto.LoginForm;
 import com.example.testSecurity.auth.service.AuthService;
 import com.example.testSecurity.dto.CareerDto;
 import com.example.testSecurity.dto.MemberDto;
@@ -11,6 +9,7 @@ import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.dto.ProfileDto.Create;
 import com.example.testSecurity.dto.ProfileDto.Info;
 import com.example.testSecurity.dto.ProfileDto.Search;
+import com.example.testSecurity.dto.ProfileDto.Update;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.repository.MemberJpaRepository;
@@ -82,7 +81,7 @@ class ProfileServiceTest {
             .email("test email")
             .contactNumber("010-1234-5678")
             .experienceYear(3)
-            .careers(careerList)
+            .career(careerList)
             .build();
 
         Member member = memberJpaRepository.findAll().get(0);
@@ -122,7 +121,7 @@ class ProfileServiceTest {
         //then
         assertThat(profileInfo.getName()).isEqualTo("test");
         assertThat(profileInfo.getEmail()).isEqualTo("test email");
-        assertThat(profileInfo.getCareers().get(0).getCompanyName()).isEqualTo("company" + 0);
+        assertThat(profileInfo.getCareer().get(0).getCompanyName()).isEqualTo("company" + 0);
 
     }
 
@@ -131,9 +130,9 @@ class ProfileServiceTest {
     void updateProfile() {
 
         //given
-        List<CareerDto.Create> updateCareerList = new ArrayList<>();
+        List<CareerDto.Update> updateCareerList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            CareerDto.Create careerCreateDto = CareerDto.Create.builder()
+            CareerDto.Update careerCreateDto = CareerDto.Update.builder()
                 .companyName("update company" + i)
                 .assignedTask("update assignedTask" + i)
                 .description("update description" + i)
@@ -144,13 +143,14 @@ class ProfileServiceTest {
                 .build();
             updateCareerList.add(careerCreateDto);
         }
-        ProfileDto.Create update = Create.builder()
+
+        ProfileDto.Update update = Update.builder()
             .name("update test")
             .introduce("update test introduce")
             .email("update test email")
             .experienceYear(3)
             .contactNumber("update number")
-            .careers(updateCareerList)
+            .career(updateCareerList)
             .build();
 
         //given
@@ -201,7 +201,7 @@ class ProfileServiceTest {
             .email("different test email")
             .contactNumber("010-1234-5678")
             .experienceYear(4)
-            .careers(careerList)
+            .career(careerList)
             .build();
 
         //다른 멤버
@@ -214,8 +214,8 @@ class ProfileServiceTest {
         Member secondMember = memberJpaRepository.findAll().get(1);
         profileService.createProfile(create, secondMember);
 
-        ProfileDto.Search firstSearchCondition = new Search(null,null,3);
-        ProfileDto.Search secondSearchCondition = new Search(ANNOUNCE,null,null);
+        ProfileDto.Search firstSearchCondition = new Search(null, null, 3);
+        ProfileDto.Search secondSearchCondition = new Search(ANNOUNCE, null, null);
 
         Sort sort = Sort.by("profile_no").descending();
         Pageable pageable = PageRequest.of(0, 10, sort);

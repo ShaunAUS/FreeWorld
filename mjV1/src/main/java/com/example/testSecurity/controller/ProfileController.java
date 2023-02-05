@@ -70,12 +70,12 @@ public class ProfileController {
     @PatchMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public ProfileDto.Info modifyProfile(
-        @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
+        @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Update profileUpdateDTO,
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
         checkIsMyProfile(profileNo, getLoginMember(authentication).getNo());
-        return profileService.updateProfile(profileCreateDTO, profileNo);
+        return profileService.updateProfile(profileUpdateDTO, profileNo);
     }
 
 

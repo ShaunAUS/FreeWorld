@@ -78,14 +78,14 @@ public class Career {
 
     }
 
-    public void updateCareer(Create create) {
+    public void updateCareer(CareerDto.Update careerUpdateDto) {
         MapperUtils.getMapper()
-            .typeMap(CareerDto.Create.class, Career.class)
+            .typeMap(CareerDto.Update.class, Career.class)
             .addMappings(mapper -> {
                 mapper.using(CATEGORY_TYPE_INTEGER_CONVERTER)
-                    .map(CareerDto.Create::getCategory, Career::setCategory);
+                    .map(CareerDto.Update::getCategory, Career::setCategory);
             })
-            .map(create, this);
+            .map(careerUpdateDto, this);
 
     }
 }

@@ -90,7 +90,7 @@ class ArticleServiceTest {
             .introduce("test introduce")
             .email("test email")
             .contactNumber("010-1234-5678")
-            .careers(careerList)
+            .career(careerList)
             .build();
 
         Member member = memberJpaRepository.findAll().get(0);
