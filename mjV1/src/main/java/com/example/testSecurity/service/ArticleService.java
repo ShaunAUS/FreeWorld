@@ -13,7 +13,7 @@ public interface ArticleService {
 
     ArticleDto.Info getArticle(Long articleNo);
 
-    ArticleDto.Info updateArticle(ArticleDto.Create articleCreateDTO, Long no);
+    ArticleDto.Info updateArticle(ArticleDto.Update articleUpdateDto, Long articleNo);
 
     void deleteArticle(Long articleNo);
 
@@ -26,5 +26,5 @@ public interface ArticleService {
 
     Page<ArticleDto.Info> search(ArticleDto.Search searchCondition, Pageable pageable);
 
-    Page<Info> findAllArticles(Pageable pageable);
+    Page<Info> getArticles(Pageable pageable);
 }

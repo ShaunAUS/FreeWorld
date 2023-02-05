@@ -23,8 +23,6 @@ public class ArticleDto {
         private String title;
         @ApiModelProperty(value = "내용")
         private String contents;
-        @ApiModelProperty(value = "작성자")
-        private String writer;
         @ApiModelProperty(value = "좋아요")
         @Builder.Default
         private Integer likeCnt = 0;
@@ -33,22 +31,22 @@ public class ArticleDto {
         private Integer views = 0;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
+        @ApiModelProperty(value = "프로파일")
+        private Profile profile;
 
-        public static Article toEntity(ArticleDto.Create createDto, Profile profile) {
+        public Article toEntity() {
             return MapperUtils.getMapper()
                 .typeMap(ArticleDto.Create.class, Article.class)
                 .addMappings(mapper -> {
                     mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
                         .map(ArticleDto.Create::getCategory, Article::setCategory);
                 })
-                .map(createDto)
-                .chageProfile(profile);
+                .map(this);
         }
 
-        public void changeWriter(String writer) {
-            this.writer = writer;
+        public void changeWriter(Profile profileByMemberNo) {
+            this.profile = profileByMemberNo;
         }
-
     }
 
     @Getter
@@ -88,6 +86,30 @@ public class ArticleDto {
         private String keyword;
         @ApiModelProperty(value = "카테고리")
         private CategoryType category;
+    }
+
+    @Getter
+    @Builder
+    @Setter
+    @ApiModel(value = "ArticleDto.Update", description = "게시글 수정")
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Update {
+
+        @ApiModelProperty(value = "제목")
+        private String title;
+        @ApiModelProperty(value = "내용")
+        private String contents;
+        @ApiModelProperty(value = "좋아요")
+        @Builder.Default
+        private Integer likeCnt = 0;
+        @ApiModelProperty(value = "조회수")
+        @Builder.Default
+        private Integer views = 0;
+        @ApiModelProperty(value = "카테고리")
+        private CategoryType category;
+        @ApiModelProperty(value = "프로파일")
+        private Profile profile;
     }
 
 }

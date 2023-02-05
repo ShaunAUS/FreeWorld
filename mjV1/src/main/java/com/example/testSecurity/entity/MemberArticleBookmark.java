@@ -21,13 +21,13 @@ public class MemberArticleBookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_article_bookmark_no")
+    @Column(name = "profile_article_bookmark_no")
     private Long no;
 
-    @ApiModelProperty(value = "멤버 no")
+    @ApiModelProperty(value = "프로파일 no")
     @OneToOne
-    @JoinColumn(name = "member_no")
-    private Member member;
+    @JoinColumn(name = "profile_no")
+    private Profile profile;
     @ApiModelProperty(value = "게시글 no")
     @OneToOne
     @JoinColumn(name = "article_no")

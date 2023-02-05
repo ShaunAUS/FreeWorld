@@ -46,8 +46,6 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final NumberPath<Integer> views = createNumber("views", Integer.class);
 
-    public final StringPath writer = createString("writer");
-
     public QArticle(String variable) {
         this(Article.class, forVariable(variable), INITS);
     }

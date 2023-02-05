@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 
+import javax.validation.Valid;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +24,13 @@ public class Member extends BaseTime {
     private Long no;
 
     @ApiModelProperty(value = "접속 아이디")
+    @Column(nullable = false)
     private String userName;   // = LoginForm UserName
     @ApiModelProperty(value = "접속 비밀번호")
+    @Column(nullable = false)
     private String password;
     @ApiModelProperty(value = "권한")
+    @Column(nullable = false)
     private Integer roleType;
 
 }

@@ -40,15 +40,13 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO,
         Long loginMemberNo) {
 
-        //게시글 작성시 프로필이 최소 하나
-        Profile profile = profileJpaRepository.findByMemberNo(loginMemberNo)
+        //must have profile when create article
+        Profile profileByMemberNo = profileJpaRepository.findProfileByMemberNo(loginMemberNo)
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
 
-        //게시글의 작성자는 Profile name으로 자동 등록
-        articleCreateDTO.changeWriter(profile.getName());
+        articleCreateDTO.changeWriter(profileByMemberNo);
 
-        Article savedArticle = articleJpaRepository.save(
-            ArticleDto.Create.toEntity(articleCreateDTO, profile));
+        Article savedArticle = articleJpaRepository.save(articleCreateDTO.toEntity());
 
         log.info("============savedArticle============");
         log.info("savedArticle : {}", savedArticle);
@@ -60,61 +58,50 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public ArticleDto.Info getArticle(Long articleNo) {
-
-        Optional<Article> articleByNo = articleJpaRepository.findById(articleNo);
-
-        if (articleByNo.isPresent()) {
-            Article article = articleByNo.get();
-            //조회수 증가
-            article.addView();
-            return article.toInfoDto();
-
-        } else {
-            throw new ServiceProcessException(ServiceMessage.NOT_FOUND);
-        }
+        Article articleByNo = getArticleByNo(articleNo);
+        articleByNo.addView();
+        return articleByNo.toInfoDto();
     }
 
     @Override
     @Transactional
-    public ArticleDto.Info updateArticle(ArticleDto.Create articleCreateDTO, Long no) {
+    public ArticleDto.Info updateArticle(ArticleDto.Update articleUpdateDto, Long articleNo) {
 
-        Optional<Article> articleById = articleJpaRepository.findById(no);
+        Article articleByNo = getArticleByNo(articleNo);
 
-        if (articleById.isPresent()) {
-            Article article = articleById.get();
+        log.info("============before update article============");
+        log.info("article : {}", articleByNo);
+        log.info("============before update article============");
 
-            log.info("============before update article============");
-            log.info("article : {}", article);
-            log.info("============before update article============");
+        //조회로 인한 영속성 상태+ 트랜젹선 안에서 +  엔티티 변경 = 더티체킹
+        articleByNo.update(articleUpdateDto);
 
-            //조회로 인한 영속성 상태+ 트랜젹선 안에서 +  엔티티 변경 = 더티체킹
-            //Article.update(article, articleCreateDTO);
-            article.update(articleCreateDTO);
+        log.info("===========after update article============");
+        log.info("updatedArticle : {}", articleByNo);
+        log.info("===========after update article============");
 
-            log.info("===========after update article============");
-            log.info("updatedArticle : {}", article);
-            log.info("===========after update article============");
-
-            return article.toInfoDto();
-
-        } else {
-            throw new ServiceProcessException(ServiceMessage.NOT_FOUND);
-        }
+        return articleByNo.toInfoDto();
     }
 
+
     @Override
-    public void deleteArticle(Long no) {
-        articleJpaRepository.deleteById(no);
+    public void deleteArticle(Long articleNo) {
+        articleJpaRepository.deleteById(articleNo);
     }
 
     @Override
     public void bookmarkArticle(Long articleNo, Member member) {
-        //TODO 일단은 findById 객체 통쨰로 넣기 -> 나중에 id만 조절
-        Article article = articleJpaRepository.findById(articleNo).get();
+
+        Optional<Profile> profileByMemberNo = profileJpaRepository.findProfileByMemberNo(
+            member.getNo());
+
+        if (profileByMemberNo.isEmpty()) {
+            throw new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE);
+        }
 
         MemberArticleBookmark bookmark = MemberArticleBookmark.builder()
-            .article(article)
-            .member(member)
+            .profile(profileByMemberNo.get())
+            .article(getArticleByNo(articleNo))
             .build();
         bookmarkJpaRepository.save(bookmark);
 
@@ -136,19 +123,19 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public ArticleDto.Info likeArticle(Long articleNo) {
-        Article article = articleJpaRepository.findById(articleNo).get();
+        Article articleByNo = getArticleByNo(articleNo);
 
         log.info("============before like article============");
-        log.info("likeArticle : {}", article);
+        log.info("likeArticle : {}", articleByNo);
         log.info("============Before like Article============");
 
-        article.addLike();
+        articleByNo.addLike();
 
         log.info("============after like article============");
-        log.info("likeArticle : {}", article);
+        log.info("likeArticle : {}", articleByNo);
         log.info("============after like article============");
 
-        return article.toInfoDto();
+        return articleByNo.toInfoDto();
     }
 
     @Override
@@ -158,8 +145,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<Info> findAllArticles(Pageable pageable) {
-          return articleJpaRepository.findAll(pageable)
-              .map(article -> article.toInfoDto());
+    public Page<Info> getArticles(Pageable pageable) {
+        return articleJpaRepository.findAll(pageable)
+            .map(article -> article.toInfoDto());
+    }
+
+    private Article getArticleByNo(Long articleNo) {
+        return articleJpaRepository.findById(articleNo).orElseThrow(
+            () -> new ServiceProcessException(ServiceMessage.NOT_FOUND));
     }
 }

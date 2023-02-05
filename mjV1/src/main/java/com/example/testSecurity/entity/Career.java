@@ -28,19 +28,26 @@ public class Career {
     @Column(name = "career_no")
     private Long no;
     @ApiModelProperty(value = "회사이름")
+    @Column(nullable = false)
     private String companyName;
     @ApiModelProperty(value = "담당업무")
+    @Column(nullable = false)
     private String assignedTask;
     @ApiModelProperty(value = "담당업무 설명")
+    @Column(nullable = false)
     private String description;
     @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+    @Column(nullable = false)
     private String startPeriod;
     @ApiModelProperty(value = "경력 년월 - `yyyymm` ")
+    @Column(nullable = false)
     private String finishPeriod;
 
     @ApiModelProperty(value = "카테고리")
+    @Column(nullable = false)
     private Integer category;
     @ApiModelProperty(value = "카테고리 상세")
+    @Column(nullable = false)
     private Integer categoryDetail;
 
 

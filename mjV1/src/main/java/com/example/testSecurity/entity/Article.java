@@ -5,12 +5,14 @@ import com.example.testSecurity.dto.ArticleDto;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
 
 //게시글
 @Entity
@@ -18,6 +20,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor()
 @ToString
+@DynamicInsert
 public class Article extends BaseTime {
 
     @Id
@@ -25,20 +28,21 @@ public class Article extends BaseTime {
     @Column(name = "article_no")
     private Long no;
 
-    @ApiModelProperty(value = "작성자") // = ProfileName?
-    private String writer;
-
     @ApiModelProperty(value = "제목")
+    @Column(nullable = false)
     private String title;
     @ApiModelProperty(value = "내용")
+    @Column(nullable = false)
     private String contents;
     @ApiModelProperty(value = "좋아요")
     private Integer likeCnt;
     @ApiModelProperty(value = "조회수")
     private Integer views;
     @ApiModelProperty(value = "카테고리")
+    @Column(nullable = false)
     private Integer category;
     @ApiModelProperty(value = "카테고리 상세")
+    @Column(nullable = false)
     private Integer categoryDetail;
 
 
@@ -57,26 +61,25 @@ public class Article extends BaseTime {
     }
 
 
-    public void update(ArticleDto.Create createDto) {
+    public void update(ArticleDto.Update articleUpdateDto) {
         MapperUtils.getMapper()
-            .typeMap(ArticleDto.Create.class, Article.class)
+            .typeMap(ArticleDto.Update.class, Article.class)
             .addMappings(mapper -> {
                 mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
-                    .map(ArticleDto.Create::getCategory, Article::setCategory);
+                    .map(ArticleDto.Update::getCategory, Article::setCategory);
             })
-            .map(createDto, this);
+            .map(articleUpdateDto, this);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.views = this.views == null ? 0 : this.views;
+        this.likeCnt = this.likeCnt == null ? 0 : this.likeCnt;
     }
 
 
     public void addLike() {
         this.likeCnt += 1;
-    }
-
-
-    //TODO need to check, so inefficient
-    public Article chageProfile(Profile profile) {
-        this.profile = profile;
-        return this;
     }
 
     public void addView() {
