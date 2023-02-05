@@ -13,9 +13,9 @@ import org.modelmapper.Converter;
 @Getter
 public enum RoleType {
 
-    ANONYMOUS("ANONYMOUS", 0),
-    GENERAL_MEMBER("GENERAL_MEMBER", 1), // 게시글 참여회원
-    ADMIN("ADMIN", 2);
+    ANONYMOUS("외부자", 0),
+    GENERAL_MEMBER("일반회원", 1), // 게시글 참여회원
+    ADMIN("어드민", 2);
 
     private String name;
     private Integer number;

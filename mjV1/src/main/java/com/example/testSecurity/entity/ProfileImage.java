@@ -28,10 +28,9 @@ public class ProfileImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_image_no")
     private Long no;
-
     @ApiModelProperty(value = "이미지URL")
+    @Column(nullable = false)
     private String imageUrl;
-
     @ApiModelProperty(value = "이미지 순서")
     private Integer imageOrder;
     @ManyToOne(fetch = FetchType.LAZY)

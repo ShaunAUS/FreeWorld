@@ -13,7 +13,7 @@ public interface ProfileService {
 
     ProfileDto.Info getProfile(Long no);
 
-    ProfileDto.Info updateProfile(ProfileDto.Create profileCreateDTO, Long no);
+    ProfileDto.Info updateProfile(ProfileDto.Update profileUpdateDTO, Long no);
 
     void deleteProfile(Long no);
 

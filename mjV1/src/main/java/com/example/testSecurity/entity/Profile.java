@@ -5,6 +5,7 @@ import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.dto.ProfileDto.Info;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -24,43 +25,42 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "careers")
+@ToString(exclude = "careers") //to prevent stack overflow
 public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_no")
     private Long no;
-
     @ApiModelProperty(value = "이름")
+    @Column(nullable = false)
     private String name;
     @ApiModelProperty(value = "소개")
+    @Column(nullable = false)
     private String introduce;
     @ApiModelProperty(value = "년차")
     private Integer experienceYear;
-
     @ApiModelProperty(value = "이메일")
+    @Column(nullable = false)
     private String email;
     @ApiModelProperty(value = "연락처")
+    @Column(nullable = false)
     private String contactNumber;
-
-
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Career> careers;
-
     @OneToMany(mappedBy = "profile")
+    @Column(nullable = false)
     private List<ProfileImage> profileImages;
-
     @OneToOne
     @JoinColumn(name = "member_no")
     private Member member;
 
 
-    public void update(ProfileDto.Create profileCreateDto) {
-        this.name = profileCreateDto.getName();
-        this.introduce = profileCreateDto.getIntroduce();
-        this.email = profileCreateDto.getEmail();
-        this.contactNumber = profileCreateDto.getContactNumber();
+    public void update(ProfileDto.Update profileUpdateDto) {
+        this.name = profileUpdateDto.getName();
+        this.introduce = profileUpdateDto.getIntroduce();
+        this.email = profileUpdateDto.getEmail();
+        this.contactNumber = profileUpdateDto.getContactNumber();
 
     }
 
@@ -69,7 +69,7 @@ public class Profile {
             .typeMap(Profile.class, ProfileDto.Info.class)
             .addMappings(mapper -> {
                 mapper.using(CAREER_LIST_TO_INFO_LIST)
-                    .map(Profile::getCareers, ProfileDto.Info::setCareers);
+                    .map(Profile::getCareers, ProfileDto.Info::setCareer);
             })
             .map(this);
     }
@@ -81,5 +81,11 @@ public class Profile {
 
     public void changeMember(Member loginMember) {
         this.member = loginMember;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.experienceYear = this.experienceYear == null ? 0 : this.experienceYear;
+        this.careers = this.careers == null ? Collections.emptyList() : this.careers;
     }
 }

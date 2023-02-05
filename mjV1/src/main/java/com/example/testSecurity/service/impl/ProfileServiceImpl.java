@@ -40,15 +40,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO, Member loginMember) {
 
-        Profile profile = profileCreateDTO.toEntity();
-        profile.changeMember(loginMember);
+        Profile createProfile = profileCreateDTO.toEntity();
+        createProfile.changeMember(loginMember);
 
-        List<Career> careers = profile.getCareers();
+        List<Career> careers = createProfile.getCareers();
         for (Career career : careers) {
-            career.changeProfile(profile);
+            career.changeProfile(createProfile);
         }
         //Profile + Career save
-        Profile savedProfile = profileJpaRepository.save(profile);
+        Profile savedProfile = profileJpaRepository.save(createProfile);
 
         log.info("============savedProfile============");
         log.info("savedProfile : {}", savedProfile);
@@ -60,33 +60,27 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDto.Info getProfile(Long profileNo) {
-
-        Optional<Profile> profileById = profileJpaRepository.findById(profileNo);
-        if (profileById.isPresent()) {
-            return profileById.get().toInfoDto();
-        } else {
-            throw new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE);
-        }
+        return profileByNo(profileNo).toInfoDto();
     }
+
 
     @Override
     @Transactional
-    public ProfileDto.Info updateProfile(ProfileDto.Create profileCreateDto, Long profileNo) {
+    public ProfileDto.Info updateProfile(ProfileDto.Update profileUpdateDto, Long profileNo) {
 
-        Profile profileById = profileJpaRepository.findById(profileNo)
-            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
+        Profile profileById = profileByNo(profileNo);
 
         log.info("============before update profile============");
         log.info("profileById : {}", profileById);
         log.info("============before update profile============");
 
         //Only profile update
-        profileById.update(profileCreateDto);
+        profileById.update(profileUpdateDto);
 
         //Only Career update
-        List<Create> updateCareers = profileCreateDto.getCareers();
+        List<CareerDto.Update> updateCareers = profileUpdateDto.getCareer();
         List<Career> originCareers = profileById.getCareers();
-        for (int i = 0; updateCareers.size() > i; i++) {
+        for (int i = 0; i < updateCareers.size(); i++) {
             originCareers.get(i).updateCareer(updateCareers.get(i));
 
         }
@@ -104,11 +98,16 @@ public class ProfileServiceImpl implements ProfileService {
         profileJpaRepository.deleteById(profileNo);
     }
 
-    //porifle + career
+    //profile + career
     @Override
     public Page<Info> search(Search profileSearchConditionDto, Pageable pageable) {
-        return profileCustomRepository.search(profileSearchConditionDto,
-            pageable).map(Info::toInfoDto);
+        return profileCustomRepository.search(profileSearchConditionDto, pageable)
+            .map(Info::toInfoDto);
+    }
+
+    private Profile profileByNo(Long profileNo) {
+        return profileJpaRepository.findById(profileNo)
+            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
     }
 
 }
