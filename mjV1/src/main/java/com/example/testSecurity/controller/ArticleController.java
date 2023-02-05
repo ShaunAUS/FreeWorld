@@ -64,8 +64,8 @@ public class ArticleController {
         @PageableDefault(sort = {
             "no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable, Model model
     ) {
-        Page<Info> allArticles = articleService.findAllArticles(pageable);
-        model.addAttribute("allArticles", allArticles);
+        Page<Info> articles = articleService.getArticles(pageable);
+        model.addAttribute("allArticles", articles);
         return "articleAll";
     }
 
@@ -74,12 +74,12 @@ public class ArticleController {
     @PatchMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public ArticleDto.Info modifyArticle(
-        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
+        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Update articleUpdateDto,
         @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
     ) {
         if (checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))) {
-            return articleService.updateArticle(articleCreateDto, articleNo);
+            return articleService.updateArticle(articleUpdateDto, articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
 

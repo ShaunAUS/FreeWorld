@@ -115,9 +115,6 @@ public class ProfileDto {
                 .map(profile);
         }
 
-        public void changeCareer(List<CareerDto.Info> careerList) {
-            this.careers = careerList;
-        }
     }
 
 

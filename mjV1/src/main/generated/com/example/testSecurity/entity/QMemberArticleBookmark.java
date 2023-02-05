@@ -24,9 +24,9 @@ public class QMemberArticleBookmark extends EntityPathBase<MemberArticleBookmark
 
     public final QArticle article;
 
-    public final QMember member;
-
     public final NumberPath<Long> no = createNumber("no", Long.class);
+
+    public final QProfile profile;
 
     public QMemberArticleBookmark(String variable) {
         this(MemberArticleBookmark.class, forVariable(variable), INITS);
@@ -47,7 +47,7 @@ public class QMemberArticleBookmark extends EntityPathBase<MemberArticleBookmark
     public QMemberArticleBookmark(Class<? extends MemberArticleBookmark> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.article = inits.isInitialized("article") ? new QArticle(forProperty("article"), inits.get("article")) : null;
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

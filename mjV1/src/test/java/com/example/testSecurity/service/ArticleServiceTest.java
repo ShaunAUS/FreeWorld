@@ -13,6 +13,7 @@ import com.example.testSecurity.dto.ProfileDto;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.MemberArticleBookmark;
+import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.repository.ArticleJpaRepository;
 import com.example.testSecurity.repository.MemberArticleBookmarkJpaRepository;
 import com.example.testSecurity.repository.MemberJpaRepository;
@@ -98,7 +99,7 @@ class ArticleServiceTest {
         ArticleDto.Create articleCreate = ArticleDto.Create.builder()
             .title("test title")
             .contents("test contents")
-            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .profile(create.toEntity())  //게시글의 작성자는 Profile 자동 등록
             .likeCnt(0)
             .views(0)
             .category(CategoryType.PROGRAMMING)
@@ -151,10 +152,10 @@ class ArticleServiceTest {
     @Transactional
     void updateArticle() {
         //given
-        ArticleDto.Create update = ArticleDto.Create.builder()
+        ArticleDto.Update update = ArticleDto.Update.builder()
             .title("update test title")
             .contents("update test contents")
-            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .profile(profileJpaRepository.findAll().get(0))  //게시글의 작성자는 Profile로 자동 등록
             .likeCnt(0)
             .views(0)
             .category(CategoryType.ANNOUNCE)
@@ -193,11 +194,13 @@ class ArticleServiceTest {
         Article article = articleJpaRepository.findAll().get(0);
         articleService.bookmarkArticle(article.getNo(), member);
 
+        Profile profile = profileJpaRepository.findAll().get(0);
+
         MemberArticleBookmark memberArticleBookmark = bookmarkJpaRepository.findAll().get(0);
         //then
 
         assertThat(memberArticleBookmark.getArticle()).isEqualTo(article);
-        assertThat(memberArticleBookmark.getMember()).isEqualTo(member);
+        assertThat(memberArticleBookmark.getProfile()).isEqualTo(profile);
 
     }
 
@@ -232,10 +235,12 @@ class ArticleServiceTest {
     void search() {
 
         //given
+        Profile profile = profileJpaRepository.findAll().get(0);
+
         ArticleDto.Create create = ArticleDto.Create.builder()
             .title("second test title")
             .contents("test contents")
-            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .profile(profile)  //게시글의 작성자는 Profile로 자동 등록
             .likeCnt(0)
             .views(55)
             .category(CategoryType.ANNOUNCE)
@@ -244,7 +249,7 @@ class ArticleServiceTest {
         ArticleDto.Create secondArticle = ArticleDto.Create.builder()
             .title("article title")
             .contents("article contents")
-            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .profile(profile)  //게시글의 작성자는 Profile로 자동 등록
             .likeCnt(0)
             .views(55)
             .category(CategoryType.PROGRAMMING)
@@ -253,7 +258,7 @@ class ArticleServiceTest {
         ArticleDto.Create thirdArticle = ArticleDto.Create.builder()
             .title("third article title")
             .contents("third article contents")
-            .writer("")  //게시글의 작성자는 Profile name으로 자동 등록
+            .profile(profile)  //게시글의 작성자는 Profile로 자동 등록
             .likeCnt(0)
             .views(55)
             .category(CategoryType.PROGRAMMING)
@@ -276,7 +281,8 @@ class ArticleServiceTest {
 
         //then
         assertThat(firstSearchResult.getTotalElements()).isEqualTo(1);
-        assertThat(firstSearchResult.getContent().get(0).getContents()).isEqualTo("third article contents");
+        assertThat(firstSearchResult.getContent().get(0).getContents()).isEqualTo(
+            "third article contents");
 
         assertThat(secondSearchResult.getTotalElements()).isEqualTo(3);
         assertThat(secondSearchResult.getContent().get(1).getTitle()).isEqualTo("article title");
