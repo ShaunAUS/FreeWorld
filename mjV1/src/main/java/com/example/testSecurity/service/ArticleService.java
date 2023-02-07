@@ -1,7 +1,9 @@
 package com.example.testSecurity.service;
 
-import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ArticleDto.Info;
+import com.example.testSecurity.dto.article.ArticleCreateDto;
+import com.example.testSecurity.dto.article.ArticleInfoDto;
+import com.example.testSecurity.dto.article.ArticleSearchConditionDto;
+import com.example.testSecurity.dto.article.ArticleUpdateDto;
 import com.example.testSecurity.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,11 +11,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface ArticleService {
 
-    ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO, Long loginMemberNo);
+    ArticleInfoDto createArticle(ArticleCreateDto articleCreateDTO, Long loginMemberNo);
 
-    ArticleDto.Info getArticle(Long articleNo);
+    ArticleInfoDto getArticle(Long articleNo);
 
-    ArticleDto.Info updateArticle(ArticleDto.Update articleUpdateDto, Long articleNo);
+    ArticleInfoDto updateArticle(ArticleUpdateDto articleUpdateDto, Long articleNo);
 
     void deleteArticle(Long articleNo);
 
@@ -22,9 +24,9 @@ public interface ArticleService {
 
     Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo);
 
-    ArticleDto.Info likeArticle(Long articleNo);
+    ArticleInfoDto likeArticle(Long articleNo);
 
-    Page<ArticleDto.Info> search(ArticleDto.Search searchCondition, Pageable pageable);
+    Page<ArticleInfoDto> search(ArticleSearchConditionDto searchCondition, Pageable pageable);
 
-    Page<Info> getArticles(Pageable pageable);
+    Page<ArticleInfoDto> getArticles(Pageable pageable);
 }

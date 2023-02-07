@@ -1,27 +1,23 @@
 package com.example.testSecurity.service.impl;
 
 
-import com.example.testSecurity.dto.CareerDto;
-import com.example.testSecurity.dto.CareerDto.Create;
-import com.example.testSecurity.dto.ProfileDto;
-import com.example.testSecurity.dto.ProfileDto.Info;
-import com.example.testSecurity.dto.ProfileDto.Search;
+import com.example.testSecurity.dto.career.CareerUpdateDto;
+import com.example.testSecurity.dto.profile.ProfileCreateDto;
+import com.example.testSecurity.dto.profile.ProfileInfoDto;
+import com.example.testSecurity.dto.profile.ProfileSearchConditionDto;
+import com.example.testSecurity.dto.profile.ProfileUpdateDto;
 import com.example.testSecurity.entity.Career;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
-import com.example.testSecurity.querydlsRepository.CareerCustomRepository;
 import com.example.testSecurity.querydlsRepository.ProfileCustomRepository;
-import com.example.testSecurity.repository.CareerJpaRepository;
 import com.example.testSecurity.repository.ProfileJpaRepository;
 import com.example.testSecurity.service.ProfileService;
-import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +34,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO, Member loginMember) {
+    public ProfileInfoDto createProfile(ProfileCreateDto profileCreateDTO, Member loginMember) {
 
         Profile createProfile = profileCreateDTO.toEntity();
         createProfile.changeMember(loginMember);
@@ -59,14 +55,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileDto.Info getProfile(Long profileNo) {
+    public ProfileInfoDto getProfile(Long profileNo) {
         return profileByNo(profileNo).toInfoDto();
     }
 
 
     @Override
     @Transactional
-    public ProfileDto.Info updateProfile(ProfileDto.Update profileUpdateDto, Long profileNo) {
+    public ProfileInfoDto updateProfile(ProfileUpdateDto profileUpdateDto, Long profileNo) {
 
         Profile profileById = profileByNo(profileNo);
 
@@ -78,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
         profileById.update(profileUpdateDto);
 
         //Only Career update
-        List<CareerDto.Update> updateCareers = profileUpdateDto.getCareer();
+        List<CareerUpdateDto> updateCareers = profileUpdateDto.getUpdateCareers();
         List<Career> originCareers = profileById.getCareers();
         for (int i = 0; i < updateCareers.size(); i++) {
             originCareers.get(i).updateCareer(updateCareers.get(i));
@@ -100,9 +96,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     //profile + career
     @Override
-    public Page<Info> search(Search profileSearchConditionDto, Pageable pageable) {
+    public Page<ProfileInfoDto> search(ProfileSearchConditionDto profileSearchConditionDto,
+        Pageable pageable) {
         return profileCustomRepository.search(profileSearchConditionDto, pageable)
-            .map(Info::toInfoDto);
+            .map(ProfileInfoDto::toInfoDto);
     }
 
     private Profile profileByNo(Long profileNo) {

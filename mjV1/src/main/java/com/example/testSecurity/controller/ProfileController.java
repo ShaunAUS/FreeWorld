@@ -1,9 +1,10 @@
 package com.example.testSecurity.controller;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ProfileDto;
-import com.example.testSecurity.dto.ProfileDto.Info;
-import com.example.testSecurity.dto.ProfileDto.Search;
+import com.example.testSecurity.dto.profile.ProfileCreateDto;
+import com.example.testSecurity.dto.profile.ProfileInfoDto;
+import com.example.testSecurity.dto.profile.ProfileSearchConditionDto;
+import com.example.testSecurity.dto.profile.ProfileUpdateDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -44,8 +45,8 @@ public class ProfileController {
     @ApiOperation(value = "등록", notes = "프로필 등록")
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER')")
-    public ProfileDto.Info createProfile(
-        @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Create profileCreateDTO,
+    public ProfileInfoDto createProfile(
+        @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileCreateDto profileCreateDTO,
         @ApiIgnore Authentication authentication
     ) {
         return profileService.createProfile(profileCreateDTO, getLoginMember(authentication));
@@ -59,7 +60,7 @@ public class ProfileController {
         @PathVariable Long profileNo,
         Model model
     ) {
-        Info profile = profileService.getProfile(profileNo);
+        ProfileInfoDto profile = profileService.getProfile(profileNo);
         model.addAttribute("profileDetail", profile);
 
         return "profileDetail";
@@ -69,8 +70,8 @@ public class ProfileController {
     @ApiOperation(value = "수정", notes = "프로필 수정")
     @PatchMapping("/{profileNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public ProfileDto.Info modifyProfile(
-        @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileDto.Update profileUpdateDTO,
+    public ProfileInfoDto modifyProfile(
+        @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileUpdateDto profileUpdateDTO,
         @PathVariable Long profileNo,
         @ApiIgnore Authentication authentication
     ) {
@@ -100,11 +101,11 @@ public class ProfileController {
         @PageableDefault(sort = {
             "profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable
     ) {
-        ProfileDto.Search profileSearchConditionDto = Search.builder()
+        ProfileSearchConditionDto profileSearchConditionDto = ProfileSearchConditionDto.builder()
             .categoryType(category)
             .experienceYear(year)
             .build();
-        Page<Info> search = profileService.search(profileSearchConditionDto, pageable);
+        Page<ProfileInfoDto> search = profileService.search(profileSearchConditionDto, pageable);
 
         model.addAttribute("searchResult", search);
         return "profile";

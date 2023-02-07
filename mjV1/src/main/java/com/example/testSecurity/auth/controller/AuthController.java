@@ -4,14 +4,13 @@ import com.example.testSecurity.auth.dto.AuthToken;
 import com.example.testSecurity.auth.dto.LoginForm;
 import com.example.testSecurity.auth.service.AuthService;
 import com.example.testSecurity.config.AppProperties;
-import com.example.testSecurity.dto.MemberDto;
+import com.example.testSecurity.dto.member.MemberCreateDto;
+import com.example.testSecurity.dto.member.MemberInfoDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -32,7 +31,7 @@ public class AuthController {
 
     @ApiOperation(value = "createMember", notes = "멤버추가")
     @PostMapping("/create")
-    public MemberDto.Info createMember(@RequestBody MemberDto.Create createDto) {
+    public MemberInfoDto createMember(@RequestBody MemberCreateDto createDto) {
         return authService.createMember(createDto);
     }
 

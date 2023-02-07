@@ -1,7 +1,7 @@
 package com.example.testSecurity.querydlsRepository.impl;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.dto.article.ArticleSearchConditionDto;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.querydlsRepository.ArticleCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -31,7 +31,7 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
 
     //게시글 검색은  키워드(제목+내용), 카테고리 로 한다
     @Override
-    public Page<Article> search(ArticleDto.Search searchCondition, Pageable pageable) {
+    public Page<Article> search(ArticleSearchConditionDto searchCondition, Pageable pageable) {
 
         List<Article> result = queryFactory
             .select(article)
@@ -74,7 +74,8 @@ public class ArticleRepositoryImpl implements ArticleCustomRepository {
 
     //null이면 그냥 무시 됌 , 에러 x
     BooleanExpression keywordContains(String keyword) {
-        return hasText(keyword) ? article.title.contains(keyword).or(article.contents.contains(keyword)) : null;
+        return hasText(keyword) ? article.title.contains(keyword)
+            .or(article.contents.contains(keyword)) : null;
     }
 
     BooleanExpression contentContains(String contents) {

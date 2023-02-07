@@ -1,9 +1,10 @@
 package com.example.testSecurity.controller;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ArticleDto.Info;
-import com.example.testSecurity.dto.ArticleDto.Search;
+import com.example.testSecurity.dto.article.ArticleCreateDto;
+import com.example.testSecurity.dto.article.ArticleInfoDto;
+import com.example.testSecurity.dto.article.ArticleSearchConditionDto;
+import com.example.testSecurity.dto.article.ArticleUpdateDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
@@ -36,8 +37,8 @@ public class ArticleController {
     @ApiOperation(value = "등록", notes = "게시글 등록")
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public ArticleDto.Info createArticle(
-        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Create articleCreateDto,
+    public ArticleInfoDto createArticle(
+        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleCreateDto articleCreateDto,
         @ApiIgnore Authentication authentication
     ) {
         return articleService.createArticle(articleCreateDto, getLoginMemberNo(authentication));
@@ -51,7 +52,7 @@ public class ArticleController {
         @PathVariable Long articleNo,
         Model model
     ) {
-        ArticleDto.Info articleInfo = articleService.getArticle(articleNo);
+        ArticleInfoDto articleInfo = articleService.getArticle(articleNo);
         model.addAttribute("articleInfo", articleInfo);
         return "articleDetail";
     }
@@ -64,7 +65,7 @@ public class ArticleController {
         @PageableDefault(sort = {
             "no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable, Model model
     ) {
-        Page<Info> articles = articleService.getArticles(pageable);
+        Page<ArticleInfoDto> articles = articleService.getArticles(pageable);
         model.addAttribute("allArticles", articles);
         return "articleAll";
     }
@@ -73,8 +74,8 @@ public class ArticleController {
     @ApiOperation(value = "수정", notes = "게시글 수정")
     @PatchMapping("/{articleNo}")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public ArticleDto.Info modifyArticle(
-        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleDto.Update articleUpdateDto,
+    public ArticleInfoDto modifyArticle(
+        @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleUpdateDto articleUpdateDto,
         @PathVariable Long articleNo,
         @ApiIgnore Authentication authentication
     ) {
@@ -112,7 +113,7 @@ public class ArticleController {
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
     @PatchMapping("/{articleNo}/like")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
-    public ArticleDto.Info likeArticle(
+    public ArticleInfoDto likeArticle(
         @PathVariable Long articleNo
     ) {
         return articleService.likeArticle(articleNo);
@@ -131,11 +132,11 @@ public class ArticleController {
         Model model
 
     ) {
-        ArticleDto.Search searchCondition = Search.builder()
+        ArticleSearchConditionDto searchCondition = ArticleSearchConditionDto.builder()
             .keyword(keyword)
             .category(categoryType)
             .build();
-        Page<Info> search = articleService.search(searchCondition, pageable);
+        Page<ArticleInfoDto> search = articleService.search(searchCondition, pageable);
         model.addAttribute("searchResult", search);
 
         return "articleSearch";

@@ -4,15 +4,15 @@ import com.example.testSecurity.auth.dto.AuthToken;
 import com.example.testSecurity.auth.dto.LoginForm;
 import com.example.testSecurity.auth.entity.MemberAccess;
 import com.example.testSecurity.auth.service.AuthService;
+import com.example.testSecurity.dto.member.MemberCreateDto;
+import com.example.testSecurity.dto.member.MemberInfoDto;
 import com.example.testSecurity.jwt.JwtProvider;
 import com.example.testSecurity.config.AppProperties;
-import com.example.testSecurity.dto.MemberDto;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.exception.ServiceProcessException;
 import com.example.testSecurity.exception.enums.ServiceMessage;
 import com.example.testSecurity.repository.MemberAccessRepository;
 import com.example.testSecurity.repository.MemberJpaRepository;
-import com.example.testSecurity.utils.MapperUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
@@ -45,20 +45,20 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public MemberDto.Info createMember(MemberDto.Create createDto) {
+    public MemberInfoDto createMember(MemberCreateDto createDto) {
 
         //아이디 중복체크
         checkDuplicateUserName(createDto);
 
         createDto.insertEncodedPassword(passwordEncoder.encode(createDto.getPassword()));
-        Member savedMember = memberJpaRepository.save(MemberDto.Create.toEntity(createDto));
+        Member savedMember = memberJpaRepository.save(MemberCreateDto.toEntity(createDto));
 
         log.info("============savedMember============");
         log.info("createMember : {}", savedMember);
         log.info("============savedMember============");
 
         //ModelMapper는 해당 클래스의 기본 생성자를 이용해 객체를 생성하고 setter를 이용해 매핑을 한다.
-        return MemberDto.Info.toDto(savedMember);
+        return MemberInfoDto.toDto(savedMember);
     }
 
 
@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthToken.builder()
             .jwt(token)
             .refreshToken(memberAccess.getRefreshToken())
-            .managerInfo(MemberDto.Info.toDto(member.get()))
+            .managerInfo(MemberInfoDto.toDto(member.get()))
             .build();
 
     }
@@ -176,7 +176,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     //만들때
-    private void checkDuplicateUserName(MemberDto.Create createDto) {
+    private void checkDuplicateUserName(MemberCreateDto createDto) {
 
         Optional<Member> optionalMember = memberJpaRepository.findByUserName(
             createDto.getUserName());

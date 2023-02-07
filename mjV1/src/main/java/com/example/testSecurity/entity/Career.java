@@ -3,11 +3,10 @@ package com.example.testSecurity.entity;
 import static com.example.testSecurity.Enum.CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER;
 import static com.example.testSecurity.Enum.CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER;
 
-import com.example.testSecurity.dto.CareerDto;
-import com.example.testSecurity.dto.CareerDto.Create;
+import com.example.testSecurity.dto.career.CareerInfoDto;
+import com.example.testSecurity.dto.career.CareerUpdateDto;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,31 +58,31 @@ public class Career {
         this.profile = savedProfile;
     }
 
-    public static CareerDto.Info toCareerInfoDTO(Career career) {
+    public static CareerInfoDto toCareerInfoDTO(Career career) {
         return MapperUtils.getMapper()
-            .typeMap(Career.class, CareerDto.Info.class)
+            .typeMap(Career.class, CareerInfoDto.class)
             .map(career);
     }
 
-    public CareerDto.Info toInfoDto() {
+    public CareerInfoDto toInfoDto() {
 
         return MapperUtils.getMapper()
-            .typeMap(Career.class, CareerDto.Info.class)
+            .typeMap(Career.class, CareerInfoDto.class)
             .addMappings(mapper -> {
                 mapper.using(INTEGER_CATEGORY_TYPE_CONVERTER)
-                    .map(Career::getCategory, CareerDto.Info::setCategory);
+                    .map(Career::getCategory, CareerInfoDto::setCategory);
             })
             .map(this);
 
 
     }
 
-    public void updateCareer(CareerDto.Update careerUpdateDto) {
+    public void updateCareer(CareerUpdateDto careerUpdateDto) {
         MapperUtils.getMapper()
-            .typeMap(CareerDto.Update.class, Career.class)
+            .typeMap(CareerUpdateDto.class, Career.class)
             .addMappings(mapper -> {
                 mapper.using(CATEGORY_TYPE_INTEGER_CONVERTER)
-                    .map(CareerDto.Update::getCategory, Career::setCategory);
+                    .map(CareerUpdateDto::getCategory, Career::setCategory);
             })
             .map(careerUpdateDto, this);
 

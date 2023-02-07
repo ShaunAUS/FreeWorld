@@ -1,7 +1,9 @@
 package com.example.testSecurity.service.impl;
 
-import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ArticleDto.Info;
+import com.example.testSecurity.dto.article.ArticleCreateDto;
+import com.example.testSecurity.dto.article.ArticleInfoDto;
+import com.example.testSecurity.dto.article.ArticleSearchConditionDto;
+import com.example.testSecurity.dto.article.ArticleUpdateDto;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.MemberArticleBookmark;
@@ -37,7 +39,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDto.Info createArticle(ArticleDto.Create articleCreateDTO,
+    public ArticleInfoDto createArticle(ArticleCreateDto articleCreateDTO,
         Long loginMemberNo) {
 
         //must have profile when create article
@@ -57,7 +59,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDto.Info getArticle(Long articleNo) {
+    public ArticleInfoDto getArticle(Long articleNo) {
         Article articleByNo = getArticleByNo(articleNo);
         articleByNo.addView();
         return articleByNo.toInfoDto();
@@ -65,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDto.Info updateArticle(ArticleDto.Update articleUpdateDto, Long articleNo) {
+    public ArticleInfoDto updateArticle(ArticleUpdateDto articleUpdateDto, Long articleNo) {
 
         Article articleByNo = getArticleByNo(articleNo);
 
@@ -122,7 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDto.Info likeArticle(Long articleNo) {
+    public ArticleInfoDto likeArticle(Long articleNo) {
         Article articleByNo = getArticleByNo(articleNo);
 
         log.info("============before like article============");
@@ -139,13 +141,14 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<ArticleDto.Info> search(ArticleDto.Search searchCondition, Pageable pageable) {
+    public Page<ArticleInfoDto> search(ArticleSearchConditionDto searchCondition,
+        Pageable pageable) {
         return articleCustomRepository.search(searchCondition, pageable)
             .map(Article::toInfoDto);
     }
 
     @Override
-    public Page<Info> getArticles(Pageable pageable) {
+    public Page<ArticleInfoDto> getArticles(Pageable pageable) {
         return articleJpaRepository.findAll(pageable)
             .map(article -> article.toInfoDto());
     }

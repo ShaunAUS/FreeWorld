@@ -1,22 +1,24 @@
 package com.example.testSecurity.service;
 
-import com.example.testSecurity.dto.ProfileDto;
-import com.example.testSecurity.dto.ProfileDto.Info;
-import com.example.testSecurity.dto.ProfileDto.Search;
+import com.example.testSecurity.dto.profile.ProfileCreateDto;
+import com.example.testSecurity.dto.profile.ProfileInfoDto;
+import com.example.testSecurity.dto.profile.ProfileSearchConditionDto;
+import com.example.testSecurity.dto.profile.ProfileUpdateDto;
 import com.example.testSecurity.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProfileService {
 
-    ProfileDto.Info createProfile(ProfileDto.Create profileCreateDTO, Member loginMember);
+    ProfileInfoDto createProfile(ProfileCreateDto profileCreateDTO, Member loginMember);
 
-    ProfileDto.Info getProfile(Long no);
+    ProfileInfoDto getProfile(Long no);
 
-    ProfileDto.Info updateProfile(ProfileDto.Update profileUpdateDTO, Long no);
+    ProfileInfoDto updateProfile(ProfileUpdateDto profileUpdateDTO, Long no);
 
     void deleteProfile(Long no);
 
-    Page<Info> search(Search profileSearchConditionDto, Pageable pageable);
+    Page<ProfileInfoDto> search(ProfileSearchConditionDto profileSearchConditionDto,
+        Pageable pageable);
 
 }

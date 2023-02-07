@@ -3,13 +3,13 @@ package com.example.testSecurity.service;
 import com.example.testSecurity.Enum.CategoryType;
 import com.example.testSecurity.Enum.RoleType;
 import com.example.testSecurity.auth.service.AuthService;
-import com.example.testSecurity.dto.ArticleDto;
-import com.example.testSecurity.dto.ArticleDto.Info;
-import com.example.testSecurity.dto.ArticleDto.Search;
-import com.example.testSecurity.dto.CareerDto;
-import com.example.testSecurity.dto.CareerDto.Create;
-import com.example.testSecurity.dto.MemberDto;
-import com.example.testSecurity.dto.ProfileDto;
+import com.example.testSecurity.dto.article.ArticleCreateDto;
+import com.example.testSecurity.dto.article.ArticleInfoDto;
+import com.example.testSecurity.dto.article.ArticleSearchConditionDto;
+import com.example.testSecurity.dto.article.ArticleUpdateDto;
+import com.example.testSecurity.dto.career.CareerCreateDto;
+import com.example.testSecurity.dto.member.MemberCreateDto;
+import com.example.testSecurity.dto.profile.ProfileCreateDto;
 import com.example.testSecurity.entity.Article;
 import com.example.testSecurity.entity.Member;
 import com.example.testSecurity.entity.MemberArticleBookmark;
@@ -58,7 +58,7 @@ class ArticleServiceTest {
     @BeforeEach
     private void addMember() {
 
-        MemberDto.Create member = MemberDto.Create.builder()
+        MemberCreateDto member = MemberCreateDto.builder()
             .userName("testUserName")
             .password("12345")
             .roleType(RoleType.ADMIN)
@@ -71,9 +71,9 @@ class ArticleServiceTest {
     @BeforeEach
     private void addProfileWithArticle() {
 
-        List<Create> careerList = new ArrayList<>();
+        List<CareerCreateDto> careerList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            CareerDto.Create careerCreateDto = CareerDto.Create.builder()
+            CareerCreateDto careerCreateDto = CareerCreateDto.builder()
                 .companyName("company" + i)
                 .assignedTask("assignedTask" + i)
                 .description("description" + i)
@@ -85,18 +85,18 @@ class ArticleServiceTest {
             careerList.add(careerCreateDto);
         }
 
-        ProfileDto.Create create = ProfileDto.Create.builder()
+        ProfileCreateDto create = ProfileCreateDto.builder()
             .name("test")
             .introduce("test introduce")
             .email("test email")
             .contactNumber("010-1234-5678")
-            .career(careerList)
+            .careers(careerList)
             .build();
 
         Member member = memberJpaRepository.findAll().get(0);
         profileService.createProfile(create, member);
 
-        ArticleDto.Create articleCreate = ArticleDto.Create.builder()
+        ArticleCreateDto articleCreate = ArticleCreateDto.builder()
             .title("test title")
             .contents("test contents")
             .profile(create.toEntity())  //게시글의 작성자는 Profile 자동 등록
@@ -139,7 +139,7 @@ class ArticleServiceTest {
         //given
         //when
         Article article = articleJpaRepository.findAll().get(0);
-        Info articleInfo = articleService.getArticle(article.getNo());
+        ArticleInfoDto articleInfo = articleService.getArticle(article.getNo());
 
         //then
         assertThat(article.getTitle()).isEqualTo("test title");
@@ -152,7 +152,7 @@ class ArticleServiceTest {
     @Transactional
     void updateArticle() {
         //given
-        ArticleDto.Update update = ArticleDto.Update.builder()
+        ArticleUpdateDto update = ArticleUpdateDto.builder()
             .title("update test title")
             .contents("update test contents")
             .profile(profileJpaRepository.findAll().get(0))  //게시글의 작성자는 Profile로 자동 등록
@@ -163,7 +163,7 @@ class ArticleServiceTest {
 
         //when
         Article article = articleJpaRepository.findAll().get(0);
-        Info articleInfo = articleService.updateArticle(update, article.getNo());
+        ArticleInfoDto articleInfo = articleService.updateArticle(update, article.getNo());
         //then
         assertThat(articleInfo.getTitle()).isEqualTo("update test title");
         assertThat(articleInfo.getContents()).isEqualTo("update test contents");
@@ -189,7 +189,6 @@ class ArticleServiceTest {
 
         //given
         //when
-
         Member member = memberJpaRepository.findAll().get(0);
         Article article = articleJpaRepository.findAll().get(0);
         articleService.bookmarkArticle(article.getNo(), member);
@@ -237,7 +236,7 @@ class ArticleServiceTest {
         //given
         Profile profile = profileJpaRepository.findAll().get(0);
 
-        ArticleDto.Create create = ArticleDto.Create.builder()
+        ArticleCreateDto create = ArticleCreateDto.builder()
             .title("second test title")
             .contents("test contents")
             .profile(profile)  //게시글의 작성자는 Profile로 자동 등록
@@ -246,7 +245,7 @@ class ArticleServiceTest {
             .category(CategoryType.ANNOUNCE)
             .build();
 
-        ArticleDto.Create secondArticle = ArticleDto.Create.builder()
+        ArticleCreateDto secondArticle = ArticleCreateDto.builder()
             .title("article title")
             .contents("article contents")
             .profile(profile)  //게시글의 작성자는 Profile로 자동 등록
@@ -255,7 +254,7 @@ class ArticleServiceTest {
             .category(CategoryType.PROGRAMMING)
             .build();
 
-        ArticleDto.Create thirdArticle = ArticleDto.Create.builder()
+        ArticleCreateDto thirdArticle = ArticleCreateDto.builder()
             .title("third article title")
             .contents("third article contents")
             .profile(profile)  //게시글의 작성자는 Profile로 자동 등록
@@ -269,15 +268,19 @@ class ArticleServiceTest {
         articleService.createArticle(secondArticle, loginMemberNo);
         articleService.createArticle(thirdArticle, loginMemberNo);
 
-        ArticleDto.Search searchCondition = new Search("third", CategoryType.PROGRAMMING);
-        ArticleDto.Search secondSearchCondition = new Search(null, CategoryType.PROGRAMMING);
+        ArticleSearchConditionDto searchCondition = new ArticleSearchConditionDto("third",
+            CategoryType.PROGRAMMING);
+        ArticleSearchConditionDto secondSearchCondition = new ArticleSearchConditionDto(null,
+            CategoryType.PROGRAMMING);
 
         Sort sort = Sort.by("article_no").descending();
         Pageable pageable = PageRequest.of(0, 10, sort);
 
         //when
-        Page<Info> firstSearchResult = articleService.search(searchCondition, pageable); // 0
-        Page<Info> secondSearchResult = articleService.search(secondSearchCondition, pageable);
+        Page<ArticleInfoDto> firstSearchResult = articleService.search(searchCondition,
+            pageable); // 0
+        Page<ArticleInfoDto> secondSearchResult = articleService.search(secondSearchCondition,
+            pageable);
 
         //then
         assertThat(firstSearchResult.getTotalElements()).isEqualTo(1);
