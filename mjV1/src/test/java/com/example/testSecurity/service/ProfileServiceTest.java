@@ -1,19 +1,20 @@
 package com.example.testSecurity.service;
 
-import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.Enum.RoleType;
-import com.example.testSecurity.auth.service.AuthService;
-import com.example.testSecurity.dto.career.CareerCreateDto;
-import com.example.testSecurity.dto.career.CareerUpdateDto;
-import com.example.testSecurity.dto.member.MemberCreateDto;
-import com.example.testSecurity.dto.profile.ProfileCreateDto;
-import com.example.testSecurity.dto.profile.ProfileInfoDto;
-import com.example.testSecurity.dto.profile.ProfileSearchConditionDto;
-import com.example.testSecurity.dto.profile.ProfileUpdateDto;
-import com.example.testSecurity.entity.Member;
-import com.example.testSecurity.entity.Profile;
-import com.example.testSecurity.repository.MemberJpaRepository;
-import com.example.testSecurity.repository.ProfileJpaRepository;
+import com.example.testSecurity.domain.enums.CategoryType;
+import com.example.testSecurity.domain.enums.RoleType;
+import com.example.testSecurity.domain.dto.career.CareerCreateDto;
+import com.example.testSecurity.domain.dto.career.CareerUpdateDto;
+import com.example.testSecurity.domain.dto.member.MemberCreateDto;
+import com.example.testSecurity.domain.dto.profile.ProfileCreateDto;
+import com.example.testSecurity.domain.dto.profile.ProfileInfoDto;
+import com.example.testSecurity.domain.dto.profile.ProfileSearchConditionDto;
+import com.example.testSecurity.domain.dto.profile.ProfileUpdateDto;
+import com.example.testSecurity.domain.entity.Member;
+import com.example.testSecurity.domain.entity.Profile;
+import com.example.testSecurity.domain.repository.MemberJpaRepository;
+import com.example.testSecurity.domain.repository.ProfileJpaRepository;
+import com.example.testSecurity.service.service.ProfileService;
+import com.example.testSecurity.service.service.auth.AuthService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.testSecurity.Enum.CategoryType.ANNOUNCE;
-import static com.example.testSecurity.Enum.CategoryType.PROGRAMMING;
+import static com.example.testSecurity.domain.enums.CategoryType.ANNOUNCE;
+import static com.example.testSecurity.domain.enums.CategoryType.PROGRAMMING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
