@@ -2,8 +2,8 @@ package com.example.testSecurity.querydlsRepository.impl;
 
 import com.example.testSecurity.Enum.CategoryDetailType;
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ProfileDto;
-import com.example.testSecurity.dto.ProfileDto.Search;
+import com.example.testSecurity.dto.profile.ProfileCreateDto;
+import com.example.testSecurity.dto.profile.ProfileSearchConditionDto;
 import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.querydlsRepository.ProfileCustomRepository;
 import com.querydsl.core.types.Projections;
@@ -34,7 +34,7 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
 
     //Profile 검색은 (년차)와 (카테고리(career테이블)로 검색한다
     @Override
-    public Page<Profile> search(Search profileSearchConditionDto,
+    public Page<Profile> search(ProfileSearchConditionDto profileSearchConditionDto,
         Pageable pageable) {
 
         List<Profile> result = queryFactory
@@ -44,8 +44,10 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
             .on(profile.no.eq(career.profile.no))
             .where(
                 containSearchYear(profileSearchConditionDto.getExperienceYear()),
-                containSearchCategory(profileSearchConditionDto.getCategoryType()), //from career table
-                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType()) //from career table
+                containSearchCategory(profileSearchConditionDto.getCategoryType()),
+                //from career table
+                containSearchCategoryDetailType(profileSearchConditionDto.getCategoryDetailType())
+                //from career table
             )
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -70,10 +72,10 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
 
     //TODO profile + carrer  한방쿼리 방법 DTO에 넣는게 잘안됌,,, or  일단 따로따로 해서 넣는거로 처리
     @Override
-    public ProfileDto.Create findProfileByIdWithCareer(Long profileNo) {
+    public ProfileCreateDto findProfileByIdWithCareer(Long profileNo) {
 
         return queryFactory
-            .select(Projections.bean(ProfileDto.Create.class,
+            .select(Projections.bean(ProfileCreateDto.class,
                 profile.name,
                 profile.email,
                 profile.contactNumber,
@@ -97,8 +99,8 @@ public class ProfileRepositoryImpl implements ProfileCustomRepository {
 
     private BooleanExpression containSearchYear(Integer year) {
 
-        if(year != null){
-           return profile.experienceYear.eq(year);
+        if (year != null) {
+            return profile.experienceYear.eq(year);
         }
         return null;
     }

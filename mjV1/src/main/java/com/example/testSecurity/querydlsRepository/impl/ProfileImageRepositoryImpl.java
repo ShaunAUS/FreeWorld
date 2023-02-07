@@ -1,10 +1,7 @@
 package com.example.testSecurity.querydlsRepository.impl;
 
-import com.example.testSecurity.dto.ImageInfo;
-import com.example.testSecurity.entity.Profile;
 import com.example.testSecurity.querydlsRepository.ProfileImageCustomRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 

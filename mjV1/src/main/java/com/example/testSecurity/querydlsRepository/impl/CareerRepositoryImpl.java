@@ -2,11 +2,8 @@ package com.example.testSecurity.querydlsRepository.impl;
 
 import static com.example.testSecurity.entity.QCareer.career;
 
-import com.example.testSecurity.dto.CareerDto;
-import com.example.testSecurity.dto.CareerDto.Create;
 import com.example.testSecurity.entity.Career;
 import com.example.testSecurity.querydlsRepository.CareerCustomRepository;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import javax.persistence.EntityManager;

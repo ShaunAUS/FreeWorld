@@ -1,8 +1,8 @@
 package com.example.testSecurity.entity;
 
-import com.example.testSecurity.dto.CareerDto;
-import com.example.testSecurity.dto.ProfileDto;
-import com.example.testSecurity.dto.ProfileDto.Info;
+import com.example.testSecurity.dto.career.CareerInfoDto;
+import com.example.testSecurity.dto.profile.ProfileInfoDto;
+import com.example.testSecurity.dto.profile.ProfileUpdateDto;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Collections;
@@ -56,7 +56,7 @@ public class Profile {
     private Member member;
 
 
-    public void update(ProfileDto.Update profileUpdateDto) {
+    public void update(ProfileUpdateDto profileUpdateDto) {
         this.name = profileUpdateDto.getName();
         this.introduce = profileUpdateDto.getIntroduce();
         this.email = profileUpdateDto.getEmail();
@@ -64,17 +64,17 @@ public class Profile {
 
     }
 
-    public Info toInfoDto() {
+    public ProfileInfoDto toInfoDto() {
         return MapperUtils.getMapper()
-            .typeMap(Profile.class, ProfileDto.Info.class)
+            .typeMap(Profile.class, ProfileInfoDto.class)
             .addMappings(mapper -> {
                 mapper.using(CAREER_LIST_TO_INFO_LIST)
-                    .map(Profile::getCareers, ProfileDto.Info::setCareer);
+                    .map(Profile::getCareers, ProfileInfoDto::setInfoCareers);
             })
             .map(this);
     }
 
-    public static final Converter<List<Career>, List<CareerDto.Info>> CAREER_LIST_TO_INFO_LIST =
+    public static final Converter<List<Career>, List<CareerInfoDto>> CAREER_LIST_TO_INFO_LIST =
         context -> context.getSource() == null ? null : context.getSource().stream()
             .map(career -> career.toInfoDto())
             .collect(Collectors.toList());

@@ -2,12 +2,13 @@ package com.example.testSecurity.auth.service;
 
 import com.example.testSecurity.auth.dto.AuthToken;
 import com.example.testSecurity.auth.dto.LoginForm;
-import com.example.testSecurity.dto.MemberDto;
+import com.example.testSecurity.dto.member.MemberCreateDto;
+import com.example.testSecurity.dto.member.MemberInfoDto;
 
 
 public interface AuthService {
 
-    MemberDto.Info createMember(MemberDto.Create createDto);
+    MemberInfoDto createMember(MemberCreateDto createDto);
 
     AuthToken login(LoginForm loginForm);
 

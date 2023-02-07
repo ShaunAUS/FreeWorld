@@ -1,6 +1,6 @@
 package com.example.testSecurity.auth.dto;
 
-import com.example.testSecurity.dto.MemberDto;
+import com.example.testSecurity.dto.member.MemberInfoDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class AuthToken {
      * 접속 유저 정보
      */
     @ApiModelProperty("접속 유저 정보")
-    private MemberDto.Info managerInfo;
+    private MemberInfoDto managerInfo;
 
     /**
      * 리플레쉬 토큰

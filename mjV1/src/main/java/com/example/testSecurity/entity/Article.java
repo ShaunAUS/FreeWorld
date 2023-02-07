@@ -1,11 +1,11 @@
 package com.example.testSecurity.entity;
 
 import com.example.testSecurity.Enum.CategoryType;
-import com.example.testSecurity.dto.ArticleDto;
+import com.example.testSecurity.dto.article.ArticleInfoDto;
+import com.example.testSecurity.dto.article.ArticleUpdateDto;
 import com.example.testSecurity.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.time.LocalDateTime;
 import javax.persistence.*;
 
 import lombok.Getter;
@@ -50,23 +50,23 @@ public class Article extends BaseTime {
     @JoinColumn(name = "profile_no")
     private Profile profile;
 
-    public ArticleDto.Info toInfoDto() {
+    public ArticleInfoDto toInfoDto() {
         return MapperUtils.getMapper()
-            .typeMap(Article.class, ArticleDto.Info.class)
+            .typeMap(Article.class, ArticleInfoDto.class)
             .addMappings(mapper -> {
                 mapper.using(CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER)
-                    .map(Article::getCategory, ArticleDto.Info::setCategory);
+                    .map(Article::getCategory, ArticleInfoDto::setCategory);
             })
             .map(this);
     }
 
 
-    public void update(ArticleDto.Update articleUpdateDto) {
+    public void update(ArticleUpdateDto articleUpdateDto) {
         MapperUtils.getMapper()
-            .typeMap(ArticleDto.Update.class, Article.class)
+            .typeMap(ArticleUpdateDto.class, Article.class)
             .addMappings(mapper -> {
                 mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
-                    .map(ArticleDto.Update::getCategory, Article::setCategory);
+                    .map(ArticleUpdateDto::getCategory, Article::setCategory);
             })
             .map(articleUpdateDto, this);
     }
