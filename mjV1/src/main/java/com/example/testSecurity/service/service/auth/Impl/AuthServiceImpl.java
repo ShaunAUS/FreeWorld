@@ -52,14 +52,14 @@ public class AuthServiceImpl implements AuthService {
         checkDuplicateUserName(createDto);
 
         createDto.insertEncodedPassword(passwordEncoder.encode(createDto.getPassword()));
-        Member savedMember = memberJpaRepository.save(MemberCreateDto.toEntity(createDto));
+        Member savedMember = memberJpaRepository.save(Member.of(createDto));
 
         log.info("============savedMember============");
         log.info("createMember : {}", savedMember);
         log.info("============savedMember============");
 
         //ModelMapper는 해당 클래스의 기본 생성자를 이용해 객체를 생성하고 setter를 이용해 매핑을 한다.
-        return MemberInfoDto.toDto(savedMember);
+        return MemberInfoDto.of(savedMember);
     }
 
 
@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthToken.builder()
             .jwt(token)
             .refreshToken(memberAccess.getRefreshToken())
-            .managerInfo(MemberInfoDto.toDto(member.get()))
+            .managerInfo(MemberInfoDto.of(member.get()))
             .build();
 
     }

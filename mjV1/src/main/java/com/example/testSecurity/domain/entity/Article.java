@@ -1,5 +1,6 @@
 package com.example.testSecurity.domain.entity;
 
+import com.example.testSecurity.domain.dto.article.ArticleCreateDto;
 import com.example.testSecurity.domain.enums.CategoryType;
 import com.example.testSecurity.domain.dto.article.ArticleInfoDto;
 import com.example.testSecurity.domain.dto.article.ArticleUpdateDto;
@@ -50,14 +51,15 @@ public class Article extends BaseTime {
     @JoinColumn(name = "profile_no")
     private Profile profile;
 
-    public ArticleInfoDto toInfoDto() {
+
+    public static Article of(ArticleCreateDto articleCreateDto) {
         return MapperUtils.getMapper()
-            .typeMap(Article.class, ArticleInfoDto.class)
+            .typeMap(ArticleCreateDto.class, Article.class)
             .addMappings(mapper -> {
-                mapper.using(CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER)
-                    .map(Article::getCategory, ArticleInfoDto::setCategory);
+                mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
+                    .map(ArticleCreateDto::getCategory, Article::setCategory);
             })
-            .map(this);
+            .map(articleCreateDto);
     }
 
 

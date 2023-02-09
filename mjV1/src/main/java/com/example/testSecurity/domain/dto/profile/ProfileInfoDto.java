@@ -32,8 +32,7 @@ public class ProfileInfoDto extends ProfileUpdateDto {
             .map(CareerInfoDto::toDto) // career create -> career Info
             .collect(Collectors.toList());
 
-
-    public static ProfileInfoDto toInfoDto(Profile profile) {
+    public static ProfileInfoDto of(Profile profile) {
         return MapperUtils.getMapper()
             .typeMap(Profile.class, ProfileInfoDto.class)
             .addMappings(mapper -> {
@@ -42,6 +41,4 @@ public class ProfileInfoDto extends ProfileUpdateDto {
             })
             .map(profile);
     }
-
-
 }

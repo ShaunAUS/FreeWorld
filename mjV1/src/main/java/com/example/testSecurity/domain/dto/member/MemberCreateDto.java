@@ -30,12 +30,5 @@ public class MemberCreateDto {
         this.password = encodedPassword;
     }
 
-    public static Member toEntity(MemberCreateDto createDto) {
-        return MapperUtils.getMapper()
-            .typeMap(MemberCreateDto.class, Member.class)
-            .addMappings(mapper -> mapper.using(RoleType.ROLE_TYPE_INTEGER_CONVERTER)
-                .map(MemberCreateDto::getRoleType, Member::setRoleType))
-            .map(createDto);
-    }
 
 }

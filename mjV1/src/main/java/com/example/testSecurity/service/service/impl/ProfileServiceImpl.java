@@ -36,7 +36,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public ProfileInfoDto createProfile(ProfileCreateDto profileCreateDTO, Member loginMember) {
 
-        Profile createProfile = profileCreateDTO.toEntity();
+        Profile createProfile = Profile.of(profileCreateDTO);
         createProfile.changeMember(loginMember);
 
         List<Career> careers = createProfile.getCareers();
@@ -50,13 +50,13 @@ public class ProfileServiceImpl implements ProfileService {
         log.info("savedProfile : {}", savedProfile);
         log.info("============savedProfile============");
 
-        return savedProfile.toInfoDto();
+        return ProfileInfoDto.of(savedProfile);
 
     }
 
     @Override
     public ProfileInfoDto getProfile(Long profileNo) {
-        return profileByNo(profileNo).toInfoDto();
+        return ProfileInfoDto.of(profileByNo(profileNo));
     }
 
 
@@ -85,7 +85,7 @@ public class ProfileServiceImpl implements ProfileService {
         log.info("profileById : {}", profileById);
         log.info("============after update profile============");
 
-        return profileById.toInfoDto();
+        return ProfileInfoDto.of(profileById);
 
     }
 
@@ -99,7 +99,7 @@ public class ProfileServiceImpl implements ProfileService {
     public Page<ProfileInfoDto> search(ProfileSearchConditionDto profileSearchConditionDto,
         Pageable pageable) {
         return profileCustomRepository.search(profileSearchConditionDto, pageable)
-            .map(ProfileInfoDto::toInfoDto);
+            .map(ProfileInfoDto::of);
     }
 
     private Profile profileByNo(Long profileNo) {

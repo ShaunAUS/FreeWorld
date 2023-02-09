@@ -20,16 +20,6 @@ import lombok.experimental.SuperBuilder;
 public class ArticleCreateDto extends ArticleUpdateDto {
 
 
-    public Article toEntity() {
-        return MapperUtils.getMapper()
-            .typeMap(ArticleCreateDto.class, Article.class)
-            .addMappings(mapper -> {
-                mapper.using(CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER)
-                    .map(ArticleCreateDto::getCategory, Article::setCategory);
-            })
-            .map(this);
-    }
-
     public void changeWriter(Profile profileByMemberNo) {
         this.changeProfile(profileByMemberNo);
     }

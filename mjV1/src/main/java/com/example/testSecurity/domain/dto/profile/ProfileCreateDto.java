@@ -27,35 +27,10 @@ public class ProfileCreateDto extends ProfileUpdateDto {
 
     private List<CareerCreateDto> careers;
 
-    public Profile toEntity() {
-        return MapperUtils.getMapper()
-            .typeMap(ProfileCreateDto.class, Profile.class)
-            .addMappings(mapper -> {
-                mapper.using(
-                        CAREER_LIST_CONVERTER)   //List<CareerDto.Create> -> List<Career>
-                    .map(ProfileCreateDto::getCareers, Profile::setCareers);
-            })
-            .map(this);
-    }
-
 
     public static final Converter<List<CareerCreateDto>, List<Career>> CAREER_LIST_CONVERTER =
         context -> context.getSource() == null ? null : context.getSource().stream()
-            .map(CareerCreateDto::toEntity)
+            .map(Career::of)
             .collect(Collectors.toList());
-
-    public ProfileInfoDto toInfo() {
-
-        return MapperUtils.getMapper()
-            .typeMap(ProfileCreateDto.class, ProfileInfoDto.class)
-
-            //List<CareerDto.Create> career -> List<CareerDto.Info> career
-            .addMappings(mapper -> {
-                mapper.using(ProfileInfoDto.CAREER_CREATE_LIST_TO_INFO_LIST)
-                    .map(ProfileCreateDto::getUpdateCareers, ProfileInfoDto::setInfoCareers);
-            })
-            .map(this);
-    }
-
 
 }

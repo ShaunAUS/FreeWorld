@@ -1,6 +1,9 @@
 package com.example.testSecurity.domain.entity;
 
+import static com.example.testSecurity.domain.dto.profile.ProfileCreateDto.CAREER_LIST_CONVERTER;
+
 import com.example.testSecurity.domain.dto.career.CareerInfoDto;
+import com.example.testSecurity.domain.dto.profile.ProfileCreateDto;
 import com.example.testSecurity.domain.dto.profile.ProfileInfoDto;
 import com.example.testSecurity.domain.dto.profile.ProfileUpdateDto;
 import com.example.testSecurity.domain.utils.MapperUtils;
@@ -55,6 +58,16 @@ public class Profile {
     @JoinColumn(name = "member_no")
     private Member member;
 
+    public static Profile of(ProfileCreateDto profileCreateDto) {
+        return MapperUtils.getMapper()
+            .typeMap(ProfileCreateDto.class, Profile.class)
+            .addMappings(mapper -> {
+                mapper.using(CAREER_LIST_CONVERTER)   //List<CareerDto.Create> -> List<Career>
+                    .map(ProfileCreateDto::getCareers, Profile::setCareers);
+            })
+            .map(profileCreateDto);
+    }
+
 
     public void update(ProfileUpdateDto profileUpdateDto) {
         this.name = profileUpdateDto.getName();
@@ -64,19 +77,10 @@ public class Profile {
 
     }
 
-    public ProfileInfoDto toInfoDto() {
-        return MapperUtils.getMapper()
-            .typeMap(Profile.class, ProfileInfoDto.class)
-            .addMappings(mapper -> {
-                mapper.using(CAREER_LIST_TO_INFO_LIST)
-                    .map(Profile::getCareers, ProfileInfoDto::setInfoCareers);
-            })
-            .map(this);
-    }
 
     public static final Converter<List<Career>, List<CareerInfoDto>> CAREER_LIST_TO_INFO_LIST =
         context -> context.getSource() == null ? null : context.getSource().stream()
-            .map(career -> career.toInfoDto())
+            .map(CareerInfoDto::of)
             .collect(Collectors.toList());
 
     public void changeMember(Member loginMember) {

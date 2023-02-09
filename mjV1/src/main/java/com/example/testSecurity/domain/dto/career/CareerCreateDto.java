@@ -19,15 +19,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class CareerCreateDto extends CareerUpdateDto {
 
-    public Career toEntity() {
-        return MapperUtils.getMapper()
-            .typeMap(CareerCreateDto.class, Career.class)
-            .addMappings(mapper -> {
-                mapper.using(CATEGORY_TYPE_INTEGER_CONVERTER)
-                    .map(CareerCreateDto::getCategory, Career::setCategory);
-            })
-            .map(this);
-    }
 
     public static void update(CareerCreateDto create, Career career) {
         MapperUtils.getMapper()

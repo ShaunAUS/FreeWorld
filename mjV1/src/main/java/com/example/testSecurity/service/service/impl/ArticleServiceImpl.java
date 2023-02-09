@@ -48,13 +48,13 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleCreateDTO.changeWriter(profileByMemberNo);
 
-        Article savedArticle = articleJpaRepository.save(articleCreateDTO.toEntity());
+        Article savedArticle = articleJpaRepository.save(Article.of(articleCreateDTO));
 
         log.info("============savedArticle============");
         log.info("savedArticle : {}", savedArticle);
         log.info("============savedArticle============");
 
-        return savedArticle.toInfoDto();
+        return ArticleInfoDto.of(savedArticle);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleInfoDto getArticle(Long articleNo) {
         Article articleByNo = getArticleByNo(articleNo);
         articleByNo.addView();
-        return articleByNo.toInfoDto();
+        return ArticleInfoDto.of(articleByNo);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("updatedArticle : {}", articleByNo);
         log.info("===========after update article============");
 
-        return articleByNo.toInfoDto();
+        return ArticleInfoDto.of(articleByNo);
     }
 
 
@@ -137,20 +137,20 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("likeArticle : {}", articleByNo);
         log.info("============after like article============");
 
-        return articleByNo.toInfoDto();
+        return ArticleInfoDto.of(articleByNo);
     }
 
     @Override
     public Page<ArticleInfoDto> search(ArticleSearchConditionDto searchCondition,
         Pageable pageable) {
         return articleCustomRepository.search(searchCondition, pageable)
-            .map(Article::toInfoDto);
+            .map(ArticleInfoDto::of);
     }
 
     @Override
     public Page<ArticleInfoDto> getArticles(Pageable pageable) {
         return articleJpaRepository.findAll(pageable)
-            .map(article -> article.toInfoDto());
+            .map(ArticleInfoDto::of);
     }
 
     private Article getArticleByNo(Long articleNo) {

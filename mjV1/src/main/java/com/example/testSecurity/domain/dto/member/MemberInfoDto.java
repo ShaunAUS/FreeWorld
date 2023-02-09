@@ -23,7 +23,7 @@ public class MemberInfoDto extends MemberCreateDto {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
-    public static MemberInfoDto toDto(Member member) {
+    public static MemberInfoDto of(Member member) {
         return MapperUtils.getMapper()
             .typeMap(Member.class, MemberInfoDto.class)
             .addMappings(mapper -> {

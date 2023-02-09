@@ -101,7 +101,7 @@ class ArticleServiceTest {
         ArticleCreateDto articleCreate = ArticleCreateDto.builder()
             .title("test title")
             .contents("test contents")
-            .profile(create.toEntity())  //게시글의 작성자는 Profile 자동 등록
+            .profile(Profile.of(create))  //게시글의 작성자는 Profile 자동 등록
             .likeCnt(0)
             .views(0)
             .category(CategoryType.PROGRAMMING)

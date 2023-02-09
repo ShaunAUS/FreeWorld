@@ -3,6 +3,7 @@ package com.example.testSecurity.domain.entity;
 import static com.example.testSecurity.domain.enums.CategoryType.CATEGORY_TYPE_INTEGER_CONVERTER;
 import static com.example.testSecurity.domain.enums.CategoryType.INTEGER_CATEGORY_TYPE_CONVERTER;
 
+import com.example.testSecurity.domain.dto.career.CareerCreateDto;
 import com.example.testSecurity.domain.dto.career.CareerInfoDto;
 import com.example.testSecurity.domain.dto.career.CareerUpdateDto;
 import com.example.testSecurity.domain.utils.MapperUtils;
@@ -54,6 +55,17 @@ public class Career {
     @JoinColumn(name = "profile_no")
     private Profile profile;
 
+
+    public static Career of(CareerCreateDto careerCreateDto) {
+        return MapperUtils.getMapper()
+            .typeMap(CareerCreateDto.class, Career.class)
+            .addMappings(mapper -> {
+                mapper.using(CATEGORY_TYPE_INTEGER_CONVERTER)
+                    .map(CareerCreateDto::getCategory, Career::setCategory);
+            })
+            .map(careerCreateDto);
+    }
+
     public void changeProfile(Profile savedProfile) {
         this.profile = savedProfile;
     }
@@ -64,18 +76,6 @@ public class Career {
             .map(career);
     }
 
-    public CareerInfoDto toInfoDto() {
-
-        return MapperUtils.getMapper()
-            .typeMap(Career.class, CareerInfoDto.class)
-            .addMappings(mapper -> {
-                mapper.using(INTEGER_CATEGORY_TYPE_CONVERTER)
-                    .map(Career::getCategory, CareerInfoDto::setCategory);
-            })
-            .map(this);
-
-
-    }
 
     public void updateCareer(CareerUpdateDto careerUpdateDto) {
         MapperUtils.getMapper()

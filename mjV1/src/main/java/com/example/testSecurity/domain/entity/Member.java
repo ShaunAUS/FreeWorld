@@ -1,5 +1,8 @@
 package com.example.testSecurity.domain.entity;
 
+import com.example.testSecurity.domain.dto.member.MemberCreateDto;
+import com.example.testSecurity.domain.enums.RoleType;
+import com.example.testSecurity.domain.utils.MapperUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
@@ -32,4 +35,11 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private Integer roleType;
 
+    public static Member of(MemberCreateDto createDto) {
+        return MapperUtils.getMapper()
+            .typeMap(MemberCreateDto.class, Member.class)
+            .addMappings(mapper -> mapper.using(RoleType.ROLE_TYPE_INTEGER_CONVERTER)
+                .map(MemberCreateDto::getRoleType, Member::setRoleType))
+            .map(createDto);
+    }
 }
