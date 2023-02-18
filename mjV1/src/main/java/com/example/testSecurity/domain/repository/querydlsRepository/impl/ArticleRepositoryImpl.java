@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -22,13 +23,10 @@ import static com.example.testSecurity.domain.entity.QProfile.profile;
 import static org.springframework.util.StringUtils.*;
 
 @Repository
+@RequiredArgsConstructor
 public class ArticleRepositoryImpl implements ArticleCustomRepository {
 
     private final JPAQueryFactory queryFactory;
-
-    public ArticleRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
 
     //게시글 검색은  키워드(제목+내용), 카테고리 로 한다
     @Override

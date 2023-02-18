@@ -38,8 +38,9 @@ public class Member extends BaseTime {
     public static Member of(MemberCreateDto createDto) {
         return MapperUtils.getMapper()
             .typeMap(MemberCreateDto.class, Member.class)
-            .addMappings(mapper -> mapper.using(RoleType.ROLE_TYPE_INTEGER_CONVERTER)
-                .map(MemberCreateDto::getRoleType, Member::setRoleType))
+            .addMappings(
+                mapper -> mapper.using(RoleType.ROLE_TYPE_INTEGER_CONVERTER)
+                    .map(MemberCreateDto::getRoleType, Member::setRoleType))
             .map(createDto);
     }
 }

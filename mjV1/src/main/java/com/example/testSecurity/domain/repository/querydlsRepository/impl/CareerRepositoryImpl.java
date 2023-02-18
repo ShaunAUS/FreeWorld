@@ -8,16 +8,15 @@ import com.example.testSecurity.domain.entity.Career;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import javax.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class CareerRepositoryImpl implements CareerCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public CareerRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
 
     //career -> career.create
     @Override

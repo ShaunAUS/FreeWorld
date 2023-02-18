@@ -10,6 +10,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -24,13 +25,11 @@ import static com.example.testSecurity.domain.entity.QCareer.career;
 import static org.springframework.util.StringUtils.hasText;
 
 @Repository
+@RequiredArgsConstructor
 public class ProfileRepositoryImpl implements ProfileCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public ProfileRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
 
     //Profile 검색은 (년차)와 (카테고리(career테이블)로 검색한다
     @Override
