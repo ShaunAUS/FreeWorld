@@ -20,6 +20,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class MemberInfoDto extends MemberCreateDto {
 
+
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
@@ -39,5 +40,6 @@ public class MemberInfoDto extends MemberCreateDto {
         this.updateDate = LocalDateTime.now(ZoneOffset.UTC);
         return this;
     }
+
 
 }

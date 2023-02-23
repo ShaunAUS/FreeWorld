@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation("com.googlecode.json-simple:json-simple:1.1.1")
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
 
     //타임리프

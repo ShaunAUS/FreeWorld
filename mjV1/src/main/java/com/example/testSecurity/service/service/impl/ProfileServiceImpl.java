@@ -46,10 +46,6 @@ public class ProfileServiceImpl implements ProfileService {
         //Profile + Career save
         Profile savedProfile = profileJpaRepository.save(createProfile);
 
-        log.info("============savedProfile============");
-        log.info("savedProfile : {}", savedProfile);
-        log.info("============savedProfile============");
-
         return ProfileInfoDto.of(savedProfile);
 
     }
@@ -66,10 +62,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         Profile profileById = profileByNo(profileNo);
 
-        log.info("============before update profile============");
-        log.info("profileById : {}", profileById);
-        log.info("============before update profile============");
-
         //Only profile update
         profileById.update(profileUpdateDto);
 
@@ -80,10 +72,6 @@ public class ProfileServiceImpl implements ProfileService {
             originCareers.get(i).updateCareer(updateCareers.get(i));
 
         }
-
-        log.info("============after update profile============");
-        log.info("profileById : {}", profileById);
-        log.info("============after update profile============");
 
         return ProfileInfoDto.of(profileById);
 
