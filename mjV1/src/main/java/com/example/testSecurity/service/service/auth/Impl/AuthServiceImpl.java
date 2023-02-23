@@ -54,10 +54,6 @@ public class AuthServiceImpl implements AuthService {
         createDto.insertEncodedPassword(passwordEncoder.encode(createDto.getPassword()));
         Member savedMember = memberJpaRepository.save(Member.of(createDto));
 
-        log.info("============savedMember============");
-        log.info("createMember : {}", savedMember);
-        log.info("============savedMember============");
-
         //ModelMapper는 해당 클래스의 기본 생성자를 이용해 객체를 생성하고 setter를 이용해 매핑을 한다.
         return MemberInfoDto.of(savedMember);
     }
@@ -79,15 +75,8 @@ public class AuthServiceImpl implements AuthService {
             .build();
         memberAccessRepository.save(memberAccess);
 
-        //토큰생성
-        String token = jwtProvider.getJwtToken(member.get(), memberAccess);
-
-        log.info("============loginMember============");
-        log.info("loginMember : {}", member.get());
-        log.info("============loginMember============");
-
         return AuthToken.builder()
-            .jwt(token)
+            .jwt(jwtProvider.getJwtToken(member.get(), memberAccess))
             .refreshToken(memberAccess.getRefreshToken())
             .managerInfo(MemberInfoDto.of(member.get()))
             .build();
@@ -119,9 +108,6 @@ public class AuthServiceImpl implements AuthService {
         // 15분뒤 기록 삭제
         redisTemplate.expire(String.valueOf(accessId), 900, TimeUnit.SECONDS);
 
-        log.info("=========logoutMember=========");
-        log.info("logoutMember : {}", memberAccess.getMember());
-        log.info("=========logoutMember=========");
 
     }
 
@@ -148,13 +134,10 @@ public class AuthServiceImpl implements AuthService {
         // 로그인 멤버로 토큰 재발급
         Member member = memberJpaRepository.findById(loginManager.getNo()).get();
         final String refreshedToken = jwtProvider.getJwtToken(member, memberAccess);
-
-        log.info("=========refreshMember=========");
-        log.info("refreshMember : {}", member);
-        log.info("=========refreshMember=========");
-
+        
         return AuthToken.builder()
             .jwt(refreshedToken)
+            .managerInfo(MemberInfoDto.of(member))
             .build();
     }
 

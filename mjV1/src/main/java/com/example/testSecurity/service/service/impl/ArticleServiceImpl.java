@@ -42,17 +42,13 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleInfoDto createArticle(ArticleCreateDto articleCreateDTO,
         Long loginMemberNo) {
 
-        //must have profile when create article
+        //must have profile when before create article
         Profile profileByMemberNo = profileJpaRepository.findProfileByMemberNo(loginMemberNo)
             .orElseThrow(() -> new ServiceProcessException(ServiceMessage.NOT_FOUND_PROFILE));
 
         articleCreateDTO.changeWriter(profileByMemberNo);
 
         Article savedArticle = articleJpaRepository.save(Article.of(articleCreateDTO));
-
-        log.info("============savedArticle============");
-        log.info("savedArticle : {}", savedArticle);
-        log.info("============savedArticle============");
 
         return ArticleInfoDto.of(savedArticle);
     }
@@ -68,20 +64,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public ArticleInfoDto updateArticle(ArticleUpdateDto articleUpdateDto, Long articleNo) {
-
         Article articleByNo = getArticleByNo(articleNo);
-
-        log.info("============before update article============");
-        log.info("article : {}", articleByNo);
-        log.info("============before update article============");
-
-        //조회로 인한 영속성 상태+ 트랜젹선 안에서 +  엔티티 변경 = 더티체킹
         articleByNo.update(articleUpdateDto);
-
-        log.info("===========after update article============");
-        log.info("updatedArticle : {}", articleByNo);
-        log.info("===========after update article============");
-
         return ArticleInfoDto.of(articleByNo);
     }
 
@@ -126,17 +110,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public ArticleInfoDto likeArticle(Long articleNo) {
         Article articleByNo = getArticleByNo(articleNo);
-
-        log.info("============before like article============");
-        log.info("likeArticle : {}", articleByNo);
-        log.info("============Before like Article============");
-
         articleByNo.addLike();
-
-        log.info("============after like article============");
-        log.info("likeArticle : {}", articleByNo);
-        log.info("============after like article============");
-
         return ArticleInfoDto.of(articleByNo);
     }
 
