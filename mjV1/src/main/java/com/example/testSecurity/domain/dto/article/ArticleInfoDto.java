@@ -22,18 +22,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ArticleInfoDto extends ArticleUpdateDto {
 
-    @ApiModelProperty(value = "제목")
-    private String title;
-    @ApiModelProperty(value = "내용")
-    private String contents;
-    @ApiModelProperty(value = "좋아요")
-    private Integer likeCnt;
-    @ApiModelProperty(value = "조회수")
-    private Integer views;
-    @ApiModelProperty(value = "카테고리")
-    private CategoryType category;
-    @ApiModelProperty(value = "프로파일")
-    private Profile profile;
+
     @ApiModelProperty(value = "no")
     private String no;
 

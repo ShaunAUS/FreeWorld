@@ -4,9 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -16,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class AopTest {
+public class AopLog {
 
     //service.. 서브패키지의 클래스까지 포함
     //service.  서브패키지 미포함

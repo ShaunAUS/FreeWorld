@@ -40,8 +40,9 @@ public class ProfileController {
     private final MemberService memberService;
     private final ProfileImageService profileImageService;
 
-
     //등록은 일반회원만 가능
+
+
     @ApiOperation(value = "등록", notes = "프로필 등록")
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER')")
