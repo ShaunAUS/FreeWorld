@@ -6,6 +6,7 @@ import com.example.testSecurity.domain.dto.profile.ProfileInfoDto;
 import com.example.testSecurity.domain.dto.profile.ProfileSearchConditionDto;
 import com.example.testSecurity.domain.dto.profile.ProfileUpdateDto;
 import com.example.testSecurity.domain.entity.Member;
+import com.example.testSecurity.service.aop.LoginMember;
 import com.example.testSecurity.service.exception.ServiceProcessException;
 import com.example.testSecurity.service.exception.enums.ServiceMessage;
 import com.example.testSecurity.service.service.MemberService;
@@ -48,9 +49,9 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER')")
     public ProfileInfoDto createProfile(
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileCreateDto profileCreateDTO,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member loginMember
     ) {
-        return profileService.createProfile(profileCreateDTO, getLoginMember(authentication));
+        return profileService.createProfile(profileCreateDTO, loginMember);
     }
 
 
@@ -74,9 +75,9 @@ public class ProfileController {
     public ProfileInfoDto modifyProfile(
         @ApiParam(value = "ProfileCreateDTO") @RequestBody ProfileUpdateDto profileUpdateDTO,
         @PathVariable Long profileNo,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member loginMember
     ) {
-        checkIsMyProfile(profileNo, getLoginMember(authentication).getNo());
+        checkIsMyProfile(profileNo, loginMember.getNo());
         return profileService.updateProfile(profileUpdateDTO, profileNo);
     }
 
@@ -86,9 +87,9 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void deleteProfile(
         @PathVariable Long profileNo,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member loginMember
     ) {
-        checkIsMyProfile(profileNo, getLoginMember(authentication).getNo());
+        checkIsMyProfile(profileNo, loginMember.getNo());
         profileService.deleteProfile(profileNo);
     }
 
@@ -133,20 +134,4 @@ public class ProfileController {
         }
     }
 
-    private Member getLoginMember(Authentication authentication) {
-
-        Optional<Member> findByUserName = memberService.findByUserName(getUserName(authentication));
-        if (findByUserName.isPresent()) {
-            return findByUserName.get();
-        } else {
-            throw new ServiceProcessException(ServiceMessage.USER_NOT_FOUND);
-        }
-    }
-
-    private String getUserName(Authentication authentication) {
-        final int i = authentication.getName().lastIndexOf(":");
-        final String username =
-            i > -1 ? authentication.getName().substring(0, i) : authentication.getName();
-        return username;
-    }
 }
