@@ -1,7 +1,13 @@
 package com.example.testSecurity.service.aop;
 
+import com.example.testSecurity.domain.entity.Member;
+import com.example.testSecurity.service.exception.ServiceProcessException;
+import com.example.testSecurity.service.exception.enums.ServiceMessage;
+import com.example.testSecurity.service.service.MemberService;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -9,18 +15,22 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class AopLog {
+
 
     //service.. 서브패키지의 클래스까지 포함
     //service.  서브패키지 미포함
     @Pointcut("execution(* com.example.testSecurity.service.service..*.*(..))")
     private void cut() {
     }
+
 
     @Before("cut()")
     public void beforeParameterLog(JoinPoint joinPoint) throws Throwable {

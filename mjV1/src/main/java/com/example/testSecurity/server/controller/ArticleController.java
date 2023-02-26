@@ -6,6 +6,7 @@ import com.example.testSecurity.domain.dto.article.ArticleInfoDto;
 import com.example.testSecurity.domain.dto.article.ArticleSearchConditionDto;
 import com.example.testSecurity.domain.dto.article.ArticleUpdateDto;
 import com.example.testSecurity.domain.entity.Member;
+import com.example.testSecurity.service.aop.LoginMember;
 import com.example.testSecurity.service.exception.ServiceProcessException;
 import com.example.testSecurity.service.exception.enums.ServiceMessage;
 import com.example.testSecurity.service.service.ArticleService;
@@ -31,19 +32,16 @@ import springfox.documentation.annotations.ApiIgnore;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final MemberService memberService;
-
 
     @ApiOperation(value = "등록", notes = "게시글 등록")
     @PostMapping("/register")
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public ArticleInfoDto createArticle(
         @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleCreateDto articleCreateDto,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member logimMember
     ) {
-        return articleService.createArticle(articleCreateDto, getLoginMemberNo(authentication));
+        return articleService.createArticle(articleCreateDto, logimMember.getNo());
     }
-
 
     @ApiOperation(value = "조회", notes = "게시글 조회")
     @GetMapping("/{articleNo}")
@@ -77,9 +75,10 @@ public class ArticleController {
     public ArticleInfoDto modifyArticle(
         @ApiParam(value = "ArticleCreateDto") @RequestBody ArticleUpdateDto articleUpdateDto,
         @PathVariable Long articleNo,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member logimMember
+
     ) {
-        if (checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))) {
+        if (checkIsMemberArticle(articleNo, logimMember.getNo())) {
             return articleService.updateArticle(articleUpdateDto, articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
@@ -92,9 +91,9 @@ public class ArticleController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void deleteProfile(
         @PathVariable Long articleNo,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member logimMember
     ) {
-        if (checkIsMemberArticle(articleNo, getLoginMemberNo(authentication))) {
+        if (checkIsMemberArticle(articleNo, logimMember.getNo())) {
             articleService.deleteArticle(articleNo);
         }
         throw new ServiceProcessException(ServiceMessage.NOT_AUTHORIZED);
@@ -105,9 +104,9 @@ public class ArticleController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public void bookmarkArticle(
         @PathVariable Long articleNo,
-        @ApiIgnore Authentication authentication
+        @LoginMember Member logimMember
     ) {
-        articleService.bookmarkArticle(articleNo, getLoginMember(getLoginMemberNo(authentication)));
+        articleService.bookmarkArticle(articleNo, logimMember);
     }
 
     @ApiOperation(value = "좋아요", notes = "게시글 좋아요")
@@ -145,28 +144,5 @@ public class ArticleController {
 
     private Boolean checkIsMemberArticle(Long articleNo, Long loginMemberNo) {
         return articleService.checkIsMemberArticle(articleNo, loginMemberNo);
-    }
-
-
-    private Member getLoginMember(Long memberNo) {
-        return memberService.findById(memberNo)
-            .orElseThrow(() -> new ServiceProcessException(ServiceMessage.USER_NOT_FOUND));
-    }
-
-    private Long getLoginMemberNo(Authentication authentication) {
-
-        Optional<Member> findByUserName = memberService.findByUserName(getUserName(authentication));
-        if (findByUserName.isPresent()) {
-            return findByUserName.get().getNo();
-        } else {
-            throw new ServiceProcessException(ServiceMessage.USER_NOT_FOUND);
-        }
-    }
-
-    private String getUserName(Authentication authentication) {
-        final int i = authentication.getName().lastIndexOf(":");
-        final String username =
-            i > -1 ? authentication.getName().substring(0, i) : authentication.getName();
-        return username;
     }
 }
