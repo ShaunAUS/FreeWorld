@@ -73,6 +73,7 @@ public class Article extends BaseTime {
             .map(articleUpdateDto, this);
     }
 
+    //DynamicInsert 대신 사용해도됌
     @PrePersist
     public void prePersist() {
         this.views = this.views == null ? 0 : this.views;

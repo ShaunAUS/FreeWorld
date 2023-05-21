@@ -43,7 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
         for (Career career : careers) {
             career.changeProfile(createProfile);
         }
-        //Profile + Career save
+        //Profile + Career save (=cascade)
         Profile savedProfile = profileJpaRepository.save(createProfile);
 
         return ProfileInfoDto.of(savedProfile);

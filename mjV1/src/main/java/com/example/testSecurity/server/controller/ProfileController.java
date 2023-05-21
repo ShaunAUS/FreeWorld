@@ -99,7 +99,8 @@ public class ProfileController {
     @PreAuthorize("hasAnyRole('GENERAL_MEMBER','ADMIN')")
     public String searchProfile(
         @ApiParam(value = "카테고리") @RequestParam CategoryType category, //from career table
-        @ApiParam(value = "경력") @RequestParam Integer year, Model model,
+        @ApiParam(value = "경력") @RequestParam Integer year,
+        Model model,
         @PageableDefault(sort = {
             "profile_no"}, direction = Sort.Direction.DESC, size = 10) Pageable pageable
     ) {
